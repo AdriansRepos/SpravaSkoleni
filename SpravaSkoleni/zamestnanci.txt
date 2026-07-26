@@ -1,0 +1,13 @@
+﻿KOD;JMENO;PRIJMENI;PRACOVNI_POZICE;LEKTOR
+ZAM_001;Pavel;Novák;Programátor;ANO
+ZAM_002;Jana;Pokorná;Tester;ANO
+ZAM_003;Lucie;Adamová;Účetní;ANO
+ZAM_004;Petr;Procházka;Programátor;NE
+ZAM_005;Karel;Běhal;Manažer;ANO
+ZAM_006;Jitka;Plachá;Účetní;NE
+ZAM_007;Pavel;Novák;Analytik;NE
+ZAM_008;Veronika;Malá;Tester;NE
+ZAM_009;Ferdinand;Bělík;Programátor;NE
+ZAM_010;Josef;Vyskočil;Programátor;NE
+ZAM_011;Jindřich;Branný;Tester;NE
+ZAM_012;Petra;Šváchová;Manažer;NE

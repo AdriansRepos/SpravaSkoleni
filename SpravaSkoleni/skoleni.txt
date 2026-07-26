@@ -1,0 +1,29 @@
+﻿SKOLENI
+Excel - makra I;Základní seznámení s tvorbou maker pro Excel. Úvod do programování ve VBA;15.10.2015;18.10.2015;60;NE
+LEKTORI
+ZAM_001
+STUDENTI
+ZAM_006
+ZAM_007
+ZAM_008
+ZAM_009
+HODNOCENI
+SKOLENI
+Excel - zaklady;Základní seznámení s Excel a ukázky typického použití ve firmě.;10.10.2015;12.10.2015;60;ANO
+LEKTORI
+ZAM_001
+ZAM_002
+STUDENTI
+ZAM_006
+ZAM_007
+ZAM_008
+ZAM_009
+ZAM_010
+ZAM_011
+HODNOCENI
+ZAM_006;90
+ZAM_007;95
+ZAM_008;80
+ZAM_009;100
+ZAM_010;90
+ZAM_011;70
