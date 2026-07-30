@@ -34,7 +34,7 @@ void ZobrazVyberMenu()
                 break;
 
             case '2':
-                Skoleni vybraneSkoleni = spravceSkoleni.VybratSkoleni()! ;
+                Skoleni? vybraneSkoleni = spravceSkoleni.VybratSkoleni();
                 if (vybraneSkoleni != null)
                 {                    
                     spravceSkoleni.ZobrazDetailSkoleni(vybraneSkoleni);
