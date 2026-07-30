@@ -1,4 +1,7 @@
-﻿namespace SpravaSkoleni
+﻿using TextHelper;
+using SelectHelper;
+
+namespace SpravaSkoleni
 {
     public class SpravceSkoleni
     {
@@ -85,27 +88,24 @@
             string nazev = Console.ReadLine()!;
             Console.Write("Popis: ");
             string popis = Console.ReadLine()!;
-            Console.Write("Doporučený počet účastníků: ");
-            int doporucenyPocetUcastniku = int.Parse(Console.ReadLine()!);
+            int doporucenyPocetUcastniku = UpravaVstupu.ZeptejSeAUprav(
+                0, "doporučený počet účastníků",
+                v => v.ToString(),
+                s => int.Parse(s),
+                jeNove: true);            
 
-            Console.WriteLine("Počáteční datum:");
-            Console.Write("\tDen: ");
-            int pocatecniDatumDen = int.Parse(Console.ReadLine()!);
-            Console.Write("\tMěsíc: ");
-            int pocatecniDatumMesic = int.Parse(Console.ReadLine()!);
-            Console.Write("\tRok: ");
-            int pocatecniDatumRok = int.Parse(Console.ReadLine()!);
-            DateTime pocatecniDatum = new(pocatecniDatumRok, pocatecniDatumMesic, pocatecniDatumDen);
+            DateTime pocatecniDatum = UpravaVstupu.ZeptejSeAUprav(
+            DateTime.MinValue, "počáteční datum (den.měsíc.rok)",
+            v => v.ToShortDateString(),
+            s => DateTime.Parse(s),
+            jeNove: true);
 
-            Console.WriteLine("Koncové datum:");
-            Console.Write("\tDen: ");
-            int koncoveDatumDen = int.Parse(Console.ReadLine()!);
-            Console.Write("\tMěsíc: ");
-            int koncoveDatumMesic = int.Parse(Console.ReadLine()!);
-            Console.Write("\tRok: ");
-            int koncoveDatumRok = int.Parse(Console.ReadLine()!);
-            DateTime koncoveDatum = new(koncoveDatumRok, koncoveDatumMesic, koncoveDatumDen);
-
+            DateTime koncoveDatum = UpravaVstupu.ZeptejSeAUprav(
+            DateTime.MinValue, "koncové datum (den.měsíc.rok)",
+            v => v.ToShortDateString(),
+            s => DateTime.Parse(s),
+            jeNove: true);
+            
             Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, new List<Student>(), 
                 new List<Lektor>(), new Dictionary<Student, int>(), doporucenyPocetUcastniku , false);
             SeznamSkoleni.Add(noveSkoleni);
@@ -243,29 +243,14 @@
         }
 
         public Skoleni? VybratSkoleni()
-        {
-            Console.WriteLine("\n*** Seznam školení ***\n");
-            for (int i = 0; i < SeznamSkoleni.Count; i++)
-            {
-                string stav = "otevřené";
-                if (SeznamSkoleni[i].Uzavreno)
-                {
-                    stav = "uzavřené";
-                }
-                Console.WriteLine($"{i + 1}. {SeznamSkoleni[i].Nazev} - {stav}");
-            }
-            Console.WriteLine("0. Zpět");
-            Console.Write("Vaše volba: ");
-            int volba = int.Parse(Console.ReadLine()!) - 1;
-            if (volba >= 0 && volba < SeznamSkoleni.Count)
-            {
-                return SeznamSkoleni[volba];
-            }
-            else
-            {
-                return null;
-            }
-        }
+    {
+        Console.WriteLine("\n*** Seznam školení ***\n");
+    
+        return SelectHelp.VybratPolozku(
+            SeznamSkoleni,
+            s => $"{s.Nazev} - {(s.Uzavreno ? "uzavřené" : "otevřené")}",
+            "školení");
+    }
 
         public void ZobrazDetailSkoleni(Skoleni skoleni)
         {
@@ -320,16 +305,13 @@
             Console.WriteLine("*** Přihlášení studenta na školení ***");
             /* Zobrazíme seznam studentů, které je možné přihlásit na školení a 
              * necháme uživatele vybrat, kterého chce přihlásit. */
-            for (int i = 0; i < studenti.Count; i++)
+            Student? vybranyStudent = SelectHelp.VybratPolozku(
+                studenti,
+                s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
+                "studenta");
+            if (vybranyStudent != null)
             {
-                Console.WriteLine($"{i + 1}. {studenti[i].Jmeno} {studenti[i].Prijmeni} ({studenti[i].Kod})");
-            }
-            Console.WriteLine("0. Zpět");
-            Console.Write("Přihlásit studenta: ");
-            int volba = int.Parse(Console.ReadLine()!) - 1;
-            if (volba >= 0 && volba < studenti.Count)
-            {
-                skoleni.Studenti.Add(studenti[volba]);
+                skoleni.Studenti.Add(vybranyStudent);
                 UlozitSkoleni();
                 Console.WriteLine("! Student byl úspěšně přihlášen na školení !");
             }
@@ -340,17 +322,13 @@
             Console.WriteLine("*** Odhhlášení studenta ze školení ***");
             /* Zobrazíme seznam studentů, které je možné odhlásit ze školení a 
              * necháme uživatele vybrat, kterého chce odhlásit. */
-            for (int i = 0; i < skoleni.Studenti.Count; i++)
+            Student? vybranyStudent = SelectHelp.VybratPolozku(
+                skoleni.Studenti,
+                s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
+                "studenta");
+            if (vybranyStudent != null)            
             {
-                Console.WriteLine($"{i + 1}. {skoleni.Studenti[i].Jmeno} {skoleni.Studenti[i].Prijmeni} " +
-                    $"({skoleni.Studenti[i].Kod})");
-            }
-            Console.WriteLine("0. Zpět");
-            Console.Write("Odhlásit studenta: ");
-            int volba = int.Parse(Console.ReadLine()!) - 1;
-            if (volba >= 0 && volba < skoleni.Studenti.Count)
-            {
-                skoleni.Studenti.Remove(skoleni.Studenti[volba]);
+                skoleni.Studenti.Remove(vybranyStudent);
                 UlozitSkoleni();
                 Console.WriteLine("! Student byl úspěšně odhlášen ze školení !");
             }
@@ -371,16 +349,13 @@
             Console.WriteLine("*** Přiřazení lektora na školení ***");
             /* Zobrazíme seznam lektorů, které je možné přiřadit na školení a 
              * necháme uživatele vybrat, kterého chce přiřadit. */
-            for (int i = 0; i < lektori.Count; i++)
+            Lektor? vybranyLektor = SelectHelp.VybratPolozku(
+                lektori,
+                s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
+                "lektora");
+            if (vybranyLektor != null)
             {
-                Console.WriteLine($"{i + 1}. {lektori[i].Jmeno} {lektori[i].Prijmeni} ({lektori[i].Kod})");
-            }
-            Console.WriteLine("0. Zpět");
-            Console.Write("Přiřadit lektora: ");
-            int volba = int.Parse(Console.ReadLine()!) - 1;
-            if (volba >= 0 && volba < lektori.Count)
-            {
-                skoleni.Lektori.Add(lektori[volba]);
+                skoleni.Lektori.Add(vybranyLektor);
                 UlozitSkoleni();
                 Console.WriteLine("! Lektor byl úspěšně přiřazen na školení !");
             }
@@ -391,17 +366,13 @@
             Console.WriteLine("*** Odebraání lektora na školení ***");
             /* Zobrazíme seznam lektorů, které je možné odebrat ze školení a 
              * necháme uživatele vybrat, kterého chce odebrat. */
-            for (int i = 0; i < skoleni.Lektori.Count; i++)
+             Lektor? vybranyLektor = SelectHelp.VybratPolozku(
+                skoleni.Lektori,
+                s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
+                "lektora");
+            if (vybranyLektor != null) 
             {
-                Console.WriteLine($"{i + 1}. {skoleni.Lektori[i].Jmeno} {skoleni.Lektori[i].Prijmeni} " +
-                    $"({skoleni.Lektori[i].Kod})");
-            }
-            Console.WriteLine("0. Zpět");
-            Console.Write("Odebrat lektora: ");
-            int volba = int.Parse(Console.ReadLine()!) - 1;
-            if (volba >= 0 && volba < skoleni.Lektori.Count)
-            {
-                skoleni.Lektori.Remove(skoleni.Lektori[volba]);
+                skoleni.Lektori.Remove(vybranyLektor);
                 UlozitSkoleni();
                 Console.WriteLine("! Lektor byl úspěšně odebrán na školení !");
             }
@@ -413,8 +384,11 @@
             Console.WriteLine("Vyplňte hodnocení jednotlivých studentů");
             foreach (Student student in skoleni.Studenti)
             {
-                Console.Write($"{student.Jmeno} {student.Prijmeni} ({student.Kod}): ");
-                int hodnoceni = int.Parse(Console.ReadLine()!);
+                int hodnoceni = UpravaVstupu.ZeptejSeAUprav(
+                    0, $"hodnocení pro {student.Jmeno} {student.Prijmeni}",
+                    v => v.ToString(),
+                    s => int.Parse(s),
+                    jeNove: true);
                 skoleni.HodnoceniStudentu[student] = hodnoceni;
             }
             skoleni.Uzavreno = true;
