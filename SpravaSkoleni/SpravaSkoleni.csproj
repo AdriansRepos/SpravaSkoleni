@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="InputHelper">
+      <HintPath>..\..\InputHelper\InputHelper\bin\Release\net8.0\InputHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="SelectHelper">
+      <HintPath>..\..\SelectHelper\SelectHelper\bin\Release\net8.0\SelectHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="TextHelper">
+      <HintPath>..\..\TextHelper\TextHelper\bin\Release\net8.0\TextHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="skoleni.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
