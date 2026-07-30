@@ -29,9 +29,12 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 
 ## Datový model
 
-- **Zamestnanec** – společný základ pro `Student` a `Lektor` (jméno, příjmení, kód, pracovní pozice)
+- **Zamestnanec** – abstraktní společný základ pro `Student` a `Lektor` (jméno a příjmení s automatickým převodem do TitleCase, kód, pracovní pozice)
+
 - **Student** – dědí ze `Zamestnanec`, eviduje seznam školení, kterých se účastní
+
 - **Lektor** – dědí ze `Zamestnanec`, eviduje seznam školení, která vyučuje
+
 - **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno
 
 ---
@@ -44,6 +47,16 @@ Data se ukládají do textových souborů:
 - `skoleni.txt` – seznam všech školení včetně přiřazených lektorů, studentů a jejich hodnocení
 
 Formát souboru `skoleni.txt` používá strukturovaný zápis s návěštími (`SKOLENI`, `LEKTORI`, `STUDENTI`, `HODNOCENI`), podle kterých se při načítání pozná, která část souboru se právě čte.
+
+---
+
+## Externí knihovny (samostatné projekty)
+
+- **TextHelper** – zpracování a validace uživatelských vstupů (`UpravaVstupu.ZeptejSeAUprav`)
+- **SelectHelper** – výběr položky ze seznamu (`SelectHelp.VybratPolozku`)
+- **InputHelper** – převod textu na TitleCase (`TitleCase.ToTitleCase`)
+
+Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2), kde vznikly a dál se rozvíjejí.
 
 ---
 
@@ -68,19 +81,19 @@ Formát souboru `skoleni.txt` používá strukturovaný zápis s návěštími (
 
 ## Použité techniky
 
-- OOP (dědičnost – `Student` a `Lektor` dědí ze společné třídy `Zamestnanec`)
+- OOP (dědičnost – `Student` a `Lektor` dědí ze společné abstraktní třídy `Zamestnanec`)
 - Zapouzdření a validace vstupů
+- Znovupoužitelné knihovny (`TextHelper` pro validované zadávání vstupů, `SelectHelper` pro výběr položky ze seznamu, `InputHelper` pro převod textu na TitleCase)
 - Práce se soubory (`StreamReader`, `StreamWriter`)
 - Strukturovaný textový formát s návěštími pro serializaci vztahů mezi objekty (školení ↔ lektoři ↔ studenti)
 - Kolekce (`List<T>`, `Dictionary<TKey, TValue>`)
 - Vícevrstvé konzolové menu (hlavní menu → detail školení → úpravy školení)
-- Moderní syntaxe C# (collection expressions, ternární operátory) tam, kde nahrazuje původní učebnicový zápis
-
+- Moderní syntaxe C# (collection expressions, ternární operátory, nullable reference types) tam, kde nahrazuje původní učebnicový zápis
 ---
 
 ## Ukázka kódu
 
-```csharp
+```
 public void PriraditLektora(Skoleni skoleni)
 {
     // Sestavíme seznam lektorů, kteří ještě nejsou přiřazeni na toto školení.
@@ -94,17 +107,15 @@ public void PriraditLektora(Skoleni skoleni)
     }
 
     Console.WriteLine("*** Přiřazení lektora na školení ***");
-    for (int i = 0; i < lektori.Count; i++)
-    {
-        Console.WriteLine($"{i + 1}. {lektori[i].Jmeno} {lektori[i].Prijmeni} ({lektori[i].Kod})");
-    }
-    Console.WriteLine("0. Zpět");
-    Console.Write("Přiřadit lektora: ");
 
-    int volba = int.Parse(Console.ReadLine()!) - 1;
-    if (volba >= 0 && volba < lektori.Count)
+    Lektor? vybranyLektor = SelectHelp.VybratPolozku(
+        lektori,
+        s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
+        "lektora");
+
+    if (vybranyLektor != null)
     {
-        skoleni.Lektori.Add(lektori[volba]);
+        skoleni.Lektori.Add(vybranyLektor);
         UlozitSkoleni();
         Console.WriteLine("! Lektor byl úspěšně přiřazen na školení !");
     }
@@ -118,7 +129,6 @@ public void PriraditLektora(Skoleni skoleni)
 - Rozvrstvení architektury na datovou, logickou a komunikační vrstvu (oddělení `Console.WriteLine`/`ReadLine` od business logiky)
 - Přechod na JSON serializaci místo textového formátu s návěštími
 - Crash-safe ukládání a automatická záloha dat (podle vzoru z projektu ZOO)
-- Validace vstupů přes `TryParse` místo `Parse`
 - Vyhledávání a filtrování školení podle data/lektora/stavu
 - GUI verze (WPF)
 
@@ -128,3 +138,6 @@ public void PriraditLektora(Skoleni skoleni)
 
 **v1.0.0** – První funkční verze podle učebnicového základu: evidence školení, přihlašování/odhlašování studentů, přiřazování/odebírání lektorů, uzavírání školení, ukládání do textových souborů.  
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.0.0)
+
+**v1.1.0** – Nahrazeno ruční číslované vypisování a parsování voleb (`for` cyklus + `int.Parse`) za znovupoužitelnou knihovnu `SelectHelper` napříč všemi metodami výběru (výběr školení, přihlášení/odhlášení studenta, přiřazení/odebrání lektora). Zadávání dat (počet účastníků, data konání, hodnocení studentů) nahrazeno validovaným vstupem přes `TextHelper`, s možností opakovaného zadání při chybě místo pádu aplikace. Třída `Zamestnanec` upravena na abstraktní bázi s automatickým převodem jména a příjmení do TitleCase přes `InputHelper`, zděděným do `Student` a `Lektor`. Opraveny logické chyby (obrácená podmínka při návratu ze seznamu školení, chybějící odečtení indexu při výběru).  
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.1.0)
