@@ -17,11 +17,7 @@ namespace SpravaSkoleni
             set => _prijmeni = TitleCase.ToTitleCase(value); 
         }
         public string? Kod { get; set; }
-        private string _pracovniPozice = String.Empty;
-        public string PracovniPozice 
-        { 
-            get => _pracovniPozice; 
-            set => _pracovniPozice = TitleCase.ToTitleCase(value); 
-        }
+        
+        public string? PracovniPozice { get; set; }
     }
 }
