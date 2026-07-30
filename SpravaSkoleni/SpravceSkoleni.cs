@@ -413,7 +413,7 @@
             Console.WriteLine("Vyplňte hodnocení jednotlivých studentů");
             foreach (Student student in skoleni.Studenti)
             {
-                Console.Write($"{student.Jmeno} {student.Prijmeni} ({student.Kod})");
+                Console.Write($"{student.Jmeno} {student.Prijmeni} ({student.Kod}): ");
                 int hodnoceni = int.Parse(Console.ReadLine()!);
                 skoleni.HodnoceniStudentu[student] = hodnoceni;
             }
