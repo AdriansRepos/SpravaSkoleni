@@ -162,84 +162,95 @@ namespace SpravaSkoleni
 
         public void NacistSkoleni()
         {
-            StreamReader reader = new("skoleni.txt");
-            // Přeskočíme první řádek souboru - hlavička.
-            reader.ReadLine();
-            string radek;
-            while ((radek = reader.ReadLine()!) != null)
+            try
             {
-                /* Přečteme informace o školení, které jsou vždy na řádku, 
-                 * který následuje po řádku obsahujícím řetězec SKOLENI. */
-                string[] informaceSkoleni = radek.Split(';');
-                string nazev = informaceSkoleni[0];
-                string popis = informaceSkoleni[1];
-
-                string[] pocatecniDatumSlozky = informaceSkoleni[2].Split('.');
-                DateTime pocatecniDatum = new(int.Parse(pocatecniDatumSlozky[2]), 
-                    int.Parse(pocatecniDatumSlozky[1]), 
-                    int.Parse(pocatecniDatumSlozky[0]));
-
-                string[] koncoveDatumSlozky = informaceSkoleni[3].Split('.');
-                DateTime koncoveDatum = new(int.Parse(koncoveDatumSlozky[2]), 
-                    int.Parse(koncoveDatumSlozky[1]), 
-                    int.Parse(koncoveDatumSlozky[0]));
-
-                int doporucenyPocetUcastniku = int.Parse(informaceSkoleni[4]);
-
-                bool skoleniUzavreno = false;
-                if (informaceSkoleni[5] == "ANO")
-                {
-                    skoleniUzavreno = true;                   
-                }
-
-                // Přeskočíme řádek, na kterém očekáváme, že musí být řetězec LEKTORI.
+                StreamReader reader = new("skoleni.txt");
+                // Přeskočíme první řádek souboru - hlavička.
                 reader.ReadLine();
-                List<Lektor> lektori = [];
-                while ((radek = reader.ReadLine()!) != "STUDENTI")
+                string radek;
+                while ((radek = reader.ReadLine()!) != null)
                 {
-                    // Dokud nenarazíme na řádek s řetězcem STUDENTI, čteme lektory.
-                    lektori.Add(NajdiLektoraPodleKodu(radek)!);
+                    /* Přečteme informace o školení, které jsou vždy na řádku, 
+                     * který následuje po řádku obsahujícím řetězec SKOLENI. */
+                    string[] informaceSkoleni = radek.Split(';');
+                    string nazev = informaceSkoleni[0];
+                    string popis = informaceSkoleni[1];
+
+                    string[] pocatecniDatumSlozky = informaceSkoleni[2].Split('.');
+                    DateTime pocatecniDatum = new(int.Parse(pocatecniDatumSlozky[2]), 
+                        int.Parse(pocatecniDatumSlozky[1]), 
+                        int.Parse(pocatecniDatumSlozky[0]));
+
+                    string[] koncoveDatumSlozky = informaceSkoleni[3].Split('.');
+                    DateTime koncoveDatum = new(int.Parse(koncoveDatumSlozky[2]), 
+                        int.Parse(koncoveDatumSlozky[1]), 
+                        int.Parse(koncoveDatumSlozky[0]));
+
+                    int doporucenyPocetUcastniku = int.Parse(informaceSkoleni[4]);
+
+                    bool skoleniUzavreno = false;
+                    if (informaceSkoleni[5] == "ANO")
+                    {
+                        skoleniUzavreno = true;                   
+                    }
+
+                    // Přeskočíme řádek, na kterém očekáváme, že musí být řetězec LEKTORI.
+                    reader.ReadLine();
+                    List<Lektor> lektori = [];
+                    while ((radek = reader.ReadLine()!) != "STUDENTI")
+                    {
+                        // Dokud nenarazíme na řádek s řetězcem STUDENTI, čteme lektory.
+                        lektori.Add(NajdiLektoraPodleKodu(radek)!);
+                    }
+
+                    List<Student> studenti = [];
+                    while ((radek = reader.ReadLine()!) != "HODNOCENI")
+                    {
+                        // Dokud nenarazíme na řádek s řetězcem HODNOCENI, čteme studenty.
+                        studenti.Add(NajdiStudentaPodleKodu(radek)!);
+                    }
+
+                    Dictionary<Student, int > hodnoceni = [];
+                    while (true)
+                    {
+                        // Dokud nenarazíme na řádek s řetězcem SKOLENI, čteme hodnocení.
+                        radek = reader.ReadLine()!;
+                        if (radek == null || radek == "SKOLENI")
+                            break;
+                        string[] hodnotyHodnoceni = radek.Split(';');
+
+                        hodnoceni.Add(NajdiStudentaPodleKodu(hodnotyHodnoceni[0])!, 
+                            int.Parse(hodnotyHodnoceni[1]));
+                    }
+
+                    /* Vytvoříme si instanci Skoleni. Ta v sobě bude mít informaci, kteří studenti a lektoři se školení účastní.
+                     * Zároveň jednotlivým studentům a lektorům přiřadíme informaci o výše vytvořeném školení.
+                     * Toto se nám bude hodit ve chvíli, kdy budeme chtít jednoduše získat pro daného 
+                     * studenta nebo lektora seznam jeho školení. */
+                    Skoleni skoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, studenti, 
+                        lektori, hodnoceni, doporucenyPocetUcastniku, skoleniUzavreno);
+                    
+                     foreach (Student student in studenti)
+                     {
+                         student.Skoleni.Add(skoleni);
+                     }
+                     
+                     foreach (Lektor lektor in lektori)
+                     {
+                         lektor.VyucovanaSkoleni.Add(skoleni);
+                     }                
+                     SeznamSkoleni.Add(skoleni);
                 }
-
-                List<Student> studenti = [];
-                while ((radek = reader.ReadLine()!) != "HODNOCENI")
-                {
-                    // Dokud nenarazíme na řádek s řetězcem HODNOCENI, čteme studenty.
-                    studenti.Add(NajdiStudentaPodleKodu(radek)!);
-                }
-
-                Dictionary<Student, int > hodnoceni = [];
-                while (true)
-                {
-                    // Dokud nenarazíme na řádek s řetězcem SKOLENI, čteme hodnocení.
-                    radek = reader.ReadLine()!;
-                    if (radek == null || radek == "SKOLENI")
-                        break;
-                    string[] hodnotyHodnoceni = radek.Split(';');
-
-                    hodnoceni.Add(NajdiStudentaPodleKodu(hodnotyHodnoceni[0])!, 
-                        int.Parse(hodnotyHodnoceni[1]));
-                }
-
-                /* Vytvoříme si instanci Skoleni. Ta v sobě bude mít informaci, kteří studenti a lektoři se školení účastní.
-                 * Zároveň jednotlivým studentům a lektorům přiřadíme informaci o výše vytvořeném školení.
-                 * Toto se nám bude hodit ve chvíli, kdy budeme chtít jednoduše získat pro daného 
-                 * studenta nebo lektora seznam jeho školení. */
-                Skoleni skoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, studenti, 
-                    lektori, hodnoceni, doporucenyPocetUcastniku, skoleniUzavreno);
-                
-                 foreach (Student student in studenti)
-                 {
-                     student.Skoleni.Add(skoleni);
-                 }
-                 
-                 foreach (Lektor lektor in lektori)
-                 {
-                     lektor.VyucovanaSkoleni.Add(skoleni);
-                 }                
-                 SeznamSkoleni.Add(skoleni);
+                reader.Close();
             }
-            reader.Close();
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Chyba při načítání souboru skoleni.txt: {ex.Message}");
+                Console.WriteLine("Aplikace bude pokračovat bez načtených školení.");
+                Console.ResetColor();
+
+            }
         }
 
         public Skoleni? VybratSkoleni()
