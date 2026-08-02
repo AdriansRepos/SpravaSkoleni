@@ -2,8 +2,6 @@
 
 SpravceSkoleni spravceSkoleni = new();
 spravceSkoleni.NacistSkoleniJson();
-
-spravceSkoleni.MigrujZamestnanceZeStarehoFormatu();  // spustit jednou, pak smazat řádek
 spravceSkoleni.NacistZamestnanceJson();               // od teď natrvalo
 
 ZobrazVyberMenu();
