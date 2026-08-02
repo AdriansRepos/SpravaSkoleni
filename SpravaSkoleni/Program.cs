@@ -2,10 +2,11 @@
 
 SpravceSkoleni spravceSkoleni = new();
 spravceSkoleni.NacistZamestnance();
-spravceSkoleni.NacistSkoleni();
+
+spravceSkoleni.MigrujSkoleniZeStarehoFormatu();  // spustit jednou, pak smazat řádek
+spravceSkoleni.NacistSkoleniJson();               // od teď natrvalo
 
 ZobrazVyberMenu();
-
 void ZobrazVyberMenu()
 {
     char volba;
