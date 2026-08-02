@@ -11,10 +11,6 @@ namespace SpravaSkoleni
 
         private const string SouborSkoleniJson = "skoleni.json";
 
-        /// <summary>
-        /// Uloží všechna školení do JSON souboru. Ukládají se jen kódy
-        /// studentů/lektorů a hodnocení, ne celé objekty.
-        /// </summary>
         public void UlozitSkoleniJson()
         {
             List<Skoleni> kUlozeni = [];
@@ -33,10 +29,6 @@ namespace SpravaSkoleni
             File.WriteAllText(SouborSkoleniJson, json);
         }
 
-        /// <summary>
-        /// Načte školení z JSON souboru a dopojí skutečné objekty
-        /// studentů/lektorů podle uložených kódů.
-        /// </summary>
         public void NacistSkoleniJson()
         {
             if (!File.Exists(SouborSkoleniJson))
@@ -80,33 +72,6 @@ namespace SpravaSkoleni
                 Console.WriteLine($"Chyba při načítání skoleni.json: {ex.Message}");
                 Console.ResetColor();
             }
-        }
-
-        /// <summary>
-        /// Jednorázová migrace dat ze starého textového formátu (skoleni.txt)
-        /// do nového JSON formátu (skoleni.json). Po úspěšné migraci lze tuto
-        /// metodu i staré txt soubory odstranit.
-        /// </summary>
-        public void MigrujSkoleniZeStarehoFormatu()
-        {
-            if (File.Exists(SouborSkoleniJson))
-            {
-                Console.WriteLine("skoleni.json už existuje, migrace se přeskakuje.");
-                return;
-            }
-        
-            if (!File.Exists("skoleni.txt"))
-            {
-                Console.WriteLine("skoleni.txt neexistuje, není co migrovat.");
-                return;
-            }
-        
-            NacistSkoleni();       // stará metoda (txt) – naplní SeznamSkoleni
-            UlozitSkoleniJson();   // nová metoda – zapíše totéž do JSON
-        
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Migrace dokončena: {SeznamSkoleni.Count} školení převedeno do skoleni.json.");
-            Console.ResetColor();
         }
     }
 }

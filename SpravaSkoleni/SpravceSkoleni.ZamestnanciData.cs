@@ -19,10 +19,12 @@ namespace SpravaSkoleni
             var vsichni = new List<ZamestnanecJsonZaznam>();
 
             foreach (var lektor in Lektori)
-                vsichni.Add(new ZamestnanecJsonZaznam(lektor.Jmeno, lektor.Prijmeni, lektor.Kod!, lektor.PracovniPozice, true));
+                vsichni.Add(new ZamestnanecJsonZaznam(lektor.Jmeno, lektor.Prijmeni, lektor.Kod!, 
+                    lektor.PracovniPozice, JeLektorem: true));
 
             foreach (var student in Studenti)
-                vsichni.Add(new ZamestnanecJsonZaznam(student.Jmeno, student.Prijmeni, student.Kod!, student.PracovniPozice, false));
+                vsichni.Add(new ZamestnanecJsonZaznam(student.Jmeno, student.Prijmeni, student.Kod!, 
+                    student.PracovniPozice, JeLektorem: false));
 
             string json = JsonSerializer.Serialize(vsichni, ZamestnanecJsonOptions);
             File.WriteAllText(SouborZamestnanciJson, json);
@@ -59,37 +61,11 @@ namespace SpravaSkoleni
                 Console.ResetColor();
             }
         }
-
+        
         /// <summary>
-        /// Jednorázová migrace zaměstnanců ze starého textového formátu
-        /// (zamestnanci.txt) do nového JSON formátu (zamestnanci.json).
+        /// Pomocný záznam pro JSON serializaci zaměstnance s příznakem role
+        /// (lektor/student), protože Zamestnanec je abstraktní.
         /// </summary>
-        public void MigrujZamestnanceZeStarehoFormatu()
-        {
-            if (File.Exists(SouborZamestnanciJson))
-            {
-                Console.WriteLine("zamestnanci.json už existuje, migrace se přeskakuje.");
-                return;
-            }
-
-            if (!File.Exists("zamestnanci.txt"))
-            {
-                Console.WriteLine("zamestnanci.txt neexistuje, není co migrovat.");
-                return;
-            }
-
-            NacistZamestnance();     // stará metoda (txt) – naplní Lektori a Studenti
-            UlozitZamestnanceJson(); // nová metoda – zapíše totéž do JSON
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Migrace dokončena: {Lektori.Count} lektorů a {Studenti.Count} studentů převedeno do zamestnanci.json.");
-            Console.ResetColor();
-        }
+        internal record ZamestnanecJsonZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
     }
-
-    /// <summary>
-    /// Pomocný záznam pro JSON serializaci zaměstnance s příznakem role
-    /// (lektor/student), protože Zamestnanec je abstraktní.
-    /// </summary>
-    internal record ZamestnanecJsonZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
 }
