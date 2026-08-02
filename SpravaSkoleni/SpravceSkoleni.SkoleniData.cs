@@ -17,8 +17,8 @@ namespace SpravaSkoleni
 
             foreach (var skoleni in SeznamSkoleni)
             {
-                skoleni.KodyStudentu = skoleni.Studenti.Select(s => s.Kod!).ToList();
-                skoleni.KodyLektoru = skoleni.Lektori.Select(l => l.Kod!).ToList();
+                skoleni.KodyStudentu = [.. skoleni.Studenti.Select(s => s.Kod!)];
+                skoleni.KodyLektoru = [.. skoleni.Lektori.Select(l => l.Kod!)];
                 skoleni.Hodnoceni = skoleni.HodnoceniStudentu
                     .ToDictionary(kv => kv.Key.Kod!, kv => kv.Value);
 
@@ -41,17 +41,15 @@ namespace SpravaSkoleni
 
                 foreach (var skoleni in nactena)
                 {
-                    skoleni.Studenti = skoleni.KodyStudentu
+                    skoleni.Studenti = [.. skoleni.KodyStudentu
                         .Select(kod => NajdiStudentaPodleKodu(kod))
                         .Where(s => s != null)
-                        .Select(s => s!)
-                        .ToList();
+                        .Select(s => s!)];
 
-                    skoleni.Lektori = skoleni.KodyLektoru
+                    skoleni.Lektori = [.. skoleni.KodyLektoru
                         .Select(kod => NajdiLektoraPodleKodu(kod))
                         .Where(l => l != null)
-                        .Select(l => l!)
-                        .ToList();
+                        .Select(l => l!)];
 
                     skoleni.HodnoceniStudentu = skoleni.Hodnoceni
                         .Where(kv => NajdiStudentaPodleKodu(kv.Key) != null)
