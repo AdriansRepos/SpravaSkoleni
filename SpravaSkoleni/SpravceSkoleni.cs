@@ -106,8 +106,7 @@ namespace SpravaSkoleni
             s => DateTime.Parse(s),
             jeNove: true);
             
-            Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, new List<Student>(), 
-                new List<Lektor>(), new Dictionary<Student, int>(), doporucenyPocetUcastniku , false);
+            Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku);
             SeznamSkoleni.Add(noveSkoleni);
 
             UlozitSkoleni();
@@ -227,8 +226,13 @@ namespace SpravaSkoleni
                      * Zároveň jednotlivým studentům a lektorům přiřadíme informaci o výše vytvořeném školení.
                      * Toto se nám bude hodit ve chvíli, kdy budeme chtít jednoduše získat pro daného 
                      * studenta nebo lektora seznam jeho školení. */
-                    Skoleni skoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, studenti, 
-                        lektori, hodnoceni, doporucenyPocetUcastniku, skoleniUzavreno);
+                    Skoleni skoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku)
+                    {
+                        Studenti = studenti,
+                        Lektori = lektori,
+                        HodnoceniStudentu = hodnoceni,
+                        Uzavreno = skoleniUzavreno
+                    };
                     
                      foreach (Student student in studenti)
                      {
