@@ -3,7 +3,7 @@ using SelectHelper;
 
 namespace SpravaSkoleni
 {
-    public class SpravceSkoleni
+    public partial class SpravceSkoleni
     {
         public List<Lektor> Lektori { get; set; }
         public List<Student> Studenti { get; set; }
