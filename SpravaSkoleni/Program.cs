@@ -2,7 +2,7 @@
 
 SpravceSkoleni spravceSkoleni = new();
 spravceSkoleni.NacistSkoleniJson();
-spravceSkoleni.NacistZamestnanceJson();               // od teď natrvalo
+spravceSkoleni.NacistZamestnanceJson();
 
 ZobrazVyberMenu();
 void ZobrazVyberMenu()
