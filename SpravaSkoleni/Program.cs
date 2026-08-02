@@ -1,10 +1,10 @@
 ﻿using SpravaSkoleni;
 
 SpravceSkoleni spravceSkoleni = new();
-spravceSkoleni.NacistZamestnance();
+spravceSkoleni.NacistSkoleniJson();
 
-spravceSkoleni.MigrujSkoleniZeStarehoFormatu();  // spustit jednou, pak smazat řádek
-spravceSkoleni.NacistSkoleniJson();               // od teď natrvalo
+spravceSkoleni.MigrujZamestnanceZeStarehoFormatu();  // spustit jednou, pak smazat řádek
+spravceSkoleni.NacistZamestnanceJson();               // od teď natrvalo
 
 ZobrazVyberMenu();
 void ZobrazVyberMenu()
