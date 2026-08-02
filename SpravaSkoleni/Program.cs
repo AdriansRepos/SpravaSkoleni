@@ -1,8 +1,8 @@
 ﻿using SpravaSkoleni;
 
 SpravceSkoleni spravceSkoleni = new();
-spravceSkoleni.NacistSkoleniJson();
 spravceSkoleni.NacistZamestnanceJson();
+spravceSkoleni.NacistSkoleniJson();
 
 ZobrazVyberMenu();
 void ZobrazVyberMenu()
