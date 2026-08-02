@@ -82,7 +82,7 @@ namespace SpravaSkoleni
                 "školení");
         }
 
-        public void ZobrazDetailSkoleni(Skoleni skoleni)
+        public static void ZobrazDetailSkoleni(Skoleni skoleni)
         {
             string stav = "Otevřené";
             if (skoleni.Uzavreno)
