@@ -35,8 +35,8 @@ void ZobrazVyberMenu()
             case '2':
                 Skoleni? vybraneSkoleni = spravceSkoleni.VybratSkoleni();
                 if (vybraneSkoleni != null)
-                {                    
-                    spravceSkoleni.ZobrazDetailSkoleni(vybraneSkoleni);
+                {
+                    SpravceSkoleni.ZobrazDetailSkoleni(vybraneSkoleni);
                     if (vybraneSkoleni.Uzavreno)
                     {
                         Console.WriteLine("! Školení je uzavřené a nelze s ním provést žádnou operaci." + 
