@@ -1,9 +1,13 @@
-﻿namespace SpravaSkoleni
+﻿using System.Text.Json.Serialization;
+
+namespace SpravaSkoleni
 {
     public class Lektor : Zamestnanec
     {
+        [JsonIgnore]
         public List<Skoleni> VyucovanaSkoleni { get; set; }
 
+        [JsonConstructor]
         public Lektor(string jmeno, string prijmeni, string kod, string pracovniPozice)
         {
             Jmeno = jmeno;
