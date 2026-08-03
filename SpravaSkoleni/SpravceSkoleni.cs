@@ -68,7 +68,7 @@ namespace SpravaSkoleni
             Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku);
             SeznamSkoleni.Add(noveSkoleni);
 
-            UlozitSkoleniJson();
+            UlozitSkoleni();
             Console.WriteLine("! Školení bylo úspěšně vytvořeno !");
         }
 
@@ -138,7 +138,7 @@ namespace SpravaSkoleni
             if (vybranyStudent != null)
             {
                 skoleni.Studenti.Add(vybranyStudent);
-                UlozitSkoleniJson();
+                UlozitSkoleni();
                 Console.WriteLine("! Student byl úspěšně přihlášen na školení !");
             }
         }
@@ -153,7 +153,7 @@ namespace SpravaSkoleni
             if (vybranyStudent != null)
             {
                 skoleni.Studenti.Remove(vybranyStudent);
-                UlozitSkoleniJson();
+                UlozitSkoleni();
                 Console.WriteLine("! Student byl úspěšně odhlášen ze školení !");
             }
         }
@@ -176,7 +176,7 @@ namespace SpravaSkoleni
             if (vybranyLektor != null)
             {
                 skoleni.Lektori.Add(vybranyLektor);
-                UlozitSkoleniJson();
+                UlozitSkoleni();
                 Console.WriteLine("! Lektor byl úspěšně přiřazen na školení !");
             }
         }
@@ -191,7 +191,7 @@ namespace SpravaSkoleni
             if (vybranyLektor != null)
             {
                 skoleni.Lektori.Remove(vybranyLektor);
-                UlozitSkoleniJson();
+                UlozitSkoleni();
                 Console.WriteLine("! Lektor byl úspěšně odebrán na školení !");
             }
         }
@@ -210,7 +210,7 @@ namespace SpravaSkoleni
                 skoleni.HodnoceniStudentu[student] = hodnoceni;
             }
             skoleni.Uzavreno = true;
-            UlozitSkoleniJson();
+            UlozitSkoleni();
             Console.WriteLine("! Školení bylo úspěšně uzavřeno !");
         }
 

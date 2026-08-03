@@ -9,9 +9,9 @@ namespace SpravaSkoleni
             WriteIndented = true
         };
 
-        private const string SouborSkoleniJson = "skoleni.json";
+        private const string SouborSkoleni = "skoleni.json";
 
-        public void UlozitSkoleniJson()
+        public void UlozitSkoleni()
         {
             List<Skoleni> kUlozeni = [];
 
@@ -26,17 +26,17 @@ namespace SpravaSkoleni
             }
 
             string json = JsonSerializer.Serialize(kUlozeni, SkoleniJsonOptions);
-            File.WriteAllText(SouborSkoleniJson, json);
+            File.WriteAllText(SouborSkoleni, json);
         }
 
-        public void NacistSkoleniJson()
+        public void NacistSkoleni()
         {
-            if (!File.Exists(SouborSkoleniJson))
+            if (!File.Exists(SouborSkoleni))
                 return;
 
             try
             {
-                string json = File.ReadAllText(SouborSkoleniJson);
+                string json = File.ReadAllText(SouborSkoleni);
                 var nactena = JsonSerializer.Deserialize<List<Skoleni>>(json, SkoleniJsonOptions) ?? [];
 
                 foreach (var skoleni in nactena)

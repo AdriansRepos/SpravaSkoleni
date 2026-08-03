@@ -9,39 +9,39 @@ namespace SpravaSkoleni
             WriteIndented = true
         };
 
-        private const string SouborZamestnanciJson = "zamestnanci.json";
+        private const string SouborZamestnanci = "zamestnanci.json";
 
         /// <summary>
         /// Uloží lektory a studenty do JSON souboru, každého s příznakem role.
         /// </summary>
-        public void UlozitZamestnanceJson()
+        public void UlozitZamestnance()
         {
-            var vsichni = new List<ZamestnanecJsonZaznam>();
+            var vsichni = new List<ZamestnanecZaznam>();
 
             foreach (var lektor in Lektori)
-                vsichni.Add(new ZamestnanecJsonZaznam(lektor.Jmeno, lektor.Prijmeni, lektor.Kod!, 
+                vsichni.Add(new ZamestnanecZaznam(lektor.Jmeno, lektor.Prijmeni, lektor.Kod!, 
                     lektor.PracovniPozice, JeLektorem: true));
 
             foreach (var student in Studenti)
-                vsichni.Add(new ZamestnanecJsonZaznam(student.Jmeno, student.Prijmeni, student.Kod!, 
+                vsichni.Add(new ZamestnanecZaznam(student.Jmeno, student.Prijmeni, student.Kod!, 
                     student.PracovniPozice, JeLektorem: false));
 
             string json = JsonSerializer.Serialize(vsichni, ZamestnanecJsonOptions);
-            File.WriteAllText(SouborZamestnanciJson, json);
+            File.WriteAllText(SouborZamestnanci, json);
         }
 
         /// <summary>
         /// Načte lektory a studenty z JSON souboru.
         /// </summary>
-        public void NacistZamestnanceJson()
+        public void NacistZamestnance()
         {
-            if (!File.Exists(SouborZamestnanciJson))
+            if (!File.Exists(SouborZamestnanci))
                 return;
 
             try
             {
-                string json = File.ReadAllText(SouborZamestnanciJson);
-                var vsichni = JsonSerializer.Deserialize<List<ZamestnanecJsonZaznam>>(json, ZamestnanecJsonOptions) ?? [];
+                string json = File.ReadAllText(SouborZamestnanci);
+                var vsichni = JsonSerializer.Deserialize<List<ZamestnanecZaznam>>(json, ZamestnanecJsonOptions) ?? [];
 
                 Lektori = [];
                 Studenti = [];
@@ -66,6 +66,6 @@ namespace SpravaSkoleni
         /// Pomocný záznam pro JSON serializaci zaměstnance s příznakem role
         /// (lektor/student), protože Zamestnanec je abstraktní.
         /// </summary>
-        internal record ZamestnanecJsonZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
+        internal record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
     }
 }
