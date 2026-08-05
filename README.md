@@ -90,7 +90,7 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 - Znovupoužitelné knihovny (`TextHelper` pro validované zadávání vstupů, `SelectHelper` pro výběr položky ze seznamu, `InputHelper` pro převod textu na TitleCase)
 - Serializace/deserializace do JSON souborů (`System.Text.Json`)
 - Rozdělení třídy `SpravceSkoleni` na partial soubory (obecná logika, data školení, data zaměstnanců) pro přehlednost
-- `[JsonIgnore]` pro zamezení kruhové reference při serializaci vztahu školení <-> studenti/lektoři
+- `[JsonIgnore]` pro zamezení kruhové reference při serializaci vztahu školení ↔ studenti/lektoři
 - LINQ (`Select`, `Where`, `ToDictionary`) pro dopojení objektů po načtení podle uložených kódů
 - Kolekce (`List<T>`, `Dictionary<TKey, TValue>`)
 - Vícevrstvé konzolové menu (hlavní menu → detail školení → úpravy školení)
@@ -132,7 +132,7 @@ public void PriraditLektora(Skoleni skoleni)
 
 ## Plánované funkce
 
-- Rozvrstvení architektury na datovou, logickou a komunikační vrstvu (oddělení `Console.WriteLine`/`ReadLine` od business logiky)
+- Rozvrstvení architektury na vstupní bod → komunikační vrstvu → logickou vrstvu → datovou vrstvu, s přísným oddělením odpovědností mezi vrstvami
 - Crash-safe ukládání a automatická záloha dat (podle vzoru z projektu ZOO)
 - Vyhledávání a filtrování školení podle data/lektora/stavu
 - GUI verze (WPF)
