@@ -1,4 +1,15 @@
-SpravaSkoleni/bin
-SpravaSkoleni/obj
+# Sestavené soubory a binárky (.NET)
+[Bb]in/
+[Oo]bj/
+[LGs]og/
+[LGs]ogs/
+
+# Dočasné složky Visual Studia
 .vs/
-.github/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Výstupy testů a balíčky
+*.nupkg
+*.suo
