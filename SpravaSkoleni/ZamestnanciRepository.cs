@@ -17,7 +17,7 @@ public class ZamestnanciRepository
     /// <summary>
     /// Uloží lektory a studenty do JSON souboru, každého s příznakem role.
     /// </summary>
-    public void Ulozit(List<Lektor> lektori, List<Student> studenti)
+    public static void Ulozit(List<Lektor> lektori, List<Student> studenti)
     {
         var vsichni = new List<ZamestnanecZaznam>();
 
@@ -34,7 +34,7 @@ public class ZamestnanciRepository
     /// <summary>
     /// Načte lektory a studenty z JSON souboru.
     /// </summary>
-    public (List<Lektor> lektori, List<Student> studenti) Nacist()
+    public static (List<Lektor> lektori, List<Student> studenti) Nacist()
     {
         var lektori = new List<Lektor>();
         var studenti = new List<Student>();

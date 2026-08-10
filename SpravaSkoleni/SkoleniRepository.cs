@@ -17,7 +17,7 @@ public class SkoleniRepository
     /// <summary>
     /// Uloží seznam školení do JSON souboru (napáruje kódy studentů a lektorů).
     /// </summary>
-    public void Ulozit(List<Skoleni> seznamSkoleni)
+    public static void Ulozit(List<Skoleni> seznamSkoleni)
     {
         List<Skoleni> kUlozeni = [];
 
@@ -38,7 +38,7 @@ public class SkoleniRepository
     /// <summary>
     /// Načte školení z JSON a dopojí reference na objekty Studentů a Lektorů.
     /// </summary>
-    public List<Skoleni> Nacist(Func<string, Student?> najdiStudenta, Func<string, Lektor?> najdiLektora)
+    public static List<Skoleni> Nacist(Func<string, Student?> najdiStudenta, Func<string, Lektor?> najdiLektora)
     {
         if (!File.Exists(SouborSkoleni))
             return [];
@@ -56,7 +56,7 @@ public class SkoleniRepository
                     .Select(s => s!)];
 
                 skoleni.Lektori = [.. skoleni.KodyLektoru
-                    .Select(kod => najdiLektor(kod))
+                    .Select(kod => najdiLektora(kod))
                     .Where(l => l != null)
                     .Select(l => l!)];
 
