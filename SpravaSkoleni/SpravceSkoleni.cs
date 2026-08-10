@@ -5,27 +5,25 @@ namespace SpravaSkoleni;
 
 public class SpravceSkoleni
 {
-    private readonly ZamestnanciRepository _zamestnanciRepo = new();
-    private readonly SkoleniRepository _skoleniRepo = new();
-
     public List<Lektor> Lektori { get; set; } = [];
     public List<Student> Studenti { get; set; } = [];
     public List<Skoleni> SeznamSkoleni { get; set; } = [];
 
-    public void UlozitZamestnance() => _zamestnanciRepo.Ulozit(Lektori, Studenti);
+    // Přímé statické volání:
+    public void UlozitZamestnance() => ZamestnanciRepository.Ulozit(Lektori, Studenti);
     
     public void NacistZamestnance()
     {
-        var (lektori, studenti) = _zamestnanciRepo.Nacist();
+        var (lektori, studenti) = ZamestnanciRepository.Nacist();
         Lektori = lektori;
         Studenti = studenti;
     }
 
-    public void UlozitSkoleni() => _skoleniRepo.Ulozit(SeznamSkoleni);
+    public void UlozitSkoleni() => SkoleniRepository.Ulozit(SeznamSkoleni);
     
     public void NacistSkoleni()
     {
-        SeznamSkoleni = _skoleniRepo.Nacist(NajdiStudentaPodleKodu, NajdiLektoraPodleKodu);
+        SeznamSkoleni = SkoleniRepository.Nacist(NajdiStudentaPodleKodu, NajdiLektoraPodleKodu);
     }
 
     public Student? NajdiStudentaPodleKodu(string kod)
