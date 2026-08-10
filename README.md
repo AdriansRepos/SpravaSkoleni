@@ -61,40 +61,35 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 ---
 
 ## Struktura projektu
+```text
 /SpravaSkoleni
-
 ├── Program.cs
-
 ├── SpravceSkoleni.cs
-
-├── SpravceSkoleni.SkoleniData.cs
-
-├── SpravceSkoleni.ZamestnanciData.cs
-
+├── ZamestnanciRepository.cs
+├── SkoleniRepository.cs
 ├── Zamestnanec.cs
-
 ├── Student.cs
-
 ├── Lektor.cs
-
 ├── Skoleni.cs
-
 └── README.md
+```
 
 ---
 
 ## Použité techniky
 
-- OOP (dědičnost – `Student` a `Lektor` dědí ze společné abstraktní třídy `Zamestnanec`)
+- OOP (dědičnost – Student a Lektor dědí ze společné abstraktní třídy Zamestnanec)
 - Zapouzdření a validace vstupů
-- Znovupoužitelné knihovny (`TextHelper` pro validované zadávání vstupů, `SelectHelper` pro výběr položky ze seznamu, `InputHelper` pro převod textu na TitleCase)
-- Serializace/deserializace do JSON souborů (`System.Text.Json`)
-- Rozdělení třídy `SpravceSkoleni` na partial soubory (obecná logika, data školení, data zaměstnanců) pro přehlednost
-- `[JsonIgnore]` pro zamezení kruhové reference při serializaci vztahu školení ↔ studenti/lektoři
-- LINQ (`Select`, `Where`, `ToDictionary`) pro dopojení objektů po načtení podle uložených kódů
-- Kolekce (`List<T>`, `Dictionary<TKey, TValue>`)
+- Vícevrstvá architektura a vzor Repository 
+(odělená datová vrstva ZamestnanciRepository a SkoleniRepository pro práci s JSON od aplikační logiky)
+- Znovupoužitelné knihovny 
+(TextHelper pro validované zadávání vstupů, SelectHelper pro výběr položky ze seznamu, InputHelper pro převod textu na TitleCase)
+- Serializace/deserializace do JSON souborů (System.Text.Json)
+- [JsonIgnore] pro zamezení kruhové reference při serializaci vztahu školení ↔ studenti/lektoři
+- LINQ (Select, Where, ToDictionary) pro dopojení objektů po načtení podle uložených kódů
+- Kolekce (List<T>, Dictionary<TKey, TValue>)
 - Vícevrstvé konzolové menu (hlavní menu → detail školení → úpravy školení)
-- Moderní syntaxe C# (collection expressions, ternární operátory, nullable reference types) tam, kde nahrazuje původní učebnicový zápis
+- Moderní syntaxe C# (collection expressions, ternární operátory, nullable reference types, records)
 ---
 
 ## Ukázka kódu
@@ -132,7 +127,7 @@ public void PriraditLektora(Skoleni skoleni)
 
 ## Plánované funkce
 
-- Rozvrstvení architektury na vstupní bod → komunikační vrstvu → logickou vrstvu → datovou vrstvu, s přísným oddělením odpovědností mezi vrstvami
+- Další rozvrstvení architektury na vstupní bod → komunikační vrstvu → logickou vrstvu → datovou vrstvu, s přísným oddělením odpovědností mezi vrstvami
 - Crash-safe ukládání a automatická záloha dat (podle vzoru z projektu ZOO)
 - Vyhledávání a filtrování školení podle data/lektora/stavu
 - GUI verze (WPF)
@@ -149,3 +144,6 @@ public void PriraditLektora(Skoleni skoleni)
 
 **v1.2.0** – Přechod z textového formátu s návěštími na JSON serializaci (`zamestnanci.json`, `skoleni.json`). Třída `Skoleni` ukládá jen kódy studentů/lektorů místo celých objektů, aby se předešlo kruhové referenci; skutečné vazby se dopojují po načtení. `SpravceSkoleni` rozdělena na partial soubory (`SpravceSkoleni.SkoleniData.cs`, `SpravceSkoleni.ZamestnanciData.cs`) pro přehlednost. Metody přejmenovány bez přípony "Json" (např. `UlozitSkoleniJson` → `UlozitSkoleni`), protože JSON je teď jediný podporovaný formát.  
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.0)
+
+**v1.2.1** – Refaktorování architektury datové vrstvy. Odstraněny partial soubory třídy SpravceSkoleni a nahrazeny samostatnými třídami repozitářů (ZamestnanciRepository, SkoleniRepository). Dosaženo čistého oddělení odpovědností (SRP) – SpravceSkoleni se stará o logiku a prezentaci, zatímco repozitáře čistě o persistenci do JSON souborů.
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.1)
