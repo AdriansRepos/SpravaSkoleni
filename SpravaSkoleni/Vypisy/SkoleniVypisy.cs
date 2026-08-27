@@ -1,8 +1,8 @@
 ﻿using TextHelper;
 using SelectHelper;
 using BarevneVypisyHelper;
-using SpravaSkoleni.Entity;
 using SpravaSkoleni.Logika;
+using SpravaSkoleni.Data.Entity;
 
 namespace SpravaSkoleni.Vypisy
 {
