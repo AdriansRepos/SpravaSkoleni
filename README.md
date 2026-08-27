@@ -55,22 +55,33 @@ Aby se předešlo kruhové referenci při serializaci (`Student` obsahuje seznam
 - **TextHelper** – zpracování a validace uživatelských vstupů (`UpravaVstupu.ZeptejSeAUprav`)
 - **SelectHelper** – výběr položky ze seznamu (`SelectHelp.VybratPolozku`)
 - **InputHelper** – převod textu na TitleCase (`TitleCase.ToTitleCase`)
+- **BarevneVypisyHelper** – formátování a barevný výstup menu i systémových hlášení do konzole (`VypisyDoKonzole`)
 
 Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2), kde vznikly a dál se rozvíjejí.
 
 ---
 
 ## Struktura projektu
+## Struktura projektu
+
 ```text
 /SpravaSkoleni
+├── Data/
+│   ├── Entity/
+│   │   ├── Lektor.cs
+│   │   ├── Skoleni.cs
+│   │   ├── Student.cs
+│   │   └── Zamestnanec.cs
+│   └── Repozitare/
+│       ├── SkoleniRepository.cs
+│       └── ZamestnanciRepository.cs
+├── Logika/
+│   └── SpravceSkoleni.cs
+├── Menu/
+│   └── HlavniMenu.cs
+├── Vypisy/
+│   └── SkoleniVypisy.cs
 ├── Program.cs
-├── SpravceSkoleni.cs
-├── ZamestnanciRepository.cs
-├── SkoleniRepository.cs
-├── Zamestnanec.cs
-├── Student.cs
-├── Lektor.cs
-├── Skoleni.cs
 └── README.md
 ```
 
@@ -80,10 +91,9 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 
 - OOP (dědičnost – Student a Lektor dědí ze společné abstraktní třídy Zamestnanec)
 - Zapouzdření a validace vstupů
-- Vícevrstvá architektura a vzor Repository 
-(odělená datová vrstva ZamestnanciRepository a SkoleniRepository pro práci s JSON od aplikační logiky)
-- Znovupoužitelné knihovny 
-(TextHelper pro validované zadávání vstupů, SelectHelper pro výběr položky ze seznamu, InputHelper pro převod textu na TitleCase)
+- Vícevrstvá architektura s přísným oddělením odpovědností (UI / Vypisy / Menu → Logika → Data/Entity & Repozitáře)
+- Vzor Repository pro práci s JSON soubory
+- Znovupoužitelné externí knihovny (TextHelper, SelectHelper, InputHelper, BarevneVypisyHelper)
 - Serializace/deserializace do JSON souborů (System.Text.Json)
 - [JsonIgnore] pro zamezení kruhové reference při serializaci vztahu školení ↔ studenti/lektoři
 - LINQ (Select, Where, ToDictionary) pro dopojení objektů po načtení podle uložených kódů
@@ -94,32 +104,20 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 
 ## Ukázka kódu
 
-```
-public void PriraditLektora(Skoleni skoleni)
+```csharp
+// Ukázka čisté aplikační logiky ve SpravceSkoleni bez přímé závislosti na konzolové prezentaci
+public void PriradLektora(Skoleni skoleni, Lektor lektor)
 {
-    // Sestavíme seznam lektorů, kteří ještě nejsou přiřazeni na toto školení.
-    List<Lektor> lektori = [];
-    foreach (Lektor lektor in Lektori)
+    if (!skoleni.Lektori.Contains(lektor))
     {
-        if (!skoleni.Lektori.Contains(lektor))
-        {
-            lektori.Add(lektor);
-        }
-    }
-
-    Console.WriteLine("*** Přiřazení lektora na školení ***");
-
-    Lektor? vybranyLektor = SelectHelp.VybratPolozku(
-        lektori,
-        s => $"{s.Jmeno} {s.Prijmeni} ({s.Kod})",
-        "lektora");
-
-    if (vybranyLektor != null)
-    {
-        skoleni.Lektori.Add(vybranyLektor);
+        skoleni.Lektori.Add(lektor);
         UlozitSkoleni();
-        Console.WriteLine("! Lektor byl úspěšně přiřazen na školení !");
     }
+}
+
+public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
+{
+    return Lektori.Where(lektor => !skoleni.Lektori.Contains(lektor)).ToList();
 }
 ```
 
@@ -127,10 +125,13 @@ public void PriraditLektora(Skoleni skoleni)
 
 ## Plánované funkce
 
-- Další rozvrstvení architektury na vstupní bod → komunikační vrstvu → logickou vrstvu → datovou vrstvu, s přísným oddělením odpovědností mezi vrstvami
-- Crash-safe ukládání a automatická záloha dat (podle vzoru z projektu ZOO)
-- Vyhledávání a filtrování školení podle data/lektora/stavu
-- GUI verze (WPF)
+- **B2B datový model & Multi-tenancy** – podpora atributu `Firma` u entit i školení pro plné pokrytí externích zakázek, samoobslužného sdíleného přístupu i interního nenasazení (např. Temelín/DVI scénář)
+- **Rozdělení datových repozitářů** – odříznutí kmenových zaměstnanců zákaznických firem od lektorů do samostatných souborů (`studenti.json` a `lektori.json`)
+- **Export Prezenční listiny** – generování formátovaného textového výstupu prezenčky s kolonkami pro podpisy a rezervními řádky pro operativně dopsané náhradníky
+- **Filtrování a vyhledávání školení** – přehledy podle stavu (otevřená/uzavřená) a vyhledávání podle názvu či termínu
+- **Validace a defenzivní logika** – kontrola konzistence dat (koncové datum po počátečním) a vizuální upozornění při překročení doporučené kapacity školení
+- **Crash-safe ukládání a automatická záloha dat** – zamezení poškození datových souborů při nečekaném ukončení aplikace a možnost vytváření časovaných záloh
+- GUI (WPF)
 
 ---
 
@@ -147,3 +148,6 @@ public void PriraditLektora(Skoleni skoleni)
 
 **v1.2.1** – Refaktorování architektury datové vrstvy. Odstraněny partial soubory třídy SpravceSkoleni a nahrazeny samostatnými třídami repozitářů (ZamestnanciRepository, SkoleniRepository). Dosaženo čistého oddělení odpovědností (SRP) – SpravceSkoleni se stará o logiku a prezentaci, zatímco repozitáře čistě o persistenci do JSON souborů.
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.1)
+
+**v1.2.2** – Kompletní strukturální refaktorování architektury bez změny vnějších funkcí pro uživatele. Kód byl přehledně rozdělen do samostatných jmenných prostorů a složek (`Data/Entity`, `Data/Repozitare`, `Logika`, `Menu`, `Vypisy`). Aplikační logika ve `SpravceSkoleni` byla plně očistěna od konzolových výpisů (`Console.WriteLine`), které byly přesunuty do prezentace. Přidána integrace sdílené knihovny `BarevneVypisyHelper` pro unifikované stylování konzolového výstupu.  
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.2)
