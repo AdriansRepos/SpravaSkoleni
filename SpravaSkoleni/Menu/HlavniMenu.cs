@@ -1,5 +1,5 @@
 ﻿using BarevneVypisyHelper;
-using SpravaSkoleni.Entity;
+using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Vypisy;
 
