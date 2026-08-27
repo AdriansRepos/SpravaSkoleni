@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="BarevneVypisyHelper">
+      <HintPath>..\..\BarevneVypisyHelper\BarevneVypisyHelper\bin\Release\net8.0\BarevneVypisyHelper.dll</HintPath>
+    </Reference>
     <Reference Include="InputHelper">
       <HintPath>..\..\InputHelper\InputHelper\bin\Release\net8.0\InputHelper.dll</HintPath>
     </Reference>
