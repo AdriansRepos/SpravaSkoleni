@@ -1,5 +1,5 @@
-﻿using SpravaSkoleni.Entity;
-using SpravaSkoleni.Repozitare;
+﻿using SpravaSkoleni.Data.Entity;
+using SpravaSkoleni.Data.Repozitare;
 
 namespace SpravaSkoleni.Logika;
 
