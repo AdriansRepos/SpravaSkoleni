@@ -17,7 +17,8 @@ public class ZamestnanciRepository
     private const string SouborZamestnanci = "zamestnanci.json";
 
     /// <summary>
-    /// Uloží lektory a studenty do JSON souboru, každého s příznakem role.
+    /// Uloží lektory a studenty do JSON souboru (atomicky přes dočasný .tmp soubor),
+    /// každého s příznakem role.
     /// </summary>
     public static void Ulozit(List<Lektor> lektori, List<Student> studenti)
     {
@@ -30,7 +31,11 @@ public class ZamestnanciRepository
             vsichni.Add(new ZamestnanecZaznam(student.Jmeno, student.Prijmeni, student.Kod!, student.PracovniPozice, JeLektorem: false));
 
         string json = JsonSerializer.Serialize(vsichni, JsonOptions);
-        File.WriteAllText(SouborZamestnanci, json);
+        
+        // Atomický zápis: nejprve do .tmp souboru, pak bezpečné nahrazení
+        string docasnySoubor = SouborZamestnanci + ".tmp";
+        File.WriteAllText(docasnySoubor, json);
+        File.Move(docasnySoubor, SouborZamestnanci, overwrite: true);
     }
 
     /// <summary>
