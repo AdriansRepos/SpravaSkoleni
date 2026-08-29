@@ -83,7 +83,7 @@ namespace SpravaSkoleni.Logika;
             foreach (var kvp in hodnoceni)
             {
                 skoleni.HodnoceniStudentu[kvp.Key] = kvp.Value;
-                skoleni.Hodnoceni[kvp.Key.Kod] = kvp.Value; // zajistí persistenci
+                skoleni.Hodnoceni[kvp.Key.Kod!] = kvp.Value; // zajistí persistenci
             }
             skoleni.Uzavreno = true;
             UlozitSkoleni();
