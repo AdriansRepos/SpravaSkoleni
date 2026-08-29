@@ -17,28 +17,20 @@ public class SkoleniRepository
     private const string SouborSkoleni = "skoleni.json";
 
     /// <summary>
-    /// Uloží seznam školení do JSON souboru (napáruje kódy studentů a lektorů).
+    /// Uloží seznam školení do JSON souboru (atomicky přes dočasný .tmp soubor).
     /// </summary>
-    public static void Ulozit(List<Skoleni> seznamSkoleni)
+    public static void Ulozit(List<Skoleni> skoleni)
     {
-        List<Skoleni> kUlozeni = [];
+        string json = JsonSerializer.Serialize(skoleni, JsonOptions);
 
-        foreach (var skoleni in seznamSkoleni)
-        {
-            skoleni.KodyStudentu = [.. skoleni.Studenti.Select(s => s.Kod!)];
-            skoleni.KodyLektoru = [.. skoleni.Lektori.Select(l => l.Kod!)];
-            skoleni.Hodnoceni = skoleni.HodnoceniStudentu
-                .ToDictionary(kv => kv.Key.Kod!, kv => kv.Value);
-
-            kUlozeni.Add(skoleni);
-        }
-
-        string json = JsonSerializer.Serialize(kUlozeni, JsonOptions);
-        File.WriteAllText(SouborSkoleni, json);
+        // Atomický zápis: nejprve do .tmp souboru, pak bezpečné nahrazení
+        string docasnySoubor = SouborSkoleni + ".tmp";
+        File.WriteAllText(docasnySoubor, json);
+        File.Move(docasnySoubor, SouborSkoleni, overwrite: true);
     }
 
     /// <summary>
-    /// Načte školení z JSON a dopojí reference na objekty Studentů a Lektorů.
+    /// Načte seznam školení z JSON souboru a propojí kódy na reálné objekty lektorů a studentů.
     /// </summary>
     public static List<Skoleni> Nacist(Func<string, Student?> najdiStudenta, Func<string, Lektor?> najdiLektora)
     {
@@ -48,36 +40,45 @@ public class SkoleniRepository
         try
         {
             string json = File.ReadAllText(SouborSkoleni);
-            var nactena = JsonSerializer.Deserialize<List<Skoleni>>(json, JsonOptions) ?? [];
+            var seznam = JsonSerializer.Deserialize<List<Skoleni>>(json, JsonOptions) ?? [];
 
-            foreach (var skoleni in nactena)
+            foreach (var skoleni in seznam)
             {
-                skoleni.Studenti = [.. skoleni.KodyStudentu
-                    .Select(kod => najdiStudenta(kod))
-                    .Where(s => s != null)
-                    .Select(s => s!)];
+                // Obnovení seznamu studentů na základě uložených kódů
+                skoleni.Studenti.Clear();
+                foreach (var kod in skoleni.KodyStudentu)
+                {
+                    var student = najdiStudenta(kod);
+                    if (student != null)
+                        skoleni.Studenti.Add(student);
+                }
 
-                skoleni.Lektori = [.. skoleni.KodyLektoru
-                    .Select(kod => najdiLektora(kod))
-                    .Where(l => l != null)
-                    .Select(l => l!)];
+                // Obnovení seznamu lektorů na základě uložených kódů
+                skoleni.Lektori.Clear();
+                foreach (var kod in skoleni.KodyLektoru)
+                {
+                    var lektor = najdiLektora(kod);
+                    if (lektor != null)
+                        skoleni.Lektori.Add(lektor);
+                }
 
-                skoleni.HodnoceniStudentu = skoleni.Hodnoceni
-                    .Where(kv => najdiStudenta(kv.Key) != null)
-                    .ToDictionary(kv => najdiStudenta(kv.Key)!, kv => kv.Value);
-
-                foreach (var student in skoleni.Studenti)
-                    student.Skoleni.Add(skoleni);
-
-                foreach (var lektor in skoleni.Lektori)
-                    lektor.VyucovanaSkoleni.Add(skoleni);
+                // --- NOVINKA: obnovit HodnoceniStudentu z persistovaného slovníku Hodnoceni ---
+                skoleni.HodnoceniStudentu.Clear();
+                if (skoleni.Hodnoceni != null)
+                {
+                    foreach (var kvp in skoleni.Hodnoceni)
+                    {
+                        var student = najdiStudenta(kvp.Key);
+                        if (student != null)
+                            skoleni.HodnoceniStudentu[student] = kvp.Value;
+                    }
+                }
             }
-
-            return nactena;
+            return seznam;
         }
         catch (Exception ex)
-        {           
-            VypisyDoKonzole.VypisVarovani($"Chyba při načítání skoleni.json: {ex.Message}");            
+        {
+            VypisyDoKonzole.VypisVarovani($"Chyba při načítání skoleni.json: {ex.Message}");
             return [];
         }
     }
