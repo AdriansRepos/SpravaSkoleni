@@ -16,5 +16,17 @@ namespace SpravaSkoleni.Data.Entity
             PracovniPozice = pracovniPozice;
             Skoleni = [];
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Student druhy)
+                return Kod == druhy.Kod;
+            return false;
+        }
+        
+        public override int GetHashCode()
+        {
+            return Kod?.GetHashCode() ?? 0;
+        }
     }
 }
