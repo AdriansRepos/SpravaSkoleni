@@ -1,5 +1,6 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Data.Repozitare;
+using System.Diagnostics;
 
 namespace SpravaSkoleni.Logika;
 
@@ -77,15 +78,17 @@ namespace SpravaSkoleni.Logika;
             }
         }
     
-        public void UzavritSkoleni(Skoleni skoleni, Dictionary<Student, int> hodnoceni)
+        public void UzavritSkoleni(Skoleni skoleni, Dictionary<Student,int> hodnoceni)
         {
             foreach (var kvp in hodnoceni)
             {
                 skoleni.HodnoceniStudentu[kvp.Key] = kvp.Value;
+                skoleni.Hodnoceni[kvp.Key.Kod] = kvp.Value; // zajistí persistenci
             }
             skoleni.Uzavreno = true;
             UlozitSkoleni();
         }
+        [Conditional("DEBUG")]
         public void VypisLadiciInfo()
         {
             Console.WriteLine("\n********** Správa školení **********");
@@ -128,8 +131,15 @@ namespace SpravaSkoleni.Logika;
                 {
                     if (skoleni.Uzavreno)
                     {
-                        Console.WriteLine($"\t{student.Jmeno} {student.Prijmeni} ({student.Kod}) - " +
-                            $"{skoleni.HodnoceniStudentu[student]}%");
+                        // Najdeme hodnotu ve slovníku podle kódu studenta, ne podle reference objektu
+                        var zaznam = skoleni.HodnoceniStudentu
+                            .FirstOrDefault(kvp => kvp.Key.Kod == student.Kod);
+
+                        string textHodnoceni = zaznam.Key != null 
+                            ? $"{zaznam.Value}%" 
+                            : "Bez hodnocení";
+
+                        Console.WriteLine($"\t{student.Jmeno} {student.Prijmeni} ({student.Kod}) - {textHodnoceni}");
                     }
                     else
                     {
