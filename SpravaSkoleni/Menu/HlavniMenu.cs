@@ -2,6 +2,7 @@
 using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Vypisy;
+using SpravaSkoleni.Zaloha;
 
 namespace SpravaSkoleni.Menu
 {
@@ -19,13 +20,14 @@ namespace SpravaSkoleni.Menu
                 "3. čeká na implementaci",
                 "4. čeká na implementaci",
                 "5. čeká na implementaci",
+                "8. Ruční záloha",
                 "9. Výpis Ladící info",
-                "0. Ukončit program"
+                "k. Ukončit program"
             );
             
             VypisyDoKonzole.VypisVyzvuKZadani();
 
-            volba = Console.ReadKey().KeyChar;
+            volba = char.ToLower(Console.ReadKey().KeyChar);
             Console.WriteLine();
 
             switch (volba)
@@ -62,12 +64,12 @@ namespace SpravaSkoleni.Menu
                                     "3. Přiřadit lektora",
                                     "4. Odebrat lektora",
                                     "5. Uzavřít školení",                         
-                                    "6. Návrat do hlavního menu"
+                                    "n. Návrat do hlavního menu"
                                 );
                                 
                                 VypisyDoKonzole.VypisVyzvuKZadani();
 
-                                volbaDetailSkoleni = Console.ReadKey().KeyChar;
+                                volbaDetailSkoleni = char.ToLower(Console.ReadKey().KeyChar);
                                 Console.WriteLine();
                                 
                                 switch (volbaDetailSkoleni)
@@ -92,7 +94,7 @@ namespace SpravaSkoleni.Menu
                                         SkoleniVypisy.UzavritSkoleni(spravceSkoleni, vybraneSkoleni);
                                         break;
 
-                                    case '6':
+                                    case 'n':
                                         break;
 
                                     default:                                         
@@ -100,7 +102,7 @@ namespace SpravaSkoleni.Menu
                                         break;
                                 }
                             }
-                            while (volbaDetailSkoleni != '6');
+                            while (volbaDetailSkoleni != 'n');
                         }                                       
                     }                
                     break;
@@ -117,11 +119,15 @@ namespace SpravaSkoleni.Menu
                     // čeká na implementaci 
                     break;
 
+                case '8':
+                    ZalohovaciSluzba.ProvedRucniZalohu();
+                    break;
+
                 case '9': 
                     spravceSkoleni.VypisLadiciInfo();
                     break;
 
-                case '0':                 
+                case 'k':                 
                     break;
 
                 default:                         
@@ -130,7 +136,7 @@ namespace SpravaSkoleni.Menu
             }
 
         } 
-        while (volba != '0');
+        while (volba != 'k');
     }
 }
 }
