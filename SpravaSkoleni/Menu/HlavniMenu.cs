@@ -16,7 +16,7 @@ namespace SpravaSkoleni.Menu
             VypisyDoKonzole.VypisHlavickuMenu("MENU");
             VypisyDoKonzole.VypisTeloMenu(
                 "1. Nové školení",
-                "2. Seznam školení",
+                "2. Správa školení",
                 "3. čeká na implementaci",
                 "4. čeká na implementaci",
                 "5. čeká na implementaci",
@@ -123,7 +123,7 @@ namespace SpravaSkoleni.Menu
                     ZalohovaciSluzba.ProvedRucniZalohu();
                     break;
 
-                case '9': 
+                case '9':                     
                     spravceSkoleni.VypisLadiciInfo();
                     break;
 
