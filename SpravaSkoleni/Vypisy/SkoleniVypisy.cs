@@ -15,28 +15,43 @@ namespace SpravaSkoleni.Vypisy
             string nazev = Console.ReadLine()!;
             Console.Write("Popis: ");
             string popis = Console.ReadLine()!;
-
+        
             int doporucenyPocetUcastniku = UpravaVstupu.ZeptejSeAUprav(
                 0, "doporučený počet účastníků",
                 v => v.ToString(),
                 s => int.Parse(s),
                 jeNove: true);
-
+        
             DateTime pocatecniDatum = UpravaVstupu.ZeptejSeAUprav(
                 DateTime.MinValue, "počáteční datum (den.měsíc.rok)",
                 v => v.ToShortDateString(),
                 s => DateTime.Parse(s),
                 jeNove: true);
-
-            DateTime koncoveDatum = UpravaVstupu.ZeptejSeAUprav(
-                DateTime.MinValue, "koncové datum (den.měsíc.rok)",
-                v => v.ToShortDateString(),
-                s => DateTime.Parse(s),
-                jeNove: true);
-
+        
+            // TADY ZAČÍNÁ CYKLUS PRO KONTROLU ZADÁVANÝCH DATUMŮ:
+            DateTime koncoveDatum;
+            while (true)
+            {
+                koncoveDatum = UpravaVstupu.ZeptejSeAUprav(
+                    DateTime.MinValue, "koncové datum (den.měsíc.rok)",
+                    v => v.ToShortDateString(),
+                    s => DateTime.Parse(s),
+                    jeNove: true);
+        
+                // Pokud je konec po začátku (nebo ve stejný den), vše je OK a končíme
+                if (koncoveDatum >= pocatecniDatum)
+                {
+                    break; 
+                }                       
+                
+                VypisyDoKonzole.VypisVarovani("\n[CHYBA] Koncové datum nemůže být před počátečním datumem!");
+                VypisyDoKonzole.VypisInformaci($"Školení začíná {pocatecniDatum.ToShortDateString()}, zadejte správný datum konce.\n");                
+            }
+        
+            // Teprve až projdeme kontrolou, vytvoříme bezpečný objekt
             Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku);
             spravce.PridatSkoleni(noveSkoleni);
-
+        
             VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
         }
 
