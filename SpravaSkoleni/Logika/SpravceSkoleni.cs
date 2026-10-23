@@ -84,13 +84,21 @@ namespace SpravaSkoleni.Logika;
             }
         }
     
-        public void PriradLektora(Skoleni skoleni, Lektor lektor)
+        public bool PriradLektora(Skoleni skoleni, Lektor lektor)
         {
+            // Pokud má lektor překryv, zablokujeme to a nepustíme ho dál!
+            if (MaLektorPrekryv(lektor, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
+            {                
+                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
+                return false;
+            }
+
             if (!skoleni.Lektori.Contains(lektor))
             {
                 skoleni.Lektori.Add(lektor);
                 UlozitSkoleni();
             }
+            return true;
         }
     
         public void OdeberLektora(Skoleni skoleni, Lektor lektor)
