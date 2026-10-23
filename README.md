@@ -12,6 +12,7 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 - Výpis seznamu všech školení se stavem (otevřené/uzavřené)
 - Zobrazení detailu školení (lektoři, přihlášení studenti, u uzavřených školení i jejich hodnocení)
 - Uzavření školení
+- Nasazena pokročilá defenzivní logika: kontrola platnosti datumu
 
 ### Studenti a lektoři
 
@@ -20,6 +21,7 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 - Přiřazení lektora na otevřené školení
 - Odebrání lektora ze školení
 - U uzavřených školení nelze provádět žádné úpravy (ochrana proti změně již proběhlého školení)
+- hlídání překrývání termínů a blokace přihlášení při naplnění kapacity.
 
 ### Ladicí výpis
 
@@ -151,3 +153,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 **v1.2.2** – Kompletní strukturální refaktorování architektury bez změny vnějších funkcí pro uživatele. Kód byl přehledně rozdělen do samostatných jmenných prostorů a složek (`Data/Entity`, `Data/Repozitare`, `Logika`, `Menu`, `Vypisy`). Aplikační logika ve `SpravceSkoleni` byla plně očistěna od konzolových výpisů (`Console.WriteLine`), které byly přesunuty do prezentace. Přidána integrace sdílené knihovny `BarevneVypisyHelper` pro unifikované stylování konzolového výstupu.  
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.2)
+
+**v1.3.0** – Nasazena pokročilá defenzivní logika: kontrola platnosti datumu, hlídání překrývání termínů a blokace přihlášení při naplnění kapacity.
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.3.0)
