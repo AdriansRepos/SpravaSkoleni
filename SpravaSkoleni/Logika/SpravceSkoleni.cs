@@ -1,6 +1,7 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Data.Repozitare;
 using System.Diagnostics;
+using BarevneVypisyHelper;
 
 namespace SpravaSkoleni.Logika;
 
@@ -35,10 +36,8 @@ namespace SpravaSkoleni.Logika;
         public bool PridatSkoleni(Skoleni noveSkoleni)
         {
             if (noveSkoleni.KoncoveDatum < noveSkoleni.PocatecniDatum)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Kritická chyba: Objekt školení má neplatná data!");
-                Console.ResetColor();
+            {                
+                VypisyDoKonzole.VypisVarovani("Kritická chyba: Objekt školení má neplatná data!");                
                 return false; // Zmetek nepřidáme!
             }
         
