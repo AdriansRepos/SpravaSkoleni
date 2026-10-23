@@ -156,4 +156,24 @@ namespace SpravaSkoleni.Logika;
                 }
             }
         }
+            
+        // 1. Pomocná pojistka pro lektora
+        private bool MaLektorPrekryv(Lektor lektor, DateTime start, DateTime konec)
+        {
+            // Hledáme v seznamu, zda lektor už neučí školení, které se překrývá s novým časem
+            return SeznamSkoleni.Any(s => 
+                s.Lektori.Contains(lektor) && 
+                start < s.KoncoveDatum && 
+                konec > s.PocatecniDatum);
+        }
+        
+        // 2. Pomocná pojistka pro studenta
+        private bool MaStudentPrekryv(Student student, DateTime start, DateTime konec)
+        {
+            // Hledáme, zda student už nemá v tomto čase jiné registrované školení
+            return SeznamSkoleni.Any(s => 
+                s.Studenti.Contains(student) && 
+                start < s.KoncoveDatum && 
+                konec > s.PocatecniDatum);
+        }        
     }
