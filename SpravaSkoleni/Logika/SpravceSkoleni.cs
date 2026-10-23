@@ -52,13 +52,28 @@ namespace SpravaSkoleni.Logika;
         public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
             => [.. Lektori.Where(lektor => !skoleni.Lektori.Contains(lektor))];
     
-        public void PrihlasStudenta(Skoleni skoleni, Student student)
+        public bool PrihlasStudenta(Skoleni skoleni, Student student)
         {
+            // Kontrola kapacity (kterou už máš v plánu)
+            if (skoleni.Studenti.Count >= skoleni.DoporucenyPocetUcastniku)
+            {
+                VypisyDoKonzole.VypisVarovani("[BLOKACE] Kapacita školení je plná!");                
+                return false;
+            }
+
+            // 🔥 Pokud má student překryv, dostane stopku!
+            if (MaStudentPrekryv(student, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
+            {                
+                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                ;
+                return false;
+            }
+
             if (!skoleni.Studenti.Contains(student))
             {
                 skoleni.Studenti.Add(student);
                 UlozitSkoleni();
             }
+            return true;
         }
     
         public void OdhlasStudenta(Skoleni skoleni, Student student)
