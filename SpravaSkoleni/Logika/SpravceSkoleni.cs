@@ -32,10 +32,19 @@ namespace SpravaSkoleni.Logika;
         public Lektor? NajdiLektoraPodleKodu(string kod) 
             => Lektori.FirstOrDefault(lektor => lektor.Kod == kod);
     
-        public void PridatSkoleni(Skoleni noveSkoleni)
+        public bool PridatSkoleni(Skoleni noveSkoleni)
         {
+            if (noveSkoleni.KoncoveDatum < noveSkoleni.PocatecniDatum)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Kritická chyba: Objekt školení má neplatná data!");
+                Console.ResetColor();
+                return false; // Zmetek nepřidáme!
+            }
+        
             SeznamSkoleni.Add(noveSkoleni);
             UlozitSkoleni();
+            return true; // Vše klaplo
         }
     
         public List<Student> ZiskejNeprihlaseneStudenta(Skoleni skoleni)
