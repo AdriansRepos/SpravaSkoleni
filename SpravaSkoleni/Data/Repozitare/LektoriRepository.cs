@@ -1,4 +1,5 @@
 ﻿using SpravaSkoleni.Data.Entity;
+using SpravaSkoleni.Zaloha;
 using System.Text.Json;
 
 namespace SpravaSkoleni.Data.Repozitare
@@ -43,5 +44,21 @@ namespace SpravaSkoleni.Data.Repozitare
             return (lektori);
         }
 
+        public void Ulozit(List<Lektor> lektori)
+        {
+            // Auto-generování složek (All-in-One pojistka)
+            Directory.CreateDirectory(_slozkaLektori);
+            
+            // Serializace lektorů
+            var zaznamyLektoru = new List<ZamestnanecZaznam>();
+            foreach (var l in lektori)
+                zaznamyLektoru.Add(new ZamestnanecZaznam(l.Jmeno, l.Prijmeni, l.Kod!, l.PracovniPozice, JeLektorem: true));
+            
+            string jsonLektori = JsonSerializer.Serialize(zaznamyLektoru, JsonOptions);
+            string tmpLektori = _cestaLektori + ".tmp";
+            File.WriteAllText(tmpLektori, jsonLektori);
+            File.Move(tmpLektori, _cestaLektori, overwrite: true);
+            ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaLektori);            
+        }
     }
 }
