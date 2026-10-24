@@ -20,26 +20,17 @@ public class SkoleniRepository
     /// <summary>
     /// Uloží seznam školení do JSON souboru (atomicky přes dočasný .tmp soubor).
     /// </summary>
-    public void UlozitSkoleni(List<Skoleni> seznamSkoleni)
+    public static void Ulozit(List<Skoleni> skoleni)
     {
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(seznamSkoleni, options);
-    
-        // BOD 1: Čisté CRASH-SAFE ukládání
-        string docasnySoubor = CestaKSouboru + ".tmp";
+        string json = JsonSerializer.Serialize(skoleni, JsonOptions);
+
+        // Atomický zápis: nejprve do .tmp souboru, pak bezpečné nahrazení
+        string docasnySoubor = SouborSkoleni + ".tmp";
         File.WriteAllText(docasnySoubor, json);
-    
-        if (File.Exists(CestaKSouboru))
-        {
-            File.Replace(docasnySoubor, CestaKSouboru, null);
-        }
-        else
-        {
-            File.Move(docasnySoubor, CestaKSouboru);
-        }
-    
-        // BOD 2: Delegování automatické zálohy do specializované služby
-        ZalohovaciSluzba.ProvedAutomatickouZalohu(CestaKSouboru);
+        File.Move(docasnySoubor, SouborSkoleni, overwrite: true);
+
+        // atomická záloha
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborSkoleni);
     }
 
 
