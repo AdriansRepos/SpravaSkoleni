@@ -39,7 +39,7 @@ public class ZamestnanciRepository
         File.Move(docasnySoubor, SouborZamestnanci, overwrite: true);
 
         // Atomická záloha
-        ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborSkoleni);
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborZamestnanci);
     }
 
     /// <summary>
