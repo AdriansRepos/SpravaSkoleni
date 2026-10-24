@@ -21,7 +21,7 @@ namespace SpravaSkoleni.Menu
                 "2. Správa školení",
                 "3. Export prezenční listiny",
                 "4. Vyhledávání a filtrace",
-                "5. čeká na implementaci",
+                "5. Správa účastníků",                
                 "8. Ruční záloha",
                 "9. Výpis Ladící info",
                 "k. Ukončit program"
@@ -203,7 +203,44 @@ namespace SpravaSkoleni.Menu
                     break;
 
                 case '5': 
-                    // čeká na implementaci 
+                    char volbaUcastnici;
+                    do
+                    {
+                        VypisyDoKonzole.VypisHlavickuMenu("MENU ÚČASTNÍKŮ A HISTORIE");
+                        VypisyDoKonzole.VypisTeloMenu(
+                            "1. Vypsat všechny studenty a jejich historii",
+                            "2. Vyplessat všechny lektory a jejich historii",
+                            "n. Návrat do hlavního menu"
+                        );
+                        
+                        VypisyDoKonzole.VypisVyzvuKZadani();
+
+                        volbaUcastnici = char.ToLower(Console.ReadKey().KeyChar);
+                        Console.WriteLine();
+
+                        switch (volbaUcastnici)
+                        {
+                            case '1':
+                                ZamestnanciVypisy.VypisVsechnyStudenty(spravceSkoleni);
+                                VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
+                                Console.ReadKey();
+                                break;
+
+                            case '2':
+                                ZamestnanciVypisy.VypisVsechnyLektory(spravceSkoleni);
+                                VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
+                                Console.ReadKey();
+                                break;
+
+                            case 'n':
+                                break;
+
+                            default:
+                                VypisyDoKonzole.VypisInformaci("Neplatná volba, opakujte zadání:");
+                                break;
+                        }
+                    } 
+                    while (volbaUcastnici != 'n');
                     break;
 
                 case '8':
