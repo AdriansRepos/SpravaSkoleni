@@ -2,62 +2,34 @@
 
 namespace SpravaSkoleni.Zaloha
 {
-    public class ZalohovaciSluzba
+    public static class ZalohovaciSluzba
     {
-        private static string NouzovaZalohaSlozka =>
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SpravaSkoleni", "Zaloha");
+        private const string SlozkaAutomatickychZaloh = "Zalohy";
 
         /// <summary>
-        /// Provede ruční zálohu celé datové složky.
+        /// Provede tichou automatickou zálohu po každém úspěšném uložení dat.
+        /// Uživatel je od tohoto procesu zcela odstíněn.
         /// </summary>
-        public static void ProvedRucniZalohu(string zdrojovaSlozka = "Data", string? externiCesta = null)
-        {
-            if (!Directory.Exists(zdrojovaSlozka))
-            {
-                VypisyDoKonzole.VypisInformaci("Datová složka neexistuje, není co zálohovat.");
-                return;
-            }
-
-            ZalohujDoSlozky(zdrojovaSlozka, NouzovaZalohaSlozka, "nouzové zálohy (LOCALAPPDATA)");
-
-            if (!string.IsNullOrWhiteSpace(externiCesta))
-            {
-                ZalohujDoSlozky(zdrojovaSlozka, externiCesta, "externí zálohy");
-            }
-            else
-            {
-                VypisyDoKonzole.VypisInformaci("Externí záložní cesta není nastavena.");
-            }
-        }
-
-        private static void ZalohujDoSlozky(string zdroj, string cil, string popis)
+        public static void ProvedAutomatickouZalohu(string cestaKSouboru)
         {
             try
             {
-                Directory.CreateDirectory(cil);
-                KopirovatSlozkuRekurzivne(zdroj, cil);
-                VypisyDoKonzole.VypisUspech($"Vytvořena záložní kopie ({popis}) v: {cil}");
-            }
-            catch (Exception ex)
-            {
-                VypisyDoKonzole.VypisVarovani($"Chyba při vytváření {popis}: {ex.Message}");
-            }
-        }
+                // Pokud složka pro běžné automatické zálohy neexistuje, bezpečně ji založíme
+                if (!Directory.Exists(SlozkaAutomatickychZaloh))
+                {
+                    Directory.CreateDirectory(SlozkaAutomatickychZaloh);
+                }
 
-        private static void KopirovatSlozkuRekurzivne(string zdroj, string cil)
-        {
-            Directory.CreateDirectory(cil);
+                string nazevSouboru = Path.GetFileName(cestaKSouboru);
+                // Vytvoříme záložní soubor s příponou .bak.json ve složce Zalohy/
+                string cilovaCesta = Path.Combine(SlozkaAutomatickychZaloh, nazevSouboru.Replace(".json", ".bak.json"));
 
-            foreach (string soubor in Directory.GetFiles(zdroj))
-            {
-                string cilovySoubor = Path.Combine(cil, Path.GetFileName(soubor));
-                File.Copy(soubor, cilovySoubor, overwrite: true);
+                // Provede se rychlá, tichá záloha na disku
+                File.Copy(cestaKSouboru, cilovaCesta, overwrite: true);
             }
-
-            foreach (string podslozka in Directory.GetDirectories(zdroj))
+            catch (Exception)
             {
-                string cilovaPodslozka = Path.Combine(cil, Path.GetFileName(podslozka));
-                KopirovatSlozkuRekurzivne(podslozka, cilovaPodslozka);
+                // Tichá ignorance, aby případný I/O zámek disku neshodil běžící aplikaci
             }
         }
     }
