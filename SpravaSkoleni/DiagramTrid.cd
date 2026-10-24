@@ -78,7 +78,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Logika.SpravceExportu" Collapsed="true">
-    <Position X="13.75" Y="2.5" Width="1.5" />
+    <Position X="13.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Logika\SpravceExportu.cs</FileName>
