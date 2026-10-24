@@ -17,7 +17,7 @@ namespace SpravaSkoleni.Menu
             VypisyDoKonzole.VypisTeloMenu(
                 "1. Nové školení",
                 "2. Správa školení",
-                "3. čeká na implementaci",
+                "3. Export prezenční listiny",
                 "4. čeká na implementaci",
                 "5. čeká na implementaci",
                 "8. Ruční záloha",
@@ -108,7 +108,21 @@ namespace SpravaSkoleni.Menu
                     break;
 
                 case '3': 
-                    // čeká na implementaci 
+                    Console.WriteLine("\n*** Export prezenční listiny ***\n");
+                        
+                    Skoleni? vybraneSkoleniKExportu = SkoleniVypisy.VybratSkoleni(spravceSkoleni); 
+                    
+                    if (vybraneSkoleniKExportu != null)
+                    {                        
+                        if (SpravceExportu.ExportujPrezencniListinu(vybraneSkoleniKExportu))
+                        {
+                            VypisyDoKonzole.VypisUspech("! Prezenční listina byla úspěšně vyexportována do složky Exporty !");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Žádné školení nebylo vybráno nebo neexistuje.");
+                    } 
                     break;
 
                 case '4': 
