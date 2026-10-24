@@ -8,7 +8,7 @@ namespace SpravaSkoleni.Data.Repozitare;
 /// <summary>
 /// Datová vrstva pro práci se souborem skoleni.json.
 /// </summary>
-public class SkoleniRepository
+public class SkoleniRepository(string slozkaSkoleni = "Skoleni")
 {
     private readonly string _slozkaSkoleni = slozkaSkoleni;
     private readonly string _cestaKSouboru = Path.Combine(slozkaSkoleni, "skoleni.json");
