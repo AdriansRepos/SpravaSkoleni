@@ -45,7 +45,7 @@
   <Class Name="SpravaSkoleni.Logika.SpravceSkoleni" Collapsed="true">
     <Position X="13.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAgAAAgAAACAAEACAgwAEAIQAAIBAAAQoBACAAEA=</HashCode>
+      <HashCode>EEAQAgAAAgAAACAAEACAhwAEAIQAIMBAAAQoBACAAEA=</HashCode>
       <FileName>Logika\SpravceSkoleni.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -82,6 +82,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Logika\SpravceExportu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.ZamestnanciVypisy" Collapsed="true">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\ZamestnanciVypisy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
