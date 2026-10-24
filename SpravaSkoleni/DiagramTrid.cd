@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Data.Entity.Skoleni" Collapsed="true">
-    <Position X="13.5" Y="0.5" Width="1.5" />
+    <Position X="15.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAEEQAAAACAAAAAAAAAgAAAAAAJAIMCAAAAAAAAAAA=</HashCode>
       <FileName>Data\Entity\Skoleni.cs</FileName>
@@ -29,23 +29,16 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Data.Repozitare.SkoleniRepository" Collapsed="true">
-    <Position X="15.25" Y="0.5" Width="1.5" />
+    <Position X="10" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACAAA=</HashCode>
       <FileName>Data\Repozitare\SkoleniRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SpravaSkoleni.Data.Repozitare.ZamestnanciRepository" Collapsed="true">
-    <Position X="10" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAAAIAIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
-      <FileName>Data\Repozitare\ZamestnanciRepository.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="SpravaSkoleni.Logika.SpravceSkoleni" Collapsed="true">
-    <Position X="13.5" Y="1.5" Width="1.5" />
+    <Position X="15.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EEAQAgAAAgAAACAAEACAhwAEAIQAIMBAAAQoBACAAEA=</HashCode>
+      <HashCode>EMgQAgABAgAAACAAsACIhwAAAIQAIMBEAAQIAAAAAEA=</HashCode>
       <FileName>Logika\SpravceSkoleni.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -57,7 +50,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Vypisy.SkoleniVypisy" Collapsed="true">
-    <Position X="10" Y="1.5" Width="1.5" />
+    <Position X="11.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAQAAAKAAAACAAAAAAAQAAAAAAAAAAAAEQAA=</HashCode>
       <FileName>Vypisy\SkoleniVypisy.cs</FileName>
@@ -66,29 +59,43 @@
   <Class Name="SpravaSkoleni.Zaloha.ArchivacniSluzba" Collapsed="true">
     <Position X="10" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAEAAACAAgAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAQAAAAAAAACAAgAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
       <FileName>Zaloha\ArchivacniSluzba.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Zaloha.ZalohovaciSluzba" Collapsed="true">
-    <Position X="15.25" Y="1.5" Width="1.5" />
+    <Position X="11.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Zaloha\ZalohovaciSluzba.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Logika.SpravceExportu" Collapsed="true">
-    <Position X="11.75" Y="1.5" Width="1.5" />
+    <Position X="13.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Logika\SpravceExportu.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Vypisy.ZamestnanciVypisy" Collapsed="true">
-    <Position X="11.75" Y="2.5" Width="1.5" />
+    <Position X="13.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
       <FileName>Vypisy\ZamestnanciVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Repozitare.LektoriRepository" Collapsed="true">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAQAAAABAAAQAAAAAAAA=</HashCode>
+      <FileName>Data\Repozitare\LektoriRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Repozitare.StudentiRepository" Collapsed="true">
+    <Position X="10" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQ=</HashCode>
+      <FileName>Data\Repozitare\StudentiRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
