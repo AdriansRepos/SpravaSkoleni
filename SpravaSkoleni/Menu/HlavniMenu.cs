@@ -22,8 +22,6 @@ namespace SpravaSkoleni.Menu
                 "3. Export prezenční listiny",
                 "4. Vyhledávání a filtrace",
                 "5. Správa účastníků",                
-                "8. Ruční záloha",
-                "9. Výpis Ladící info",
                 "k. Ukončit program"
             );
             
@@ -241,16 +239,8 @@ namespace SpravaSkoleni.Menu
                         }
                     } 
                     while (volbaUcastnici != 'n');
-                    break;
-
-                case '8':
-                    ZalohovaciSluzba.ProvedRucniZalohu();
-                    break;
-
-                case '9':                     
-                    spravceSkoleni.VypisLadiciInfo();
-                    break;
-
+                    break;                
+                
                 case 'k':                 
                     break;
 
