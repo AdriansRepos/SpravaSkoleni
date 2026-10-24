@@ -11,11 +11,11 @@ namespace SpravaSkoleni.Logika;
         public List<Student> Studenti { get; set; } = [];
         public List<Skoleni> SeznamSkoleni { get; set; } = [];
     
-        public void UlozitZamestnance() => ZamestnanciRepository.Ulozit(Lektori, Studenti);
+        public void UlozitZamestnance() => StudentiRepository.Ulozit(Lektori, Studenti);
         
         public void NacistZamestnance()
         {
-            var (lektori, studenti) = ZamestnanciRepository.Nacist();
+            var (lektori, studenti) = StudentiRepository.Nacist();
             Lektori = lektori;
             Studenti = studenti;
         }
