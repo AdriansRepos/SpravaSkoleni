@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
-using BarevneVypisyHelper;
+﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Data.Entity;
+using SpravaSkoleni.Zaloha;
+using System.Text.Json;
 
 namespace SpravaSkoleni.Data.Repozitare;
 
@@ -19,15 +20,28 @@ public class SkoleniRepository
     /// <summary>
     /// Uloží seznam školení do JSON souboru (atomicky přes dočasný .tmp soubor).
     /// </summary>
-    public static void Ulozit(List<Skoleni> skoleni)
+    public void UlozitSkoleni(List<Skoleni> seznamSkoleni)
     {
-        string json = JsonSerializer.Serialize(skoleni, JsonOptions);
-
-        // Atomický zápis: nejprve do .tmp souboru, pak bezpečné nahrazení
-        string docasnySoubor = SouborSkoleni + ".tmp";
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        string json = JsonSerializer.Serialize(seznamSkoleni, options);
+    
+        // BOD 1: Čisté CRASH-SAFE ukládání
+        string docasnySoubor = CestaKSouboru + ".tmp";
         File.WriteAllText(docasnySoubor, json);
-        File.Move(docasnySoubor, SouborSkoleni, overwrite: true);
+    
+        if (File.Exists(CestaKSouboru))
+        {
+            File.Replace(docasnySoubor, CestaKSouboru, null);
+        }
+        else
+        {
+            File.Move(docasnySoubor, CestaKSouboru);
+        }
+    
+        // BOD 2: Delegování automatické zálohy do specializované služby
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(CestaKSouboru);
     }
+
 
     /// <summary>
     /// Načte seznam školení z JSON souboru a propojí kódy na reálné objekty lektorů a studentů.
