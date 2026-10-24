@@ -18,16 +18,22 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
     // Pomocný datový záznam pro čisté ukládání (DTO)
     private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
 
-    public (List<Student> Studenti) NacistVsechny()
-    {
-        var lektori = new List<Lektor>();
+    public List<Student> NacistVsechny()
+    {        
         var studenti = new List<Student>();
                 
         // 1. Tichá obnova studentů ze zálohy
         string zalohaStudenti = Path.Combine("Zalohy", "studenti.bak.json");
         if (!File.Exists(_cestaStudenti) && File.Exists(zalohaStudenti))
         {
-            try { Directory.CreateDirectory(_slozkaStudenti); File.Copy(zalohaStudenti, _cestaStudenti); } catch {}
+            try 
+            { 
+                Directory.CreateDirectory(_slozkaStudenti); 
+                File.Copy(zalohaStudenti, _cestaStudenti); 
+            }
+            catch 
+            {
+            }
         }
         
         // Načtení a spárování studentů
@@ -40,7 +46,9 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
                 foreach (var z in zaznamy)
                     studenti.Add(new Student(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice));
             }
-            catch {}
+            catch 
+            {
+            }
         }
 
         return (studenti);
