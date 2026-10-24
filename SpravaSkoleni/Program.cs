@@ -2,8 +2,9 @@
 using SpravaSkoleni.Menu;
 using SpravaSkoleni.Zaloha;
 
-var archivace = new ArchivacniSluzba();
-archivace.ZkontrolujRocniArchivaci();
+// Automatický tichý check roční uzávěrky a čistky retenčních souborů na pozadí
+ArchivacniSluzba.ZkontrolujRocniArchivaci();
+
 
 SpravceSkoleni spravceSkoleni = new();
 spravceSkoleni.NacistZamestnance();
