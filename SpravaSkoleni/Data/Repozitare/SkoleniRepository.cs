@@ -12,7 +12,11 @@ public class SkoleniRepository(string slozkaSkoleni = "Skoleni")
 {
     private readonly string _slozkaSkoleni = slozkaSkoleni;
     private readonly string _cestaKSouboru = Path.Combine(slozkaSkoleni, "skoleni.json");
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+    private static readonly JsonSerializerOptions JsonOptions = new() 
+    { 
+        WriteIndented = true 
+    };
 
     public List<Skoleni> Nacist()
     {
