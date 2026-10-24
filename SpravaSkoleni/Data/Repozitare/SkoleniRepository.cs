@@ -10,80 +10,50 @@ namespace SpravaSkoleni.Data.Repozitare;
 /// </summary>
 public class SkoleniRepository
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private readonly string _slozkaSkoleni = slozkaSkoleni;
+    private readonly string _cestaKSouboru = Path.Combine(slozkaSkoleni, "skoleni.json");
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+    public List<Skoleni> Nacist()
     {
-        WriteIndented = true
-    };
+        // Pokud chybí hlavní soubor, zkusíme tichou obnovu ze zálohy
+        string cestaKZaloze = Path.Combine("Zalohy", "skoleni.bak.json");
+        if (!File.Exists(_cestaKSouboru) && File.Exists(cestaKZaloze))
+        {
+            try
+            {
+                Directory.CreateDirectory(_slozkaSkoleni);
+                File.Copy(cestaKZaloze, _cestaKSouboru);
+            }
+            catch { /* Defenzivní skip */ }
+        }
 
-    private const string SouborSkoleni = "skoleni.json";
-
-    /// <summary>
-    /// Uloží seznam školení do JSON souboru (atomicky přes dočasný .tmp soubor).
-    /// </summary>
-    public static void Ulozit(List<Skoleni> skoleni)
-    {
-        string json = JsonSerializer.Serialize(skoleni, JsonOptions);
-
-        // Atomický zápis: nejprve do .tmp souboru, pak bezpečné nahrazení
-        string docasnySoubor = SouborSkoleni + ".tmp";
-        File.WriteAllText(docasnySoubor, json);
-        File.Move(docasnySoubor, SouborSkoleni, overwrite: true);
-
-        // atomická záloha
-        ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborSkoleni);
-    }
-
-    /// <summary>
-    /// Načte seznam školení z JSON souboru a propojí kódy na reálné objekty lektorů a studentů.
-    /// </summary>
-    public static List<Skoleni> Nacist(Func<string, Student?> najdiStudenta, Func<string, Lektor?> najdiLektora)
-    {
-        if (!File.Exists(SouborSkoleni))
-            return [];
+        if (!File.Exists(_cestaKSouboru)) return [];
 
         try
         {
-            string json = File.ReadAllText(SouborSkoleni);
-            var seznam = JsonSerializer.Deserialize<List<Skoleni>>(json, JsonOptions) ?? [];
-
-            foreach (var skoleni in seznam)
-            {
-                // Obnovení seznamu studentů na základě uložených kódů
-                skoleni.Studenti.Clear();
-                foreach (var kod in skoleni.KodyStudentu)
-                {
-                    var student = najdiStudenta(kod);
-                    if (student != null)
-                        skoleni.Studenti.Add(student);
-                }
-
-                // Obnovení seznamu lektorů na základě uložených kódů
-                skoleni.Lektori.Clear();
-                foreach (var kod in skoleni.KodyLektoru)
-                {
-                    var lektor = najdiLektora(kod);
-                    if (lektor != null)
-                        skoleni.Lektori.Add(lektor);
-                }
-
-                // --- NOVINKA: obnovit HodnoceniStudentu z persistovaného slovníku Hodnoceni ---
-                skoleni.HodnoceniStudentu.Clear();
-                if (skoleni.Hodnoceni != null)
-                {
-                    foreach (var kvp in skoleni.Hodnoceni)
-                    {
-                        var student = najdiStudenta(kvp.Key);
-                        if (student != null)
-                            skoleni.HodnoceniStudentu[student] = kvp.Value;
-                    }
-                }
-            }
-            return seznam;
+            string json = File.ReadAllText(_cestaKSouboru);
+            return JsonSerializer.Deserialize<List<Skoleni>>(json) ?? [];
         }
-        catch (Exception ex)
+        catch
         {
-            VypisyDoKonzole.VypisVarovani($"Chyba při načítání skoleni.json: {ex.Message}");
             return [];
         }
+    }
+
+    public void Ulozit(List<Skoleni> seznamSkoleni)
+    {
+        // Auto-generování složky na disku (All-in-One princip)
+        Directory.CreateDirectory(_slozkaSkoleni);
+
+        string json = JsonSerializer.Serialize(seznamSkoleni, JsonOptions);
+
+        // Neprůstřelný crash-safe zápis přes dočasný soubor
+        string docasnySoubor = _cestaKSouboru + ".tmp";
+        File.WriteAllText(docasnySoubor, json);
+        File.Move(docasnySoubor, _cestaKSouboru, overwrite: true);
+
+        // Automatická tichá záloha na pozadí
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaKSouboru);
     }
 }
