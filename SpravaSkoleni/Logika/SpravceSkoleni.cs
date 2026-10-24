@@ -227,7 +227,7 @@ namespace SpravaSkoleni.Logika;
             // Vytáhneme všechny unikátní studenty, kteří jsou na nějakém školení
             var všichniStudenti = SeznamSkoleni
                 .SelectMany(s => s.Studenti)
-                .GroupBy(st => st.Kod) // Seskupíme podle tvého nového standardu (Kód)
+                .GroupBy(st => st.Kod) // Seskupíme podle Kódu
                 .Select(g => g.First());
 
             foreach (var student in všichniStudenti)
