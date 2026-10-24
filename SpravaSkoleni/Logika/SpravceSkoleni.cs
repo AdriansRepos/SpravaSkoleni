@@ -119,67 +119,7 @@ namespace SpravaSkoleni.Logika;
             skoleni.Uzavreno = true;
             UlozitSkoleni();
         }
-        [Conditional("DEBUG")]
-        public void VypisLadiciInfo()
-        {
-            Console.WriteLine("\n********** Správa školení **********");
-            Console.WriteLine($"\nPočet lektorů: {Lektori.Count} \nPočet studentů: {Studenti.Count}");
-    
-            Console.WriteLine("\n***** Lektoři *****\n");
-            foreach (Lektor lektor in Lektori)
-            {
-                Console.WriteLine($"Jméno: {lektor.Jmeno} {lektor.Prijmeni}");
-                Console.WriteLine($"Kód: {lektor.Kod}");
-                Console.WriteLine($"Pracovní pozice: {lektor.PracovniPozice}\n");
-            }
-    
-            Console.WriteLine("\n***** Studenti *****\n");
-            foreach (Student student in Studenti)
-            {
-                Console.WriteLine($"Jméno: {student.Jmeno} {student.Prijmeni}");
-                Console.WriteLine($"Kód: {student.Kod}");
-                Console.WriteLine($"Pracovní pozice: {student.PracovniPozice}\n");
-            }
-    
-            Console.WriteLine("\n***** Školení *****");
-            foreach (Skoleni skoleni in SeznamSkoleni)
-            {
-                Console.WriteLine($"\nNázev školení: {skoleni.Nazev}");
-                Console.WriteLine($"Uzavřeno: {(skoleni.Uzavreno ? "ANO" : "NE")}");
-                Console.WriteLine($"Popis: {skoleni.Popis}");
-                Console.WriteLine($"Doporučený počet účastníků: {skoleni.DoporucenyPocetUcastniku}");
-                Console.WriteLine($"Datum konání: {skoleni.PocatecniDatum.ToShortDateString()} - " +
-                    $"{skoleni.KoncoveDatum.ToShortDateString()}");
-    
-                Console.WriteLine("\nLektoři:");
-                foreach (Lektor lektor in skoleni.Lektori)
-                {
-                    Console.WriteLine($"\t{lektor.Jmeno} {lektor.Prijmeni} {lektor.Kod}");
-                }
-    
-                Console.WriteLine("\nStudenti:");
-                foreach (Student student in skoleni.Studenti)
-                {
-                    if (skoleni.Uzavreno)
-                    {
-                        // Najdeme hodnotu ve slovníku podle kódu studenta, ne podle reference objektu
-                        var zaznam = skoleni.HodnoceniStudentu
-                            .FirstOrDefault(kvp => kvp.Key.Kod == student.Kod);
-
-                        string textHodnoceni = zaznam.Key != null 
-                            ? $"{zaznam.Value}%" 
-                            : "Bez hodnocení";
-
-                        Console.WriteLine($"\t{student.Jmeno} {student.Prijmeni} ({student.Kod}) - {textHodnoceni}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"\t{student.Jmeno} {student.Prijmeni} ({student.Kod})");
-                    }
-                }
-            }
-        }
-        
+                
         // ==========================================
         // 1. FILTROVÁNÍ PODLE STAVU 
         // ==========================================
