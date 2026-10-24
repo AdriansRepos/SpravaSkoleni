@@ -64,7 +64,7 @@ namespace SpravaSkoleni.Logika;
             // 🔥 Pokud má student překryv, dostane stopku!
             if (MaStudentPrekryv(student, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
             {                
-                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                ;
+                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Kod} {student.Prijmeni} {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                ;
                 return false;
             }
 
@@ -89,7 +89,7 @@ namespace SpravaSkoleni.Logika;
             // Pokud má lektor překryv, zablokujeme to a nepustíme ho dál!
             if (MaLektorPrekryv(lektor, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
             {                
-                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
+                VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Kod} {lektor.Prijmeni} {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
                 return false;
             }
 
