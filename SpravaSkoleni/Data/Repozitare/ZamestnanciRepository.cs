@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
-using BarevneVypisyHelper;
+﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Data.Entity;
+using SpravaSkoleni.Zaloha;
+using System.Text.Json;
 
 namespace SpravaSkoleni.Data.Repozitare;
 
@@ -36,6 +37,9 @@ public class ZamestnanciRepository
         string docasnySoubor = SouborZamestnanci + ".tmp";
         File.WriteAllText(docasnySoubor, json);
         File.Move(docasnySoubor, SouborZamestnanci, overwrite: true);
+
+        // Atomická záloha
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborSkoleni);
     }
 
     /// <summary>
