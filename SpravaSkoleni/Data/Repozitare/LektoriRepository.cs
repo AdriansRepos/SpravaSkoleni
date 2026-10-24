@@ -18,7 +18,7 @@ namespace SpravaSkoleni.Data.Repozitare
         // Pomocný datový záznam pro čisté ukládání (DTO)
         private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
 
-        public (List<Lektor> Lektori) NacistVsechny()
+        public List<Lektor> NacistVsechny()
         {
             var lektori = new List<Lektor>();
             
@@ -26,7 +26,15 @@ namespace SpravaSkoleni.Data.Repozitare
             string zalohaLektori = Path.Combine("Zalohy", "lektori.bak.json");
             if (!File.Exists(_cestaLektori) && File.Exists(zalohaLektori))
             {
-                try { Directory.CreateDirectory(_slozkaLektori); File.Copy(zalohaLektori, _cestaLektori); } catch {}
+                try 
+                { 
+                    Directory.CreateDirectory(_slozkaLektori); 
+                    File.Copy(zalohaLektori, _cestaLektori); 
+                } 
+                catch 
+                {
+
+                }
             }
                         
             // Načtení a spárování lektorů
@@ -39,7 +47,9 @@ namespace SpravaSkoleni.Data.Repozitare
                     foreach (var z in zaznamy)
                         lektori.Add(new Lektor(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice));
                 }
-                catch {}
+                catch 
+                {
+                }
             }            
             return (lektori);
         }
