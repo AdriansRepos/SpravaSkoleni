@@ -7,7 +7,5 @@ ArchivacniSluzba.ZkontrolujRocniArchivaci();
 
 
 SpravceSkoleni spravceSkoleni = new();
-spravceSkoleni.NacistZamestnance();
-spravceSkoleni.NacistSkoleni();
 
 HlavniMenu.ZobrazVyberMenu(spravceSkoleni);
