@@ -45,7 +45,7 @@
   <Class Name="SpravaSkoleni.Logika.SpravceSkoleni" Collapsed="true">
     <Position X="13.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAACAAEACAgwAEAIQAAIBAAAQoBACAAEA=</HashCode>
+      <HashCode>EAAAAgAAAgAAACAAEACAgwAEAIQAAIBAAAQoBACAAEA=</HashCode>
       <FileName>Logika\SpravceSkoleni.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -75,6 +75,13 @@
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAQAAAAAA=</HashCode>
       <FileName>Zaloha\ZalohovaciSluzba.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Logika.SpravceExportu" Collapsed="true">
+    <Position X="13.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Logika\SpravceExportu.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
