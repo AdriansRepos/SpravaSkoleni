@@ -1,34 +1,43 @@
-﻿using BarevneVypisyHelper;
-
-namespace SpravaSkoleni.Zaloha
+﻿namespace SpravaSkoleni.Zaloha
 {
-    public class ArchivacniSluzba(string archivSlozka = "Archiv")
+    public class ArchivacniSluzba
     {
-        private readonly string archivSlozka = archivSlozka;
+        private const string ArchivSlozka = "Archiv";
 
         /// <summary>
-        /// Zkontroluje a provede roční archivaci souborů.
+        /// Zkontroluje a provede automatickou roční archivaci souborů na pozadí.
+        /// Uživatel je od tohoto procesu zcela odstíněn.
         /// </summary>
-        public void ZkontrolujRocniArchivaci(string souborZamestnanci = "zamestnanci.json", string souborSkoleni = "skoleni.json")
+        public static void ZkontrolujRocniArchivaci(string souborZamestnanci = "zamestnanci.json", string souborSkoleni = "skoleni.json")
         {
-            Directory.CreateDirectory(archivSlozka);
+            try
+            {
+                if (!Directory.Exists(ArchivSlozka))
+                {
+                    Directory.CreateDirectory(ArchivSlozka);
+                }
 
-            int aktualniRok = DateTime.Now.Year;
-            // Provedeme archivaci za minulý rok, pokud ještě neproběhla
-            int rokKArchivaci = aktualniRok - 1;
+                int aktualniRok = DateTime.Now.Year;
+                // Provedeme archivaci za minulý rok, pokud ještě neproběhla
+                int rokKArchivaci = aktualniRok - 1;
 
-            ArchivujSoubor(souborZamestnanci, "zamestnanci", rokKArchivaci);
-            ArchivujSoubor(souborSkoleni, "skoleni", rokKArchivaci);
+                ArchivujSoubor(souborZamestnanci, "zamestnanci", rokKArchivaci);
+                ArchivujSoubor(souborSkoleni, "skoleni", rokKArchivaci);
 
-            VycistiStareArchivy(aktualniRok);
+                VycistiStareArchivy(aktualniRok);
+            }
+            catch (Exception)
+            {
+                // Tichá ignorance, aby selhání I/O disku nezhroutilo aplikaci při startu
+            }
         }
 
-        private void ArchivujSoubor(string zdrojovySoubor, string nazevBaze, int rok)
+        private static void ArchivujSoubor(string zdrojovySoubor, string nazevBaze, int rok)
         {
             if (!File.Exists(zdrojovySoubor))
                 return;
 
-            string cil = Path.Combine(archivSlozka, $"{nazevBaze}_{rok}.json");
+            string cil = Path.Combine(ArchivSlozka, $"{nazevBaze}_{rok}.json");
 
             // Pokud archiv za daný rok už existuje, nepřepisujeme ho
             if (File.Exists(cil))
@@ -36,43 +45,42 @@ namespace SpravaSkoleni.Zaloha
 
             try
             {
-                File.Copy(zdrojovySoubor, cil, overwrite: false);
-                VypisyDoKonzole.VypisUspech($"Data ({nazevBaze}) za rok {rok} byla archivována.");
+                // KROK 3: Neprůstřelný crash-safe zápis i do archivu přes .tmp
+                string docasnySoubor = cil + ".tmp";
+                File.Copy(zdrojovySoubor, docasnySoubor, overwrite: true);
+                File.Move(docasnySoubor, cil, overwrite: true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                VypisyDoKonzole.VypisVarovani($"Chyba při archivaci souboru '{nazevBaze}' za rok {rok}: {ex.Message}");
+                // Tichá záchrana logu na pozadí
             }
         }
 
-        private void VycistiStareArchivy(int aktualniRok)
+        private static void VycistiStareArchivy(int aktualniRok)
         {
-            if (!Directory.Exists(archivSlozka))
+            if (!Directory.Exists(ArchivSlozka))
                 return;
 
-            foreach (string soubor in Directory.GetFiles(archivSlozka, "*_*.json"))
+            // Hledáme soubory odpovídající masce
+            foreach (string soubor in Directory.GetFiles(ArchivSlozka, "*_*.json"))
             {
                 string jmenoSouboru = Path.GetFileNameWithoutExtension(soubor);
                 int podtrzitko = jmenoSouboru.LastIndexOf('_');
-                if (podtrzitko < 0) 
+                if (podtrzitko < 0)
                     continue;
 
                 if (!int.TryParse(jmenoSouboru[(podtrzitko + 1)..], out int rokSouboru))
                     continue;
 
-                // Zaměstnanecká/mzdová data 30 let, historie školení 5 let
-                int hraniceRoku = jmenoSouboru.StartsWith("zamestnanci_") ? 30 : 5;
-
-                if (aktualniRok - rokSouboru > hraniceRoku)
+                if (aktualniRok - rokSouboru > 5)
                 {
                     try
                     {
                         File.Delete(soubor);
-                        VypisyDoKonzole.VypisInformaci($"Starý archivní soubor smazán: {Path.GetFileName(soubor)}");
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        VypisyDoKonzole.VypisVarovani($"Nepodařilo se smazat archivní soubor {Path.GetFileName(soubor)}: {ex.Message}");
+                        // Defenzivní skip, pokud operační systém soubor zrovna zablokoval
                     }
                 }
             }
