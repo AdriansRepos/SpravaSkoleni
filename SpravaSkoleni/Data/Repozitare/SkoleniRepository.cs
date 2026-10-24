@@ -33,7 +33,6 @@ public class SkoleniRepository
         ZalohovaciSluzba.ProvedAutomatickouZalohu(SouborSkoleni);
     }
 
-
     /// <summary>
     /// Načte seznam školení z JSON souboru a propojí kódy na reálné objekty lektorů a studentů.
     /// </summary>
