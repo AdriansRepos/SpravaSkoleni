@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
   <Class Name="SpravaSkoleni.Data.Entity.Lektor" Collapsed="true">
     <Position X="5.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
@@ -29,14 +29,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Data.Repozitare.SkoleniRepository" Collapsed="true">
-    <Position X="10" Y="1.5" Width="1.5" />
+    <Position X="15.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
       <FileName>Data\Repozitare\SkoleniRepository.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Data.Repozitare.ZamestnanciRepository" Collapsed="true">
-    <Position X="11.75" Y="2.5" Width="1.5" />
+    <Position X="10" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAIAIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
       <FileName>Data\Repozitare\ZamestnanciRepository.cs</FileName>
@@ -57,7 +57,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Vypisy.SkoleniVypisy" Collapsed="true">
-    <Position X="11.75" Y="1.5" Width="1.5" />
+    <Position X="10" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAQAAAKAAAACAAAAAAAQAAAAAAAAAAAAEQAA=</HashCode>
       <FileName>Vypisy\SkoleniVypisy.cs</FileName>
@@ -71,21 +71,21 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Zaloha.ZalohovaciSluzba" Collapsed="true">
-    <Position X="10" Y="2.5" Width="1.5" />
+    <Position X="15.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAQAAAAAA=</HashCode>
       <FileName>Zaloha\ZalohovaciSluzba.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Logika.SpravceExportu" Collapsed="true">
-    <Position X="13.5" Y="2.5" Width="1.5" />
+    <Position X="11.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Logika\SpravceExportu.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SpravaSkoleni.Vypisy.ZamestnanciVypisy" Collapsed="true">
-    <Position X="15.25" Y="0.5" Width="1.5" />
+    <Position X="11.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
       <FileName>Vypisy\ZamestnanciVypisy.cs</FileName>
