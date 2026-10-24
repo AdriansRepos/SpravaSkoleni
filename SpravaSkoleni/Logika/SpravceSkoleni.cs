@@ -221,6 +221,46 @@ namespace SpravaSkoleni.Logika;
             );
         }
         
+        // 1. Získání přehledu všech studentů a jejich školení
+        public IEnumerable<(Student Student, List<Skoleni> SkoleniHistorie)> GetPrehledStudentu()
+        {
+            // Vytáhneme všechny unikátní studenty, kteří jsou na nějakém školení
+            var všichniStudenti = SeznamSkoleni
+                .SelectMany(s => s.Studenti)
+                .GroupBy(st => st.Kod) // Seskupíme podle tvého nového standardu (Kód)
+                .Select(g => g.First());
+
+            foreach (var student in všichniStudenti)
+            {
+                // Najdeme všechna školení, kde tento student figuruje
+                var historie = SeznamSkoleni
+                    .Where(s => s.Studenti.Any(st => st.Kod == student.Kod))
+                    .ToList();
+
+                yield return (student, historie);
+            }
+        }
+
+        // 2. Získání přehledu všech lektorů a jejich školení
+        public IEnumerable<(Lektor Lektor, List<Skoleni> SkoleniHistorie)> GetPrehledLektoru()
+        {
+            // Vytáhneme všechny unikátní lektory
+            var všichniLektori = SeznamSkoleni
+                .SelectMany(s => s.Lektori)
+                .GroupBy(l => l.Kod)
+                .Select(g => g.First());
+
+            foreach (var lektor in všichniLektori)
+            {
+                // Najdeme všechna školení, která tento lektor vyučuje
+                var historie = SeznamSkoleni
+                    .Where(s => s.Lektori.Any(l => l.Kod == lektor.Kod))
+                    .ToList();
+
+                yield return (lektor, historie);
+            }
+        }
+        
         // 1. Pomocná pojistka pro lektora
         private bool MaLektorPrekryv(Lektor lektor, DateTime start, DateTime konec)
         {
