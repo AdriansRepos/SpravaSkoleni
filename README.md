@@ -29,6 +29,13 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 
 ---
 
+### Export prezenčních listin
+
+- Export prezenční listiny do souboru `.txt` podle uživatelem vybraného školení. 
+- Soubor obsahuje všechny potřebné údaje včetně místa pro podpisy studentů.
+
+---
+
 ## Datový model
 
 - **Zamestnanec** – abstraktní společný základ pro `Student` a `Lektor` (jméno a příjmení s automatickým převodem do TitleCase, kód, pracovní pozice)
@@ -64,7 +71,6 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 ---
 
 ## Struktura projektu
-## Struktura projektu
 
 ```text
 /SpravaSkoleni
@@ -78,7 +84,8 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │       ├── SkoleniRepository.cs
 │       └── ZamestnanciRepository.cs
 ├── Logika/
-│   └── SpravceSkoleni.cs
+│   ├── SpravceSkoleni.cs
+│   └── SpravceExportu.cs
 ├── Menu/
 │   └── HlavniMenu.cs
 ├── Vypisy/
@@ -127,13 +134,12 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 ## Plánované funkce
 
-- **B2B datový model & Multi-tenancy** – podpora atributu `Firma` u entit i školení pro plné pokrytí externích zakázek, samoobslužného sdíleného přístupu i interního nenasazení (např. Temelín/DVI scénář)
-- **Rozdělení datových repozitářů** – odříznutí kmenových zaměstnanců zákaznických firem od lektorů do samostatných souborů (`studenti.json` a `lektori.json`)
-- **Export Prezenční listiny** – generování formátovaného textového výstupu prezenčky s kolonkami pro podpisy a rezervními řádky pro operativně dopsané náhradníky
-- **Filtrování a vyhledávání školení** – přehledy podle stavu (otevřená/uzavřená) a vyhledávání podle názvu či termínu
-- **Validace a defenzivní logika** – kontrola konzistence dat (koncové datum po počátečním) a vizuální upozornění při překročení doporučené kapacity školení
-- **Crash-safe ukládání a automatická záloha dat** – zamezení poškození datových souborů při nečekaném ukončení aplikace a možnost vytváření časovaných záloh
-- GUI (WPF)
+- **B2B datový model & Multi-tenancy** – podpora atributu `Firma` u entit i školení pro plné pokrytí externích zakázek, samoobslužného sdíleného přístupu i interního nasazení (např. Temelín/DVI scénář).
+- **Rozdělení datových repozitářů** – odříznutí kmenových zaměstnanců zákaznických firem od lektorů do samostatných souborů (`studenti.json` a `lektori.json`).
+- **Crash-safe ukládání a automatická záloha dat** – zamezení poškození datových souborů při nečekaném ukončení aplikace a možnost vytváření časovaných záloh.
+- **Vícevláknová architektura a hardwarová integrace** – implementace asynchronního zpracování dat (multithreading) a zajištění přímé zabezpečené komunikace s externími periferiemi (tiskárny prezenčních listin, USB zálohovací disky).
+- **Subsystem Fúze (ZOO)** – kompletní integrace modulu Správy školení jako autonomního subsystému do hlavní enterprise aplikace ZOO (https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2). Stejně jako ponechání modulu správy školení jako samostatné plně funkční aplikace.
+- **GUI (WPF)**
 
 ---
 
@@ -156,3 +162,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 **v1.3.0** – Nasazena pokročilá defenzivní logika: kontrola platnosti datumu, hlídání překrývání termínů a blokace přihlášení při naplnění kapacity.
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.3.0)
+
+**v1.4.0** – Masivní refaktorizace na unikátní podnikovou identifikaci (Kódy a Příjmení) eliminující shodu jmen. Nasazen vysoce optimalizovaný exportní modul prezenčních listin na disk s integrovanou byznysovou statistikou a nulovou paměťovou alokací (CA1862). Architektura byla rozšířena o pokročilé LINQ vyhledávací a filtrační subsystémy v samostatných souborech a kompletní evidenci historie účastníků s automatickým čištěním duplicit přes agregace. Prezentační vrstva byla modulárně rozvětvěna do izolovaných interaktivních podmenu (Vyhledávání, Účastníci) a kompletně aktualizován modelový diagram tříd (.cd). Aplikace je plně stabilizována a připravena pro přechod na vícevláknové zpracování a komunikaci s hardwarovými periferiemi.
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.4.0)
