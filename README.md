@@ -8,31 +8,49 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 
 ### Školení
 
-- Vytvoření nového školení (název, popis, doporučený počet účastníků, počáteční a koncové datum)
-- Výpis seznamu všech školení se stavem (otevřené/uzavřené)
-- Zobrazení detailu školení (lektoři, přihlášení studenti, u uzavřených školení i jejich hodnocení)
-- Uzavření školení
-- Nasazena pokročilá defenzivní logika: kontrola platnosti datumu
+- Vytvoření nového školení (název, popis, doporučený počet účastníků, počáteční a koncové datum).
+- Výpis seznamu všech školení se stavem (otevřené/uzavřené).
+- Zobrazení detailu školení (lektoři, přihlášení studenti, u uzavřených školení i jejich hodnocení).
+- Uzavření školení lektorem na konci výuky.
+- **Defenzivní klientská logika:** Kontrola platnosti datumu (konec nemůže být před začátkem) vynucená cyklickým opakováním vstupu bez nutnosti přepisovat celý formulář.
 
 ### Studenti a lektoři
 
-- Přihlášení studenta na otevřené školení
-- Odhlášení studenta ze školení
-- Přiřazení lektora na otevřené školení
-- Odebrání lektora ze školení
-- U uzavřených školení nelze provádět žádné úpravy (ochrana proti změně již proběhlého školení)
-- hlídání překrývání termínů a blokace přihlášení při naplnění kapacity.
+- Přihlášení studenta na otevřené školení.
+- Odhlášení studenta ze školení.
+- Přiřazení lektora na otevřené školení.
+- Odebrání lektora ze školení.
+- **Neprůstřelná integrita:** U uzavřených školení nelze provádět žádné úpravy (ochrana proti změně již proběhlého školení).
+- **Časové pojistky:** Automatické hlídání překrývání termínů – lektor nemůže učit a student nemůže studovat více kurzů v totožný čas.
+- **Kapacitní stopka:** Tvrdá blokace přihlášení studenta při stoprocentním naplnění doporučené kapacity školení.
+- **Unikátní podniková identifikace:** Veškeré chybové hlášky a vyhledávání nově využívají bezpečnou kombinaci `Prijmeni` a unikátního zaměstnaneckého `Kod` namísto křestních jmen.
 
-### Ladicí výpis
+### Vyhledávání a filtrace
 
-- Kompletní přehled všech zaměstnanců (lektorů, studentů) a školení pro účely vývoje a kontroly dat
+- Izolované interaktivní konzolové podmenu pro pokročilé datové dotazy.
+- Rychlý výpis školení filtrovaný striktně podle stavu (pouze otevřená / pouze uzavřená).
+- Full-textové vyhledávání školení podle názvu, příjmení lektora nebo unikátního kódu zaměstnance s ignorováním velikosti písmen (case-insensitive).
+- Vyhledávání v konkrétním rozmezí datumů konání pomocí matematického překryvu časových os.
+- Plynulý přechod z filtrovaného výběru přímo do detailu vybraného školení.
 
----
+### Správa účastníků a historie
+
+- Samostatné klientské podmenu pro kompletní přehled firemního vzdělávání.
+- Unikátní přehled všech studentů/lektorů registrovaných v systému s automatickým čištěním duplicit přes LINQ agregace (`GroupBy`).
+- Kompletní časová karta zaměstnance zobrazující detailní historii všech jeho otevřených i uzavřených kurzů.
 
 ### Export prezenčních listin
 
-- Export prezenční listiny do souboru `.txt` podle uživatelem vybraného školení. 
-- Soubor obsahuje všechny potřebné údaje včetně místa pro podpisy studentů.
+- Export formátované prezenční listiny do souboru `.txt` do automaticky generované složky `Exporty`.
+- Soubor obsahuje kompletní metadata kurzu, popis, statistiky kapacity a detailní seznam studentů s kolonkou pro fyzický podpis.
+- **Optimalizovaný I/O provoz:** Využití StringBuilderu, nulová paměťová alokace nových řetězců (`StringComparison.OrdinalIgnoreCase`) a eliminace rozšiřujících LINQ metod ve prospěch vlastnosti `.Count > 0` (CA1860, CA1862).
+
+### Datová bezpečnost a automatizace
+
+- **B2B All-in-One struktura:** Fyzické odříznutí datových repozitářů do samostatných, automaticky vytvářených složek na disku (`Skoleni/`, `Lektori/`, `Studenti/`).
+- **Crash-safe ukládání:** Zamezení poškození dat při nečekaném výpadku proudu pomocí atomického zápisu přes dočasné `.tmp` soubory a systémové nahrazení ostrých dat (`File.Move` s overwrite).
+- **Autonomní tichá záloha:** Automatické generování záložních souborů `.bak.json` do složky `Zalohy/` po každém úspěšném uložení, zcela odstíněné od zásahu uživatele.
+- **5letá instanční archivace:** Automatický check roční uzávěrky při startu aplikace. Zmražení loňských dat do složky `Archiv/` a automatické promazávání souborů starších než 5 let s využitím defenzivního přeskočení (skip) při systémovém zámku.
 
 ---
 
@@ -45,17 +63,6 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 - **Lektor** – dědí ze `Zamestnanec`, eviduje seznam školení, která vyučuje
 
 - **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno. Do JSON se ukládají jen kódy studentů/lektorů, ne celé objekty; skutečné reference se dopojují po načtení.
-
----
-
-## Ukládání dat
-
-Data se ukládají do JSON souborů:
-
-- `zamestnanci.json` – seznam všech lektorů a studentů s příznakem role
-- `skoleni.json` – seznam všech školení
-
-Aby se předešlo kruhové referenci při serializaci (`Student` obsahuje seznam `Skoleni`, které obsahuje seznam `Student`), školení si neukládá přímo objekty studentů a lektorů, ale jen jejich kódy (`KodyStudentu`, `KodyLektoru`, `Hodnoceni`). Skutečné objekty se po načtení dopojí podle kódu z již načtených zaměstnanců.
 
 ---
 
@@ -81,15 +88,20 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │   │   ├── Student.cs
 │   │   └── Zamestnanec.cs
 │   └── Repozitare/
-│       ├── SkoleniRepository.cs
-│       └── ZamestnanciRepository.cs
+|       ├── SkoleniRepository.cs
+|       ├── LektoriRepository.cs
+│       └── StudentiRepository.cs
 ├── Logika/
 │   ├── SpravceSkoleni.cs
 │   └── SpravceExportu.cs
 ├── Menu/
 │   └── HlavniMenu.cs
 ├── Vypisy/
+│   ├── ZamestnanciVypisy.cs
 │   └── SkoleniVypisy.cs
+├── Zaloha/
+│   ├── ArchivacniSluzba.cs
+│   └── ZalohovaciSluzba.cs
 ├── Program.cs
 └── README.md
 ```
@@ -135,8 +147,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 ## Plánované funkce
 
 - **B2B datový model & Multi-tenancy** – podpora atributu `Firma` u entit i školení pro plné pokrytí externích zakázek, samoobslužného sdíleného přístupu i interního nasazení (např. Temelín/DVI scénář).
-- **Rozdělení datových repozitářů** – odříznutí kmenových zaměstnanců zákaznických firem od lektorů do samostatných souborů (`studenti.json` a `lektori.json`).
-- **Crash-safe ukládání a automatická záloha dat** – zamezení poškození datových souborů při nečekaném ukončení aplikace a možnost vytváření časovaných záloh.
 - **Vícevláknová architektura a hardwarová integrace** – implementace asynchronního zpracování dat (multithreading) a zajištění přímé zabezpečené komunikace s externími periferiemi (tiskárny prezenčních listin, USB zálohovací disky).
 - **Subsystem Fúze (ZOO)** – kompletní integrace modulu Správy školení jako autonomního subsystému do hlavní enterprise aplikace ZOO (https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2). Stejně jako ponechání modulu správy školení jako samostatné plně funkční aplikace.
 - **GUI (WPF)**
@@ -165,3 +175,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 **v1.4.0** – Masivní refaktorizace na unikátní podnikovou identifikaci (Kódy a Příjmení) eliminující shodu jmen. Nasazen vysoce optimalizovaný exportní modul prezenčních listin na disk s integrovanou byznysovou statistikou a nulovou paměťovou alokací (CA1862). Architektura byla rozšířena o pokročilé LINQ vyhledávací a filtrační subsystémy v samostatných souborech a kompletní evidenci historie účastníků s automatickým čištěním duplicit přes agregace. Prezentační vrstva byla modulárně rozvětvěna do izolovaných interaktivních podmenu (Vyhledávání, Účastníci) a kompletně aktualizován modelový diagram tříd (.cd). Aplikace je plně stabilizována a připravena pro přechod na vícevláknové zpracování a komunikaci s hardwarovými periferiemi.
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.4.0)
+
+**v1.5.0** – Architektura povýšena na B2B All-in-One standard rozdělením kmenových dat do tří samostatných složek (`Skoleni`, `Lektori`, `Studenti`). Implementováno autonomní crash-safe ukládání dat přes `.tmp` soubory, tiché automatické zálohování po každém zápisu disku a 5letá instanční roční archivace s defenzivním přeskočením. Odstraněn vývojářský balast v podobě ladicích výpisů z byznysové logiky i hlavního menu a plně optimalizován startovací proces aplikace v `Program.cs`.
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.5.0)
