@@ -203,8 +203,10 @@ namespace SpravaSkoleni.Logika;
         
             // Hledá shodu v názvu ŠKOLENÍ nebo v PŘÍJMENÍ / KÓDU jakéhokoliv lektora
             return SeznamSkoleni.Where(s => 
-                s.Nazev.ToLower().Contains(text) || 
-                (s.Lektori.Count > 0 && s.Lektori.Any(l => l.Prijmeni.ToLower().Contains(text) || l.Kod.ToLower().Contains(text)))
+                s.Nazev != null && s.Nazev.Contains(text, StringComparison.OrdinalIgnoreCase) || 
+                (s.Lektori.Count > 0 && s.Lektori.Any(l => 
+                    (l.Prijmeni != null && l.Prijmeni.Contains(text, StringComparison.OrdinalIgnoreCase)) || 
+                    (l.Kod != null && l.Kod.Contains(text, StringComparison.OrdinalIgnoreCase))))
             );
         }
         
