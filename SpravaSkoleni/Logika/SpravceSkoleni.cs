@@ -179,7 +179,46 @@ namespace SpravaSkoleni.Logika;
                 }
             }
         }
-            
+        
+        // ==========================================
+        // 1. FILTROVÁNÍ PODLE STAVU 
+        // ==========================================
+        public IEnumerable<Skoleni> GetSkoleniPodleStavu(bool pouzeOtevrena)
+        {
+            // Pokud chceme pouze otevřená, hledáme s.Uzavreno == false
+            return SeznamSkoleni.Where(s => s.Uzavreno == !pouzeOtevrena);
+        }
+        
+        // ==========================================
+        // 2. VYHLEDÁVÁNÍ PODLE TEXTU (Název / Lektor)
+        // ==========================================
+        public IEnumerable<Skoleni> VyhledatSkoleniPodleTextu(string hledanyText)
+        {
+            if (string.IsNullOrWhiteSpace(hledanyText))
+            {
+                return SeznamSkoleni;
+            }
+        
+            string text = hledanyText.Trim().ToLower();
+        
+            // Hledá shodu v názvu ŠKOLENÍ nebo v PŘÍJMENÍ / KÓDU jakéhokoliv lektora
+            return SeznamSkoleni.Where(s => 
+                s.Nazev.ToLower().Contains(text) || 
+                (s.Lektori.Count > 0 && s.Lektori.Any(l => l.Prijmeni.ToLower().Contains(text) || l.Kod.ToLower().Contains(text)))
+            );
+        }
+        
+        // ==========================================
+        // 3. VYHLEDÁVÁNÍ V ROZMEZÍ DATUMŮ
+        // ==========================================
+        public IEnumerable<Skoleni> VyhledatSkoleniVRozmeziDat(DateTime odData, DateTime doData)
+        {
+            // Neprůstřelný překryv časových os
+            return SeznamSkoleni.Where(s => 
+                s.PocatecniDatum <= doData && s.KoncoveDatum >= odData
+            );
+        }
+        
         // 1. Pomocná pojistka pro lektora
         private bool MaLektorPrekryv(Lektor lektor, DateTime start, DateTime konec)
         {
