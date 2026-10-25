@@ -8,18 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="BarevneVypisyHelper">
-      <HintPath>..\..\BarevneVypisyHelper\BarevneVypisyHelper\bin\Release\net8.0\BarevneVypisyHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="InputHelper">
-      <HintPath>..\..\InputHelper\InputHelper\bin\Release\net8.0\InputHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="SelectHelper">
-      <HintPath>..\..\SelectHelper\SelectHelper\bin\Release\net8.0\SelectHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="TextHelper">
-      <HintPath>..\..\TextHelper\TextHelper\bin\Release\net8.0\TextHelper.dll</HintPath>
-    </Reference>
+    <PackageReference Include="BarevneVypisyHelper" Version="1.0.0" />
+    <PackageReference Include="InputHelper" Version="1.4.0" />
+    <PackageReference Include="SelectHelper" Version="1.1.0" />
+    <PackageReference Include="TextHelper" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>
