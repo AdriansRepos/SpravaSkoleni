@@ -71,7 +71,7 @@ namespace SpravaSkoleni.Data.Entity
         /// nutnosti zadávat kódy přímo).
         /// </summary>
         public Skoleni(string nazev, string popis, DateTime pocatecniDatum, DateTime koncoveDatum,
-            int doporucenyPocetUcastniku, string firma)
+            int doporucenyPocetUcastniku)
             : this(nazev, popis, pocatecniDatum, koncoveDatum, [], [], 
                   [], doporucenyPocetUcastniku, false)
         {
