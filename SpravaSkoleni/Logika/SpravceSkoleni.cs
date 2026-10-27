@@ -1,6 +1,5 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Data.Repozitare;
-using System.Diagnostics;
 using BarevneVypisyHelper;
 
 namespace SpravaSkoleni.Logika;
@@ -27,7 +26,6 @@ public class SpravceSkoleni
     
     public void NacistVsechnaData()
     {
-        // Správné instanční načtení z tvých nových rozdělených repozitářů
         Lektori = _lektoriRepo.NacistVsechny();
         Studenti = _studentiRepo.NacistVsechny();
         SeznamSkoleni = _skoleniRepo.Nacist();
@@ -42,22 +40,22 @@ public class SpravceSkoleni
     {
         foreach (var skoleni in SeznamSkoleni)
         {
-            // Vyčistíme staré reference před novým naplněním
             skoleni.Studenti.Clear();
             skoleni.Lektori.Clear();
             skoleni.HodnoceniStudentu.Clear();
-
-            // Dopojení studentů podle kódů
+    
+            // 1. Dopojení studentů: Studenti patří pod firmu, pro kterou se školení pořádá
             foreach (var kod in skoleni.KodyStudentu)
             {
-                var student = NajdiStudentaPodleKodu(kod);
+                var student = NajdiStudentaPodleKoduAFirmy(kod, skoleni.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.Studenti.Add(student);
                 }
             }
-
-            // Dopojení lektorů podle kódů
+    
+            // 2. OPRAVA LEKTORŮ: Lektoři jsou interní/samostatní. 
+            // Hledáme je čistě podle jejich vlastního Kódu, protože školení učitelskou firmu nedefinuje.
             foreach (var kod in skoleni.KodyLektoru)
             {
                 var lektor = NajdiLektoraPodleKodu(kod);
@@ -66,11 +64,12 @@ public class SpravceSkoleni
                     skoleni.Lektori.Add(lektor);
                 }
             }
-
-            // Dopojení hodnocení
+    
+            // 3. OPRAVA DICTIONARY: Použijeme metodu, která vrací čistý, nenullovatelný objekt,
+            // čímž okamžitě zmizí chyba s neplatným klíčem v Dictionary.
             foreach (var kvp in skoleni.Hodnoceni)
             {
-                var student = NajdiStudentaPodleKodu(kvp.Key);
+                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, skoleni.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.HodnoceniStudentu[student] = kvp.Value;
@@ -79,50 +78,61 @@ public class SpravceSkoleni
         }
     }       
     
-    public Student? NajdiStudentaPodleKodu(string kod) 
-        => Studenti.FirstOrDefault(student => student.Kod == kod);
-
+    // Vrátí Student?, protože student v databázi pro danou firmu reálně nemusí existovat
+    public Student? NajdiStudentaPodleKoduAFirmy(string kod, string firma) 
+        => Studenti.FirstOrDefault(student => student.Kod == kod && student.Firma.Equals(firma, StringComparison.OrdinalIgnoreCase));
+    
+    // Lektoři se vyhledávají pouze podle unikátního kódu lektora, bez vazby na firmu školení
     public Lektor? NajdiLektoraPodleKodu(string kod) 
         => Lektori.FirstOrDefault(lektor => lektor.Kod == kod);
+
 
     public bool PridatSkoleni(Skoleni noveSkoleni)
     {
         if (noveSkoleni.KoncoveDatum < noveSkoleni.PocatecniDatum)
         {                
             VypisyDoKonzole.VypisVarovani("Kritická chyba: Objekt školení má neplatná data!");                
-            return false; // Zmetek nepřidáme!
+            return false; 
         }
     
         SeznamSkoleni.Add(noveSkoleni);
         UlozitSkoleni();
-        return true; // Vše klaplo
+        return true; 
     }
 
-    public List<Student> ZiskejNeprihlaseneStudenta(Skoleni skoleni)
-        => [.. Studenti.Where(student => !skoleni.Studenti.Contains(student))];
+    // B2B ÚPRAVA: Možnost filtrovat neprihlášené buď globálně (pro externí kurzy), nebo striktně z jedné kmenové firmy
+    public List<Student> ZiskejNeprihlaseneStudenty(Skoleni skoleni, string? filtrovatPodleFirmy = null)
+    {
+        var dotaz = Studenti.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(filtrovatPodleFirmy))
+        {
+            dotaz = dotaz.Where(s => s.Firma.Equals(filtrovatPodleFirmy, StringComparison.OrdinalIgnoreCase));
+        }
+        return [.. dotaz.Where(student => !skoleni.Studenti.Contains(student))];
+    }
 
     public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
         => [.. Lektori.Where(lektor => !skoleni.Lektori.Contains(lektor))];
 
     public bool PrihlasStudenta(Skoleni skoleni, Student student)
     {
-        // Kontrola kapacity (kterou už máš v plánu)
         if (skoleni.Studenti.Count >= skoleni.DoporucenyPocetUcastniku)
         {
             VypisyDoKonzole.VypisVarovani("[BLOKACE] Kapacita školení je plná!");                
             return false;
         }
 
-        // Pokud má student překryv, dostane stopku!
+        // B2B ÚPRAVA: Překryv se kontroluje napříč všemi kurzy, kde student figuruje
         if (MaStudentPrekryv(student, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
-            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Kod} {student.Prijmeni} {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                ;
+            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Kod} ({student.Firma}) {student.Prijmeni} {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                
             return false;
         }
 
         if (!skoleni.Studenti.Contains(student))
         {
             skoleni.Studenti.Add(student);
+            skoleni.KodyStudentu.Add(student.Kod!); // Přidáno pro správnou synchronizaci s JSON kolekcí
             UlozitSkoleni();
         }
         return true;
@@ -132,22 +142,23 @@ public class SpravceSkoleni
     {
         if (skoleni.Studenti.Remove(student))
         {
+            skoleni.KodyStudentu.Remove(student.Kod!);
             UlozitSkoleni();
         }
     }
 
     public bool PriradLektora(Skoleni skoleni, Lektor lektor)
     {
-        // Pokud má lektor překryv, zablokujeme to a nepustíme ho dál!
         if (MaLektorPrekryv(lektor, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
-            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Kod} {lektor.Prijmeni} {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
+            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Kod} ({lektor.Firma}) {lektor.Prijmeni} {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
             return false;
         }
 
         if (!skoleni.Lektori.Contains(lektor))
         {
             skoleni.Lektori.Add(lektor);
+            skoleni.KodyLektoru.Add(lektor.Kod!); // Přidáno pro správnou synchronizaci s JSON kolekcí
             UlozitSkoleni();
         }
         return true;
@@ -157,6 +168,7 @@ public class SpravceSkoleni
     {
         if (skoleni.Lektori.Remove(lektor))
         {
+            skoleni.KodyLektoru.Remove(lektor.Kod!);
             UlozitSkoleni();
         }
     }
@@ -166,24 +178,17 @@ public class SpravceSkoleni
         foreach (var kvp in hodnoceni)
         {
             skoleni.HodnoceniStudentu[kvp.Key] = kvp.Value;
-            skoleni.Hodnoceni[kvp.Key.Kod!] = kvp.Value; // zajistí persistenci
+            skoleni.Hodnoceni[kvp.Key.Kod!] = kvp.Value; 
         }
         skoleni.Uzavreno = true;
         UlozitSkoleni();
     }
             
-    // ==========================================
-    // 1. FILTROVÁNÍ PODLE STAVU 
-    // ==========================================
     public IEnumerable<Skoleni> GetSkoleniPodleStavu(bool pouzeOtevrena)
     {
-        // Pokud chceme pouze otevřená, hledáme s.Uzavreno == false
         return SeznamSkoleni.Where(s => s.Uzavreno == !pouzeOtevrena);
     }
     
-    // ==========================================
-    // 2. VYHLEDÁVÁNÍ PODLE TEXTU (Název / Lektor)
-    // ==========================================
     public IEnumerable<Skoleni> VyhledatSkoleniPodleTextu(string hledanyText)
     {
         if (string.IsNullOrWhiteSpace(hledanyText))
@@ -193,7 +198,6 @@ public class SpravceSkoleni
     
         string text = hledanyText.Trim().ToLower();
     
-        // Hledá shodu v názvu ŠKOLENÍ nebo v PŘÍJMENÍ / KÓDU jakéhokoliv lektora
         return SeznamSkoleni.Where(s => 
             s.Nazev != null && s.Nazev.Contains(text, StringComparison.OrdinalIgnoreCase) || 
             (s.Lektori.Count > 0 && s.Lektori.Any(l => 
@@ -202,73 +206,57 @@ public class SpravceSkoleni
         );
     }
     
-    // ==========================================
-    // 3. VYHLEDÁVÁNÍ V ROZMEZÍ DATUMŮ
-    // ==========================================
     public IEnumerable<Skoleni> VyhledatSkoleniVRozmeziDat(DateTime odData, DateTime doData)
     {
-        // Neprůstřelný překryv časových os
-        return SeznamSkoleni.Where(s => 
-            s.PocatecniDatum <= doData && s.KoncoveDatum >= odData
-        );
+        return SeznamSkoleni.Where(s => s.PocatecniDatum <= doData && s.KoncoveDatum >= odData);
     }
     
-    // 1. Získání přehledu všech studentů a jejich školení
     public IEnumerable<(Student Student, List<Skoleni> SkoleniHistorie)> GetPrehledStudentu()
     {
-        // Vytáhneme všechny unikátní studenty, kteří jsou na nějakém školení
         var všichniStudenti = SeznamSkoleni
             .SelectMany(s => s.Studenti)
-            .GroupBy(st => st.Kod) // Seskupíme podle Kódu
+            .GroupBy(st => $"{st.Firma}:{st.Kod}") // B2B ÚPRAVA: Seskupení zohledňuje firmu, aby nesloučilo lidi s jinou firmou a stejným ID
             .Select(g => g.First());
 
         foreach (var student in všichniStudenti)
         {
-            // Najdeme všechna školení, kde tento student figuruje
             var historie = SeznamSkoleni
-                .Where(s => s.Studenti.Any(st => st.Kod == student.Kod))
+                .Where(s => s.Studenti.Any(st => st.Kod == student.Kod && st.Firma == student.Firma))
                 .ToList();
 
             yield return (student, historie);
         }
     }
 
-    // 2. Získání přehledu všech lektorů a jejich školení
     public IEnumerable<(Lektor Lektor, List<Skoleni> SkoleniHistorie)> GetPrehledLektoru()
     {
-        // Vytáhneme všechny unikátní lektory
         var všichniLektori = SeznamSkoleni
             .SelectMany(s => s.Lektori)
-            .GroupBy(l => l.Kod)
+            .GroupBy(l => $"{l.Firma}:{l.Kod}") // B2B ÚPRAVA: Seskupení podle unikátního složeného identifikátoru
             .Select(g => g.First());
 
         foreach (var lektor in všichniLektori)
         {
-            // Najdeme všechna školení, která tento lektor vyučuje
             var historie = SeznamSkoleni
-                .Where(s => s.Lektori.Any(l => l.Kod == lektor.Kod))
+                .Where(s => s.Lektori.Any(l => l.Kod == lektor.Kod && l.Firma == lektor.Firma))
                 .ToList();
 
             yield return (lektor, historie);
         }
     }
     
-    // 1. Pomocná pojistka pro lektora
     private bool MaLektorPrekryv(Lektor lektor, DateTime start, DateTime konec)
     {
-        // Hledáme v seznamu, zda lektor už neučí školení, které se překrývá s novým časem
         return SeznamSkoleni.Any(s => 
-            s.Lektori.Contains(lektor) && 
+            s.Lektori.Any(l => l.Kod == lektor.Kod && l.Firma == lektor.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
             start < s.KoncoveDatum && 
             konec > s.PocatecniDatum);
     }
     
-    // 2. Pomocná pojistka pro studenta
     private bool MaStudentPrekryv(Student student, DateTime start, DateTime konec)
     {
-        // Hledáme, zda student už nemá v tomto čase jiné registrované školení
         return SeznamSkoleni.Any(s => 
-            s.Studenti.Contains(student) && 
+            s.Studenti.Any(st => st.Kod == student.Kod && st.Firma == student.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
             start < s.KoncoveDatum && 
             konec > s.PocatecniDatum);
     }        
