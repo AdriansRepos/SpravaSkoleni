@@ -8,12 +8,13 @@ namespace SpravaSkoleni.Data.Entity
         public List<Skoleni> Skoleni { get; set; }
 
         [JsonConstructor]
-        public Student(string jmeno, string prijmeni, string kod, string pracovniPozice)
+        public Student(string jmeno, string prijmeni, string kod, string pracovniPozice, string firma)
         {
             Jmeno = jmeno;
             Prijmeni = prijmeni;
             Kod = kod;
             PracovniPozice = pracovniPozice;
+            Firma = firma;
             Skoleni = [];
         }
 
