@@ -16,7 +16,7 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
     };
 
     // Pomocný datový záznam pro čisté ukládání (DTO)
-    private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
+    private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, string Firma, bool JeLektorem);
 
     public List<Student> NacistVsechny()
     {        
@@ -44,7 +44,7 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
                 string json = File.ReadAllText(_cestaStudenti);
                 var zaznamy = JsonSerializer.Deserialize<List<ZamestnanecZaznam>>(json) ?? [];
                 foreach (var z in zaznamy)
-                    studenti.Add(new Student(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice));
+                    studenti.Add(new Student(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice, z.Firma));
             }
             catch 
             {
@@ -62,7 +62,7 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
         // Serializace studentů
         var zaznamyStudentu = new List<ZamestnanecZaznam>();
         foreach (var s in studenti)
-            zaznamyStudentu.Add(new ZamestnanecZaznam(s.Jmeno, s.Prijmeni, s.Kod!, s.PracovniPozice, JeLektorem: false));
+            zaznamyStudentu.Add(new ZamestnanecZaznam(s.Jmeno, s.Prijmeni, s.Kod!, s.PracovniPozice, s.Firma, JeLektorem: false));
 
         string jsonStudenti = JsonSerializer.Serialize(zaznamyStudentu, JsonOptions);
         string tmpStudenti = _cestaStudenti + ".tmp";
