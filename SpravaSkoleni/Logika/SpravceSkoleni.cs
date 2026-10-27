@@ -47,7 +47,7 @@ public class SpravceSkoleni
             // 1. Dopojení studentů: Studenti patří pod firmu, pro kterou se školení pořádá
             foreach (var kod in skoleni.KodyStudentu)
             {
-                var student = NajdiStudentaPodleKoduAFirmy(kod, skoleni.Firma ?? string.Empty);
+                var student = NajdiStudentaPodleKoduAFirmy(kod, student.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.Studenti.Add(student);
@@ -69,7 +69,7 @@ public class SpravceSkoleni
             // čímž okamžitě zmizí chyba s neplatným klíčem v Dictionary.
             foreach (var kvp in skoleni.Hodnoceni)
             {
-                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, skoleni.Firma ?? string.Empty);
+                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, student.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.HodnoceniStudentu[student] = kvp.Value;
