@@ -46,7 +46,7 @@ namespace SpravaSkoleni.Logika
                     int poradi = 1;
                     foreach (var student in skoleni.Studenti)
                     {                        
-                        sb.AppendLine($"{poradi}. {student.Prijmeni} {student.Jmeno} (Kód: {student.Kod}) - [ Podpis: ................... ]");
+                        sb.AppendLine($"{poradi}. {student.Prijmeni} {student.Jmeno} (Kód: {student.Kod}) {student.Firma}- [ Podpis: ................... ]");
                         poradi++;
                     }
                 }
