@@ -100,7 +100,7 @@ namespace SpravaSkoleni.Vypisy
 
         public static void PrihlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
         {
-            var neprihlaseniStudenti = spravce.ZiskejNeprihlaseneStudenta(skoleni);
+            var neprihlaseniStudenti = spravce.ZiskejNeprihlaseneStudenty(skoleni);
 
             Console.WriteLine("*** Přihlášení studenta na školení ***");
             Student? vybranyStudent = SelectHelp.VybratPolozku(
