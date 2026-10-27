@@ -219,13 +219,13 @@ namespace SpravaSkoleni.Menu
                             switch (volbaUcastnici)
                             {
                                 case '1':
-                                    ZamestnanciVypisy.VypisVsechnyStudenty(spravceSkoleni);
+                                    StudentiVypisy.VypisVsechnyStudenty(spravceSkoleni);
                                     VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
                                     Console.ReadKey();
                                     break;
     
                                 case '2':
-                                    ZamestnanciVypisy.VypisVsechnyLektory(spravceSkoleni);
+                                    LektoriVypisy.VypisVsechnyLektory(spravceSkoleni);
                                     VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
                                     Console.ReadKey();
                                     break;
