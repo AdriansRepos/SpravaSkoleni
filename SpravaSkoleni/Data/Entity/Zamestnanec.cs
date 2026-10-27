@@ -32,7 +32,12 @@ namespace SpravaSkoleni.Data.Entity
             set => _pracovniPozice = TitleCase.ToTitleCase(value);
         }
 
+        private string _firma = string.Empty;
         [JsonPropertyName("firma")]
-        public string? Firma { get; set; }
+        public string Firma
+        {
+            get => _firma;
+            set => _firma = TitleCase.ToTitleCase(value);
+        }
     }
 }
