@@ -5,7 +5,7 @@ namespace SpravaSkoleni.Data.Entity
     [method: JsonConstructor]
     public class Skoleni(string nazev, string popis, DateTime pocatecniDatum, DateTime koncoveDatum,
         List<string> kodyStudentu, List<string> kodyLektoru, Dictionary<string, int> hodnoceni,
-        int doporucenyPocetUcastniku, bool uzavreno)
+        int doporucenyPocetUcastniku, bool uzavreno, string firma)
     {
         [JsonPropertyName("nazev")]
         public string Nazev { get; set; } = nazev;
@@ -45,6 +45,9 @@ namespace SpravaSkoleni.Data.Entity
         [JsonPropertyName("uzavreno")]
         public bool Uzavreno { get; set; } = uzavreno;
 
+        [JsonPropertyName("firma")]
+        public string? Firma { get; set; } = firma;
+
         /// <summary>
         /// Skutečné objekty studentů, dopojené po načtení ze souboru
         /// podle KodyStudentu. Není serializováno přímo.
@@ -71,9 +74,9 @@ namespace SpravaSkoleni.Data.Entity
         /// nutnosti zadávat kódy přímo).
         /// </summary>
         public Skoleni(string nazev, string popis, DateTime pocatecniDatum, DateTime koncoveDatum,
-            int doporucenyPocetUcastniku)
+            int doporucenyPocetUcastniku, string firma)
             : this(nazev, popis, pocatecniDatum, koncoveDatum, [], [], 
-                  [], doporucenyPocetUcastniku, false)
+                  [], doporucenyPocetUcastniku, false, firma)
         {
         }
     }
