@@ -3,7 +3,6 @@ using SelectHelper;
 using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Vypisy;
-using SpravaSkoleni.Zaloha;
 using TextHelper;
 
 namespace SpravaSkoleni.Menu
