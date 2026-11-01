@@ -146,7 +146,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 ## Plánované funkce
 
-- **B2B datový model & Multi-tenancy** – podpora atributu `Firma` u entit i školení pro plné pokrytí externích zakázek, samoobslužného sdíleného přístupu i interního nasazení (např. Temelín/DVI scénář).
 - **Vícevláknová architektura a hardwarová integrace** – implementace asynchronního zpracování dat (multithreading) a zajištění přímé zabezpečené komunikace s externími periferiemi (tiskárny prezenčních listin, USB zálohovací disky).
 - **Subsystem Fúze (ZOO)** – kompletní integrace modulu Správy školení jako autonomního subsystému do hlavní enterprise aplikace ZOO (https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2). Stejně jako ponechání modulu správy školení jako samostatné plně funkční aplikace.
 - **GUI (WPF)**
@@ -178,3 +177,7 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 **v1.5.0** – Architektura povýšena na B2B All-in-One standard rozdělením kmenových dat do tří samostatných složek (`Skoleni`, `Lektori`, `Studenti`). Implementováno autonomní crash-safe ukládání dat přes `.tmp` soubory, tiché automatické zálohování po každém zápisu disku a 5letá instanční roční archivace s defenzivním přeskočením. Odstraněn vývojářský balast v podobě ladicích výpisů z byznysové logiky i hlavního menu a plně optimalizován startovací proces aplikace v `Program.cs`.
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.5.0)
+
+**v1.6.0** – Zavedení B2B Multi-tenancy – Architektura aplikace byla rozšířena o podporu parametru Firma u zaměstnanců i školení, což umožňuje kompletní izolaci dat různých firemních zákazníků. Ochrana proti překlepům – Zadávání firmy je plně defenzivní a automaticky se formátuje přes TitleCase (např. dvi -> Dvi), což zajišťuje konzistenci dat. Podpora externích kurzů – Logika dopojování referencí, hodnocení a hlídání časových překryvů nově identifikuje studenty pomocí neprůstřelné dvojice Firma + Kód, zatímco lektoři zůstávají flexibilně interní. Doplnění Firmy studenta do prezenční listiny jako další kolonka. 
+Dokončení striktního oddělení studentů od lektorů v namespace Vypisy, kde přišlo k vytvoření třídy StudentiVypisy, kam se přesunul kód pro výpisy studentů a přejmenování třídy ZamestnanciVypisy na LektoriVypisy. V této přejmenované třídě zůstal pouze kód pro výpisy lektorů.
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.6.0)
