@@ -9,7 +9,7 @@ namespace SpravaSkoleni.Menu
 {
     public static class HlavniMenu
     {
-        public static void SpustitAplikaci()
+        public static async Task SpustitAplikaciAsync()
         {
             VypisyDoKonzole.VypisHlavickuMenu("PŘIHLÁŠENÍ DO SYSTÉMU");
         
@@ -31,9 +31,10 @@ namespace SpravaSkoleni.Menu
         
             // Vytvoří správce pro konkrétního tenanta a spustí stávající menu
             SpravceSkoleni spravceSkoleni = new(vybranaFirma);
-            ZobrazVyberMenu(spravceSkoleni);
+            await spravceSkoleni.InicializovatAsync();
+            await ZobrazVyberMenuAsync(spravceSkoleni);
         }
-        public static void ZobrazVyberMenu(SpravceSkoleni spravceSkoleni)
+        public static async Task ZobrazVyberMenuAsync(SpravceSkoleni spravceSkoleni)
         {
             char volba;
             do
@@ -57,7 +58,7 @@ namespace SpravaSkoleni.Menu
                 {
                     case '1': 
                         // UI řeší zadání od uživatele a předá hotová data správci
-                        SkoleniVypisy.VytvoritNoveSkoleni(spravceSkoleni); 
+                        await SkoleniVypisy.VytvoritNoveSkoleniAsync(spravceSkoleni); 
                         break;
     
                     case '2':
@@ -98,23 +99,23 @@ namespace SpravaSkoleni.Menu
                                     switch (volbaDetailSkoleni)
                                     {
                                         case '1':                                    
-                                            SkoleniVypisy.PrihlasitStudenta(spravceSkoleni, vybraneSkoleni);
+                                            await SkoleniVypisy.PrihlasitStudentaAsync(spravceSkoleni, vybraneSkoleni);
                                             break;
     
                                         case '2':                                    
-                                            SkoleniVypisy.OdhlasitStudenta(spravceSkoleni, vybraneSkoleni);
+                                            await SkoleniVypisy.OdhlasitStudentaAsync(spravceSkoleni, vybraneSkoleni);
                                             break;
     
                                         case '3':                                    
-                                            SkoleniVypisy.PriraditLektora(spravceSkoleni, vybraneSkoleni);
+                                            await SkoleniVypisy.PriraditLektoraAsync(spravceSkoleni, vybraneSkoleni);
                                             break;
     
                                         case '4':                                    
-                                            SkoleniVypisy.OdebratLektora(spravceSkoleni, vybraneSkoleni);
+                                            await SkoleniVypisy.OdebratLektoraAsync(spravceSkoleni, vybraneSkoleni);
                                             break;
     
                                         case '5':                                    
-                                            SkoleniVypisy.UzavritSkoleni(spravceSkoleni, vybraneSkoleni);
+                                            await SkoleniVypisy.UzavritSkoleniAsync(spravceSkoleni, vybraneSkoleni);
                                             break;
     
                                         case 'n':
@@ -140,7 +141,7 @@ namespace SpravaSkoleni.Menu
                             try
                             {
                                 // Voláme čistou metodu (nyní void)
-                                SpravceExportu.ExportujPrezencniListinu(vybraneSkoleniKExportu);
+                                await SpravceExportu.ExportujPrezencniListinuAsync(vybraneSkoleniKExportu);
                                 
                                 // UI vrstva vypíše úspěch
                                 VypisyDoKonzole.VypisUspech("! Prezenční listina byla úspěšně vyexportována do složky Exporty !");
