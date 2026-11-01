@@ -1,6 +1,5 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using System.Text;
-using BarevneVypisyHelper;
 
 namespace SpravaSkoleni.Logika
 {
@@ -57,8 +56,8 @@ namespace SpravaSkoleni.Logika
             }
             catch (Exception ex)
             {                
-                VypisyDoKonzole.VypisVarovani($"Chyba při exportu: {ex.Message}");                
-                return false;
+                // Logika pouze předá informaci dál a neznečišťuje se konzolí
+                throw new IOException($"Chyba při zápisu exportu na disk: {ex.Message}", ex);                
             }
         }
     }
