@@ -30,7 +30,7 @@ namespace SpravaSkoleni.Menu
             );
         
             // Vytvoří správce pro konkrétního tenanta a spustí stávající menu
-            SpravceSkoleni spravceSkoleni = new SpravceSkoleni(vybranaFirma);
+            SpravceSkoleni spravceSkoleni = new(vybranaFirma);
             ZobrazVyberMenu(spravceSkoleni);
         }
         public static void ZobrazVyberMenu(SpravceSkoleni spravceSkoleni)
