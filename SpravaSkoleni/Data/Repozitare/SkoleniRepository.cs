@@ -1,5 +1,4 @@
-﻿using BarevneVypisyHelper;
-using SpravaSkoleni.Data.Entity;
+﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Zaloha;
 using System.Text.Json;
 
@@ -19,7 +18,8 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
         WriteIndented = true 
     };
 
-    public List<Skoleni> Nacist()
+    // Změna: Návratový typ je Task<List<Skoleni>> a přidán modifikátor async
+    public async Task<List<Skoleni>> NacistAsync()
     {
         // Pokud chybí hlavní soubor, zkusíme tichou obnovu ze zálohy
         string cestaKZaloze = Path.Combine("Zalohy", $"skoleni_{_aktualniFirma}.bak.json");
@@ -33,15 +33,16 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
             catch { /* Defenzivní skip */ }
         }
 
-        if (!File.Exists(_cestaKSouboru)) return [];
+        if (!File.Exists(_cestaKSouboru)) 
+            return [];
 
         try
         {
-            string json = File.ReadAllText(_cestaKSouboru);
+            // Asynchronní čtení z disku uvolní vlákno po dobu I/O operace
+            string json = await File.ReadAllTextAsync(_cestaKSouboru);
             var vsechnaSkoleniZDisku = JsonSerializer.Deserialize<List<Skoleni>>(json) ?? [];
 
             // --- MULTI-TENANCY FILTR ---
-            // Z celého sdíleného souboru vrátíme pouze školení patřící aktuální firmě
             return [.. vsechnaSkoleniZDisku.Where(s => s.Firma.Equals(_aktualniFirma, StringComparison.OrdinalIgnoreCase))];
         }
         catch
@@ -50,18 +51,19 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
         }
     }
 
-    public void Ulozit(List<Skoleni> seznamSkoleni)
+    // Změna: Metoda vrací Task (odpovídá asynchronnímu void) a je označená jako async
+    public async Task UlozitAsync(List<Skoleni> seznamSkoleni)
     {
-        // Auto-generování složky na disku (All-in-One princip)
+        // Auto-generování složky na disku
         Directory.CreateDirectory(_slozkaSkoleni);
 
-        // 1. Načteme surový stav z disku, abychom nesmazali školení OSTATNÍCH firem
+        // 1. Načteme surový stav z disku asynchronně, abychom nesmazali školení OSTATNÍCH firem
         List<Skoleni> vsechnaSkoleniProZapis = [];
         if (File.Exists(_cestaKSouboru))
         {
             try
             {
-                string staryJson = File.ReadAllText(_cestaKSouboru);
+                string staryJson = await File.ReadAllTextAsync(_cestaKSouboru);
                 vsechnaSkoleniProZapis = JsonSerializer.Deserialize<List<Skoleni>>(staryJson) ?? [];
             }
             catch { /* Pokud nelze načíst, začneme s prázdným seznamem */ }
@@ -80,12 +82,12 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
         // 4. Serializujeme kompletní sloučený seznam
         string json = JsonSerializer.Serialize(vsechnaSkoleniProZapis, JsonOptions);
 
-        // Neprůstřelný crash-safe zápis přes dočasný soubor
+        // Neprůstřelný crash-safe zápis přes dočasný soubor (plně asynchronně)
         string docasnySoubor = _cestaKSouboru + ".tmp";
-        File.WriteAllText(docasnySoubor, json);
+        await File.WriteAllTextAsync(docasnySoubor, json);
         File.Move(docasnySoubor, _cestaKSouboru, overwrite: true);
 
-        // Automatická tichá záloha na pozadí (Zůstává beze změny vaše volání externí služby)
+        // Automatická tichá záloha na pozadí (Zatím necháváme synchronní volání)
         ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaKSouboru, _aktualniFirma);
     }
 }
