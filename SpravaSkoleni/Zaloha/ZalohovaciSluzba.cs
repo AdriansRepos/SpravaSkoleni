@@ -10,7 +10,7 @@ namespace SpravaSkoleni.Zaloha
         /// Provede tichou automatickou zálohu po každém úspěšném uložení dat.
         /// Uživatel je od tohoto procesu zcela odstíněn.
         /// </summary>
-        public static void ProvedAutomatickouZalohu(string cestaKSouboru)
+        public static void ProvedAutomatickouZalohu(string cestaKSouboru, string aktualniFirma)
         {
             try
             {
@@ -20,9 +20,11 @@ namespace SpravaSkoleni.Zaloha
                     Directory.CreateDirectory(SlozkaAutomatickychZaloh);
                 }
 
-                string nazevSouboru = Path.GetFileName(cestaKSouboru);
-                // Vytvoříme záložní soubor s příponou .bak.json ve složce Zalohy/
-                string cilovaCesta = Path.Combine(SlozkaAutomatickychZaloh, nazevSouboru.Replace(".json", ".bak.json"));
+                string nazevSouboru = Path.GetFileNameWithoutExtension(cestaKSouboru); // např. "skoleni"
+                // Vytvoříme unikátní název zálohy pro danou firmu, např. "skoleni_SkodaAuto.bak.json"
+                string cilovaCesta = Path.Combine(SlozkaAutomatickychZaloh, $"{nazevSouboru}_{aktualniFirma}.bak.json");
+
+                File.Copy(cestaKSouboru, cilovaCesta, overwrite: true);
 
                 // Provede se rychlá, tichá záloha na disku
                 File.Copy(cestaKSouboru, cilovaCesta, overwrite: true);
