@@ -4,4 +4,4 @@ using SpravaSkoleni.Zaloha;
 
 // Automatický tichý check roční uzávěrky a čistky retenčních souborů na pozadí
 ArchivacniSluzba.ZkontrolujRocniArchivaci();
-HlavniMenu.SpustitAplikaci();
+await HlavniMenu.SpustitAplikaciAsync();
