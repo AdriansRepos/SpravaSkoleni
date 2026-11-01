@@ -1,6 +1,5 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Data.Repozitare;
-using BarevneVypisyHelper;
 
 namespace SpravaSkoleni.Logika;
 
