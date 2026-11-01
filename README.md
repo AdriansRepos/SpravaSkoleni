@@ -161,7 +161,6 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 ## Plánované funkce
 
-- **Vícevláknová architektura a hardwarová integrace** – implementace asynchronního zpracování dat (multithreading) a zajištění přímé zabezpečené komunikace s externími periferiemi (tiskárny prezenčních listin, USB zálohovací disky).
 - **Subsystem Fúze (ZOO)** – kompletní integrace modulu Správy školení jako autonomního subsystému do hlavní enterprise aplikace ZOO (https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2). Stejně jako ponechání modulu správy školení jako samostatné plně funkční aplikace.
 - **GUI (WPF)**
 
