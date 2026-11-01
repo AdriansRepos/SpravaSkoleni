@@ -5,7 +5,7 @@ namespace SpravaSkoleni.Logika
 {
     public static class SpravceExportu
     {
-        public static bool ExportujPrezencniListinu(Skoleni skoleni, string slozkaProExport = "Exporty")
+        public static async Task ExportujPrezencniListinuAsync(Skoleni skoleni, string slozkaProExport = "Exporty")
         {
             try
             {
@@ -51,8 +51,7 @@ namespace SpravaSkoleni.Logika
                 }
                 sb.AppendLine("========================================");
 
-                File.WriteAllText(cestaKSouboru, sb.ToString(), Encoding.UTF8);
-                return true;
+                await File.WriteAllTextAsync(cestaKSouboru, sb.ToString(), Encoding.UTF8);                
             }
             catch (Exception ex)
             {                
