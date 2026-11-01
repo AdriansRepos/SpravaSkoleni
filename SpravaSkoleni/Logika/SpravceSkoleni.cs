@@ -6,17 +6,31 @@ namespace SpravaSkoleni.Logika;
 
 public class SpravceSkoleni
 {
-    private readonly SkoleniRepository _skoleniRepo = new();
+    // 1. Změna: Repozitář se inicializuje až v konstruktoru s předáním firmy
+    private readonly SkoleniRepository _skoleniRepo;
     private readonly StudentiRepository _studentiRepo = new();
     private readonly LektoriRepository _lektoriRepo = new();
+
+    // Kontext aktuální firmy pro celou instanci manažera
+    private readonly string _aktualniFirma;
 
     public List<Lektor> Lektori { get; set; } = [];
     public List<Student> Studenti { get; set; } = [];
     public List<Skoleni> SeznamSkoleni { get; set; } = [];
 
-    // Konstruktor, který automaticky zajistí načtení dat a dopojení vazeb při startu aplikace
-    public SpravceSkoleni()
+    // 2. Změna: Konstruktor nově vyžaduje předání názvu firmy (Tenant)
+    public SpravceSkoleni(string aktualniFirma)
     {
+        if (string.IsNullOrWhiteSpace(aktualniFirma))
+        {
+            throw new ArgumentException("Manažer školení musí být spuštěn s platným názvem firmy.", nameof(aktualniFirma));
+        }
+
+        _aktualniFirma = aktualniFirma;
+        
+        // Inicializace repozitáře s předáním vybrané firmy
+        _skoleniRepo = new SkoleniRepository(_aktualniFirma);
+
         NacistVsechnaData();
     }
 
@@ -47,8 +61,8 @@ public class SpravceSkoleni
             // 1. Dopojení studentů: Studenti patří pod firmu, pro kterou se školení pořádá
             foreach (var kod in skoleni.KodyStudentu)
             {
-                // Oprava: Firma se musí získat z objektu školení, ne z proměnné student
-                var student = NajdiStudentaPodleKoduAFirmy(kod, skoleni.Firma ?? string.Empty);
+                // Využívá bezpečně buď firmu z objektu školení nebo kmenový kontext
+                var student = NajdiStudentaPodleKoduAFirmy(kod, skoleni.Firma ?? _aktualniFirma);
                 if (student != null)
                 {
                     skoleni.Studenti.Add(student);
@@ -70,7 +84,7 @@ public class SpravceSkoleni
             // čímž okamžitě zmizí chyba s neplatným klíčem v Dictionary.
             foreach (var kvp in skoleni.Hodnoceni)
             {
-                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, skoleni.Firma ?? string.Empty);
+                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, skoleni.Firma ?? _aktualniFirma);
                 if (student != null)
                 {
                     skoleni.HodnoceniStudentu[student] = kvp.Value;
@@ -95,6 +109,9 @@ public class SpravceSkoleni
             VypisyDoKonzole.VypisVarovani("Kritická chyba: Objekt školení má neplatná data!");                
             return false; 
         }
+        
+        // 3. Změna: Při ručním vytvoření nového školení natvrdo vynutíme firmu z kontextu manažera
+        noveSkoleni.Firma = _aktualniFirma;
     
         SeznamSkoleni.Add(noveSkoleni);
         UlozitSkoleni();
@@ -245,20 +262,18 @@ public class SpravceSkoleni
             yield return (lektor, historie);
         }
     }
-    
     private bool MaLektorPrekryv(Lektor lektor, DateTime start, DateTime konec)
     {
-        return SeznamSkoleni.Any(s => 
-            s.Lektori.Any(l => l.Kod == lektor.Kod && l.Firma == lektor.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
-            start < s.KoncoveDatum && 
-            konec > s.PocatecniDatum);
+        return SeznamSkoleni.Any(s =>
+        s.Lektori.Any(l => l.Kod == lektor.Kod && l.Firma == lektor.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
+        start < s.KoncoveDatum &&
+        konec > s.PocatecniDatum);
     }
-    
     private bool MaStudentPrekryv(Student student, DateTime start, DateTime konec)
     {
-        return SeznamSkoleni.Any(s => 
-            s.Studenti.Any(st => st.Kod == student.Kod && st.Firma == student.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
-            start < s.KoncoveDatum && 
-            konec > s.PocatecniDatum);
-    }        
+        return SeznamSkoleni.Any(s =>
+        s.Studenti.Any(st => st.Kod == student.Kod && st.Firma == student.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
+        start < s.KoncoveDatum &&
+        konec > s.PocatecniDatum);
+    }
 }
