@@ -49,7 +49,7 @@ namespace SpravaSkoleni.Vypisy
             }
         
             // Teprve až projdeme kontrolou, vytvoříme bezpečný objekt
-            Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku);
+            Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku, "");
             spravce.PridatSkoleni(noveSkoleni);
         
             VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
