@@ -106,8 +106,7 @@ public class SpravceSkoleni
     {
         if (noveSkoleni.KoncoveDatum < noveSkoleni.PocatecniDatum)
         {                
-            VypisyDoKonzole.VypisVarovani("Kritická chyba: Objekt školení má neplatná data!");                
-            return false; 
+            throw new ArgumentException("Kritická chyba: Objekt školení má neplatná data! Koncové datum nemůže být dříve než počáteční."); 
         }
         
         // 3. Změna: Při ručním vytvoření nového školení natvrdo vynutíme firmu z kontextu manažera
@@ -136,15 +135,14 @@ public class SpravceSkoleni
     {
         if (skoleni.Studenti.Count >= skoleni.DoporucenyPocetUcastniku)
         {
-            VypisyDoKonzole.VypisVarovani("[BLOKACE] Kapacita školení je plná!");                
-            return false;
+            throw new InvalidOperationException("Kapacita školení je plná!");
         }
 
         // B2B ÚPRAVA: Překryv se kontroluje napříč všemi kurzy, kde student figuruje
         if (MaStudentPrekryv(student, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
-            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Student {student.Kod} ({student.Firma}) {student.Prijmeni} {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");                
-            return false;
+            throw new InvalidOperationException($"Student {student.Kod} ({student.Firma}) {student.Prijmeni} {student.Jmeno} " +
+                $"už v tomto termínu navštěvuje jiné školení!");
         }
 
         if (!skoleni.Studenti.Contains(student))
@@ -169,8 +167,7 @@ public class SpravceSkoleni
     {
         if (MaLektorPrekryv(lektor, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
-            VypisyDoKonzole.VypisVarovani($"[BLOKACE] Lektor {lektor.Kod} ({lektor.Firma}) {lektor.Prijmeni} {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");                
-            return false;
+            throw new InvalidOperationException($"Lektor {lektor.Kod} {lektor.Prijmeni} {lektor.Jmeno} už v tomto termínu vyučuje jiné školení!");
         }
 
         if (!skoleni.Lektori.Contains(lektor))
