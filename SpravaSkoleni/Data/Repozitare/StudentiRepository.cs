@@ -1,5 +1,4 @@
-﻿using BarevneVypisyHelper;
-using SpravaSkoleni.Data.Entity;
+﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Zaloha;
 using System.Text.Json;
 
@@ -18,7 +17,8 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
     // Pomocný datový záznam pro čisté ukládání (DTO)
     private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, string Firma, bool JeLektorem);
 
-    public List<Student> NacistVsechny()
+    // Změna: Metoda je async a vrací Task<List<Student>>
+    public async Task<List<Student>> NacistVsechnyAsync()
     {        
         var studenti = new List<Student>();
                 
@@ -41,7 +41,8 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
         {
             try
             {
-                string json = File.ReadAllText(_cestaStudenti);
+                // Asynchronní čtení souboru
+                string json = await File.ReadAllTextAsync(_cestaStudenti);
                 var zaznamy = JsonSerializer.Deserialize<List<ZamestnanecZaznam>>(json) ?? [];
                 foreach (var z in zaznamy)
                     studenti.Add(new Student(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice, z.Firma));
@@ -54,7 +55,8 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
         return (studenti);
     }
 
-    public void Ulozit(List<Student> studenti)
+    // Změna: Metoda je async a vrací Task
+    public async Task UlozitAsync(List<Student> studenti)
     {
         // Auto-generování složek (All-in-One pojistka)        
         Directory.CreateDirectory(_slozkaStudenti);
@@ -66,7 +68,9 @@ public class StudentiRepository(string slozkaStudenti = "Studenti")
 
         string jsonStudenti = JsonSerializer.Serialize(zaznamyStudentu, JsonOptions);
         string tmpStudenti = _cestaStudenti + ".tmp";
-        File.WriteAllText(tmpStudenti, jsonStudenti);
+        
+        // Asynchronní zápis souboru
+        await File.WriteAllTextAsync(tmpStudenti, jsonStudenti);
         File.Move(tmpStudenti, _cestaStudenti, overwrite: true);
         ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaStudenti);
     }
