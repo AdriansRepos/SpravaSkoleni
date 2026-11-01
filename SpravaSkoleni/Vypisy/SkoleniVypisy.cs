@@ -50,7 +50,15 @@ namespace SpravaSkoleni.Vypisy
         
             // Teprve až projdeme kontrolou, vytvoříme bezpečný objekt
             Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku, "");
-            spravce.PridatSkoleni(noveSkoleni);
+            try
+            {
+                spravce.PridatSkoleni(noveSkoleni);
+                VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
+            }
+            catch (ArgumentException ex)
+            {
+                VypisyDoKonzole.VypisVarovani(ex.Message);
+            }
         
             VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
         }
@@ -110,8 +118,16 @@ namespace SpravaSkoleni.Vypisy
 
             if (vybranyStudent != null)
             {
-                spravce.PrihlasStudenta(skoleni, vybranyStudent);
-                VypisyDoKonzole.VypisUspech("! Student byl úspěšně přihlášen na školení !");
+                try
+                {
+                    spravce.PrihlasStudenta(skoleni, vybranyStudent);
+                    VypisyDoKonzole.VypisUspech("! Student byl úspěšně přihlášen na školení !");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // Chytáme byznys chybu z logiky a barevně ji vypisujeme v UI vrstvě
+                    VypisyDoKonzole.VypisVarovani($"[BLOKACE] {ex.Message}");
+                }
             }
         }
 
@@ -142,8 +158,15 @@ namespace SpravaSkoleni.Vypisy
 
             if (vybranyLektor != null)
             {
-                spravce.PriradLektora(skoleni, vybranyLektor);
-                VypisyDoKonzole.VypisUspech("! Lektor byl úspěšně přiřazen na školení !");
+                try
+                {
+                    spravce.PriradLektora(skoleni, vybranyLektor);
+                    VypisyDoKonzole.VypisUspech("! Lektor byl úspěšně přiřazen na školení !");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    VypisyDoKonzole.VypisVarovani($"[BLOKACE] {ex.Message}");
+                }
             }
         }
 
