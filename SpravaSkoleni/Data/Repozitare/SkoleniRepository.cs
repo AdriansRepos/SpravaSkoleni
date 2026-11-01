@@ -86,6 +86,6 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
         File.Move(docasnySoubor, _cestaKSouboru, overwrite: true);
 
         // Automatická tichá záloha na pozadí (Zůstává beze změny vaše volání externí služby)
-        ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaKSouboru);
+        ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaKSouboru, _aktualniFirma);
     }
 }
