@@ -8,7 +8,7 @@ namespace SpravaSkoleni.Vypisy
 {
     public static class SkoleniVypisy
     {
-        public static void VytvoritNoveSkoleni(SpravceSkoleni spravce)
+        public static async Task VytvoritNoveSkoleniAsync(SpravceSkoleni spravce)
         {
             Console.WriteLine("\n*** Vytvoření nového školení ***\n");
             Console.Write("Název: ");
@@ -52,15 +52,13 @@ namespace SpravaSkoleni.Vypisy
             Skoleni noveSkoleni = new(nazev, popis, pocatecniDatum, koncoveDatum, doporucenyPocetUcastniku, "");
             try
             {
-                spravce.PridatSkoleni(noveSkoleni);
+                await spravce.PridatSkoleniAsync(noveSkoleni);
                 VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
             }
             catch (ArgumentException ex)
             {
                 VypisyDoKonzole.VypisVarovani(ex.Message);
-            }
-        
-            VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně vytvořeno !");
+            }            
         }
 
         public static Skoleni? VybratSkoleni(SpravceSkoleni spravce)
@@ -106,7 +104,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static void PrihlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task PrihlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
         {
             var neprihlaseniStudenti = spravce.ZiskejNeprihlaseneStudenty(skoleni);
 
@@ -120,7 +118,7 @@ namespace SpravaSkoleni.Vypisy
             {
                 try
                 {
-                    spravce.PrihlasStudenta(skoleni, vybranyStudent);
+                    await spravce.PrihlasStudentaAsync(skoleni, vybranyStudent);
                     VypisyDoKonzole.VypisUspech("! Student byl úspěšně přihlášen na školení !");
                 }
                 catch (InvalidOperationException ex)
@@ -131,7 +129,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static void OdhlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task OdhlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Odhlášení studenta ze školení ***");
             Student? vybranyStudent = SelectHelp.VybratPolozku(
@@ -141,12 +139,12 @@ namespace SpravaSkoleni.Vypisy
 
             if (vybranyStudent != null)
             {
-                spravce.OdhlasStudenta(skoleni, vybranyStudent);
+                await spravce.OdhlasStudentaAsync(skoleni, vybranyStudent);
                 VypisyDoKonzole.VypisUspech("! Student byl úspěšně odhlášen ze školení !");
             }
         }
 
-        public static void PriraditLektora(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task PriraditLektora(SpravceSkoleni spravce, Skoleni skoleni)
         {
             var neprirazeniLektori = spravce.ZiskejNeprirazeneLektory(skoleni);
 
@@ -160,7 +158,7 @@ namespace SpravaSkoleni.Vypisy
             {
                 try
                 {
-                    spravce.PriradLektora(skoleni, vybranyLektor);
+                    await spravce.PriradLektoraAsync(skoleni, vybranyLektor);
                     VypisyDoKonzole.VypisUspech("! Lektor byl úspěšně přiřazen na školení !");
                 }
                 catch (InvalidOperationException ex)
@@ -170,7 +168,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static void OdebratLektora(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task OdebratLektora(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Odebrání lektora ze školení ***");
             Lektor? vybranyLektor = SelectHelp.VybratPolozku(
@@ -180,12 +178,12 @@ namespace SpravaSkoleni.Vypisy
 
             if (vybranyLektor != null)
             {
-                spravce.OdeberLektora(skoleni, vybranyLektor);
+                await spravce.OdeberLektoraAsync(skoleni, vybranyLektor);
                 VypisyDoKonzole.VypisUspech("! Lektor byl úspěšně odebrán ze školení !");
             }
         }
 
-        public static void UzavritSkoleni(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task UzavritSkoleni(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Uzavření školení ***");
             Console.WriteLine("Vyplňte hodnocení jednotlivých studentů");
@@ -202,7 +200,7 @@ namespace SpravaSkoleni.Vypisy
                 hodnoceni[student] = h;
             }
 
-            spravce.UzavritSkoleni(skoleni, hodnoceni);
+            await spravce.UzavritSkoleniAsync(skoleni, hodnoceni);
             VypisyDoKonzole.VypisUspech("! Školení bylo úspěšně uzavřeno !");
         }
     }
