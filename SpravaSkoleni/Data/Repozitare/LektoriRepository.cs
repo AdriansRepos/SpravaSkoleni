@@ -18,7 +18,8 @@ namespace SpravaSkoleni.Data.Repozitare
         // Pomocný datový záznam pro čisté ukládání (DTO)
         private record ZamestnanecZaznam(string Jmeno, string Prijmeni, string Kod, string PracovniPozice, bool JeLektorem);
 
-        public List<Lektor> NacistVsechny()
+        // Změna: Metoda je async a vrací Task<List<Lektor>>
+        public async Task<List<Lektor>> NacistVsechnyAsync()
         {
             var lektori = new List<Lektor>();
             
@@ -33,7 +34,6 @@ namespace SpravaSkoleni.Data.Repozitare
                 } 
                 catch 
                 {
-
                 }
             }
                         
@@ -42,7 +42,8 @@ namespace SpravaSkoleni.Data.Repozitare
             {
                 try
                 {
-                    string json = File.ReadAllText(_cestaLektori);
+                    // Asynchronní čtení souboru
+                    string json = await File.ReadAllTextAsync(_cestaLektori);
                     var zaznamy = JsonSerializer.Deserialize<List<ZamestnanecZaznam>>(json) ?? [];
                     foreach (var z in zaznamy)
                         lektori.Add(new Lektor(z.Jmeno, z.Prijmeni, z.Kod, z.PracovniPozice));
@@ -54,7 +55,8 @@ namespace SpravaSkoleni.Data.Repozitare
             return (lektori);
         }
 
-        public void Ulozit(List<Lektor> lektori)
+        // Změna: Metoda je async a vrací Task
+        public async Task UlozitAsync(List<Lektor> lektori)
         {
             // Auto-generování složek (All-in-One pojistka)
             Directory.CreateDirectory(_slozkaLektori);
@@ -66,7 +68,9 @@ namespace SpravaSkoleni.Data.Repozitare
             
             string jsonLektori = JsonSerializer.Serialize(zaznamyLektoru, JsonOptions);
             string tmpLektori = _cestaLektori + ".tmp";
-            File.WriteAllText(tmpLektori, jsonLektori);
+            
+            // Asynchronní zápis souboru
+            await File.WriteAllTextAsync(tmpLektori, jsonLektori);
             File.Move(tmpLektori, _cestaLektori, overwrite: true);
             ZalohovaciSluzba.ProvedAutomatickouZalohu(_cestaLektori);            
         }
