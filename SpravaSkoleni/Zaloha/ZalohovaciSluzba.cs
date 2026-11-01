@@ -34,5 +34,25 @@ namespace SpravaSkoleni.Zaloha
                 // Tichá ignorance, aby případný I/O zámek disku neshodil běžící aplikaci
             }
         }
+
+        public static void ProvedAutomatickouZalohu(string cestaKSouboru)
+        {
+            try
+            {
+                if (!Directory.Exists(SlozkaAutomatickychZaloh))
+                {
+                    Directory.CreateDirectory(SlozkaAutomatickychZaloh);
+                }
+        
+                string nazevSouboru = Path.GetFileName(cestaKSouboru); // např. "lektori.json"
+                string cilovaCesta = Path.Combine(SlozkaAutomatickychZaloh, nazevSouboru.Replace(".json", ".bak.json"));
+        
+                File.Copy(cestaKSouboru, cilovaCesta, overwrite: true);
+            }
+            catch (Exception)
+            {
+                // Tichá ignorance
+            }
+        }
     }
 }
