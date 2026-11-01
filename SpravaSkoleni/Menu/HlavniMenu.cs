@@ -9,6 +9,30 @@ namespace SpravaSkoleni.Menu
 {
     public static class HlavniMenu
     {
+        public static void SpustitAplikaci()
+        {
+            VypisyDoKonzole.VypisHlavickuMenu("PŘIHLÁŠENÍ DO SYSTÉMU");
+        
+            // Využití vašeho TextHelperu pro bezpečné načtení textu z konzole
+            string vybranaFirma = UpravaVstupu.ZeptejSeAUprav(
+                aktualni: "", 
+                popis: "název vaší firmy (Tenant)", 
+                formatter: v => v, 
+                parser: s => 
+                {
+                    if (string.IsNullOrWhiteSpace(s))
+                    {
+                        throw new ArgumentException("Název firmy nesmí být prázdný!");
+                    }
+                    return s.Trim();
+                }, 
+                jeNove: true
+            );
+        
+            // Vytvoří správce pro konkrétního tenanta a spustí stávající menu
+            SpravceSkoleni spravceSkoleni = new SpravceSkoleni(vybranaFirma);
+            ZobrazVyberMenu(spravceSkoleni);
+        }
         public static void ZobrazVyberMenu(SpravceSkoleni spravceSkoleni)
         {
             char volba;
