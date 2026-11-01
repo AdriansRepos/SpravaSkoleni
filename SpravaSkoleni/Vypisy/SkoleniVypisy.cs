@@ -104,7 +104,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static async Task PrihlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task PrihlasitStudentaAsync(SpravceSkoleni spravce, Skoleni skoleni)
         {
             var neprihlaseniStudenti = spravce.ZiskejNeprihlaseneStudenty(skoleni);
 
@@ -129,7 +129,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static async Task OdhlasitStudenta(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task OdhlasitStudentaAsync(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Odhlášení studenta ze školení ***");
             Student? vybranyStudent = SelectHelp.VybratPolozku(
@@ -144,7 +144,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static async Task PriraditLektora(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task PriraditLektoraAsync(SpravceSkoleni spravce, Skoleni skoleni)
         {
             var neprirazeniLektori = spravce.ZiskejNeprirazeneLektory(skoleni);
 
@@ -168,7 +168,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static async Task OdebratLektora(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task OdebratLektoraAsync(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Odebrání lektora ze školení ***");
             Lektor? vybranyLektor = SelectHelp.VybratPolozku(
@@ -183,7 +183,7 @@ namespace SpravaSkoleni.Vypisy
             }
         }
 
-        public static async Task UzavritSkoleni(SpravceSkoleni spravce, Skoleni skoleni)
+        public static async Task UzavritSkoleniAsync(SpravceSkoleni spravce, Skoleni skoleni)
         {
             Console.WriteLine("*** Uzavření školení ***");
             Console.WriteLine("Vyplňte hodnocení jednotlivých studentů");
