@@ -25,23 +25,30 @@ public class SpravceSkoleni
             throw new ArgumentException("Manažer školení musí být spuštěn s platným názvem firmy.", nameof(aktualniFirma));
         }
 
-        _aktualniFirma = aktualniFirma;
-        
+        _aktualniFirma = aktualniFirma;        
         // Inicializace repozitáře s předáním vybrané firmy
-        _skoleniRepo = new SkoleniRepository(_aktualniFirma);
-
-        NacistVsechnaData();
+        _skoleniRepo = new SkoleniRepository(_aktualniFirma);       
     }
 
-    public void UlozitStudenta() => _studentiRepo.Ulozit(Studenti);
-    public void UlozitLektora() => _lektoriRepo.Ulozit(Lektori);
-    public void UlozitSkoleni() => _skoleniRepo.Ulozit(SeznamSkoleni);
-    
-    public void NacistVsechnaData()
+     /// <summary>
+    /// Bezpečný asynchronní vstupní bod pro načtení vnitřního stavu manažera z disku.
+    /// </summary>
+    public async Task InicializovatAsync()
     {
-        Lektori = _lektoriRepo.NacistVsechny();
-        Studenti = _studentiRepo.NacistVsechny();
-        SeznamSkoleni = _skoleniRepo.Nacist();
+        await NacistVsechnaDataAsync();
+    }
+
+    // Přepis synchronních metod na asynchronní Task řetězec
+    public async Task UlozitStudentaAsync() => await _studentiRepo.UlozitAsync(Studenti);
+    public async Task UlozitLektoraAsync() => await _lektoriRepo.UlozitAsync(Lektori);
+    public async Task UlozitSkoleniAsync() => await _skoleniRepo.UlozitAsync(SeznamSkoleni);
+    
+    public async Task NacistVsechnaDataAsync()
+    {
+        // Spustíme asynchronní I/O dotazy do repozitářů
+        Lektori = await _lektoriRepo.NacistVsechnyAsync();
+        Studenti = await _studentiRepo.NacistVsechnyAsync();
+        SeznamSkoleni = await _skoleniRepo.NacistAsync();
         
         DopojReference(); 
     }
@@ -101,18 +108,17 @@ public class SpravceSkoleni
         => Lektori.FirstOrDefault(lektor => lektor.Kod == kod);
 
 
-    public bool PridatSkoleni(Skoleni noveSkoleni)
+    public async Task<bool> PridatSkoleniAsync(Skoleni noveSkoleni)
     {
         if (noveSkoleni.KoncoveDatum < noveSkoleni.PocatecniDatum)
         {                
             throw new ArgumentException("Kritická chyba: Objekt školení má neplatná data! Koncové datum nemůže být dříve než počáteční."); 
         }
         
-        // 3. Změna: Při ručním vytvoření nového školení natvrdo vynutíme firmu z kontextu manažera
         noveSkoleni.Firma = _aktualniFirma;
     
         SeznamSkoleni.Add(noveSkoleni);
-        UlozitSkoleni();
+        await UlozitSkoleniAsync(); // Čekáme na asynchronní zápis
         return true; 
     }
 
@@ -130,39 +136,37 @@ public class SpravceSkoleni
     public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
         => [.. Lektori.Where(lektor => !skoleni.Lektori.Contains(lektor))];
 
-    public bool PrihlasStudenta(Skoleni skoleni, Student student)
+    public async Task<bool> PrihlasStudentaAsync(Skoleni skoleni, Student student)
     {
         if (skoleni.Studenti.Count >= skoleni.DoporucenyPocetUcastniku)
         {
             throw new InvalidOperationException("Kapacita školení je plná!");
         }
 
-        // B2B ÚPRAVA: Překryv se kontroluje napříč všemi kurzy, kde student figuruje
         if (MaStudentPrekryv(student, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
-            throw new InvalidOperationException($"Student {student.Kod} ({student.Firma}) {student.Prijmeni} {student.Jmeno} " +
-                $"už v tomto termínu navštěvuje jiné školení!");
+            throw new InvalidOperationException($"Student {student.Kod} ({student.Firma}) {student.Prijmeni} {student.Jmeno} už v tomto termínu navštěvuje jiné školení!");
         }
 
         if (!skoleni.Studenti.Contains(student))
         {
             skoleni.Studenti.Add(student);
-            skoleni.KodyStudentu.Add(student.Kod!); // Přidáno pro správnou synchronizaci s JSON kolekcí
-            UlozitSkoleni();
+            skoleni.KodyStudentu.Add(student.Kod!); 
+            await UlozitSkoleniAsync();
         }
         return true;
     }
 
-    public void OdhlasStudenta(Skoleni skoleni, Student student)
+     public async Task OdhlasStudentaAsync(Skoleni skoleni, Student student)
     {
         if (skoleni.Studenti.Remove(student))
         {
             skoleni.KodyStudentu.Remove(student.Kod!);
-            UlozitSkoleni();
+            await UlozitSkoleniAsync();
         }
     }
 
-    public bool PriradLektora(Skoleni skoleni, Lektor lektor)
+    public async Task<bool> PriradLektoraAsync(Skoleni skoleni, Lektor lektor)
     {
         if (MaLektorPrekryv(lektor, skoleni.PocatecniDatum, skoleni.KoncoveDatum))
         {                
@@ -172,22 +176,22 @@ public class SpravceSkoleni
         if (!skoleni.Lektori.Contains(lektor))
         {
             skoleni.Lektori.Add(lektor);
-            skoleni.KodyLektoru.Add(lektor.Kod!); // Přidáno pro správnou synchronizaci s JSON kolekcí
-            UlozitSkoleni();
+            skoleni.KodyLektoru.Add(lektor.Kod!); 
+            await UlozitSkoleniAsync();
         }
         return true;
     }
 
-    public void OdeberLektora(Skoleni skoleni, Lektor lektor)
+   public async Task OdeberLektoraAsync(Skoleni skoleni, Lektor lektor)
     {
         if (skoleni.Lektori.Remove(lektor))
         {
             skoleni.KodyLektoru.Remove(lektor.Kod!);
-            UlozitSkoleni();
+            await UlozitSkoleniAsync();
         }
     }
 
-    public void UzavritSkoleni(Skoleni skoleni, Dictionary<Student,int> hodnoceni)
+    public async Task UzavritSkoleniAsync(Skoleni skoleni, Dictionary<Student, int> hodnoceni)
     {
         foreach (var kvp in hodnoceni)
         {
@@ -195,7 +199,7 @@ public class SpravceSkoleni
             skoleni.Hodnoceni[kvp.Key.Kod!] = kvp.Value; 
         }
         skoleni.Uzavreno = true;
-        UlozitSkoleni();
+        await UlozitSkoleniAsync();
     }
             
     public IEnumerable<Skoleni> GetSkoleniPodleStavu(bool pouzeOtevrena)
