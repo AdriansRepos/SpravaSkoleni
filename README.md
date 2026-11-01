@@ -52,18 +52,6 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 - **Autonomní tichá záloha:** Automatické generování záložních souborů `.bak.json` do složky `Zalohy/` po každém úspěšném uložení, zcela odstíněné od zásahu uživatele.
 - **5letá instanční archivace:** Automatický check roční uzávěrky při startu aplikace. Zmražení loňských dat do složky `Archiv/` a automatické promazávání souborů starších než 5 let s využitím defenzivního přeskočení (skip) při systémovém zámku.
 
----
-
-## Datový model
-
-- **Zamestnanec** – abstraktní společný základ pro `Student` a `Lektor` (jméno a příjmení s automatickým převodem do TitleCase, kód, pracovní pozice)
-
-- **Student** – dědí ze `Zamestnanec`, eviduje seznam školení, kterých se účastní
-
-- **Lektor** – dědí ze `Zamestnanec`, eviduje seznam školení, která vyučuje
-
-- **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno. Do JSON se ukládají jen kódy studentů/lektorů, ne celé objekty; skutečné reference se dopojují po načtení.
-
 ### B2B Architektura & Multi-tenancy
 Aplikace využívá koncept sdílené databáze s logickou izolací dat (Shared Database, Isolated Data). Veškerá školení jsou v JSON souborech označena příslušným identifikátorem firmy (Tenant). Systém při inicializaci `SpravceSkoleni` filtruje data na úrovni repozitářů, čímž je zajištěno, že uživatelé vidí pouze kurzy patřící jejich organizaci.
 
@@ -78,6 +66,18 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 1. **Asynchronní I/O řetězec**: Veškerá komunikace s pevným diskem (čtení/zápis JSON dat a textových exportů) probíhá neblokujícím způsobem přes `async/await`. Během fyzického zápisu na disk se procesorové vlákno vrací do fondu (Thread Pool) a je připraveno reagovat na jiné akce.
 2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
 3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání.
+
+---
+
+## Datový model
+
+- **Zamestnanec** – abstraktní společný základ pro `Student` a `Lektor` (jméno a příjmení s automatickým převodem do TitleCase, kód, pracovní pozice)
+
+- **Student** – dědí ze `Zamestnanec`, eviduje seznam školení, kterých se účastní
+
+- **Lektor** – dědí ze `Zamestnanec`, eviduje seznam školení, která vyučuje
+
+- **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno. Do JSON se ukládají jen kódy studentů/lektorů, ne celé objekty; skutečné reference se dopojují po načtení.
 
 ---
 
