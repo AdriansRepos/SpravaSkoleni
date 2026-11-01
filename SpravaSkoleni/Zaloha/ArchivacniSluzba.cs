@@ -1,17 +1,18 @@
-﻿namespace SpravaSkoleni.Zaloha
+﻿
+namespace SpravaSkoleni.Zaloha
 {
     public class ArchivacniSluzba
     {
         private const string ArchivSlozka = "Archiv";
 
         /// <summary>
-        /// Zkontroluje a provede automatickou roční archivaci souborů na pozadí.
-        /// Uživatel je od tohoto procesu zcela odstíněn.
+        /// Zkontroluje a provede automatickou roční archivaci souborů na pozadí asynchronně a paralelně.
         /// </summary>
-        public static void ZkontrolujRocniArchivaci(
-        string souborSkoleni = "Skoleni/skoleni.json", 
-        string souborStudenti = "Studenti/studenti.json", 
-        string souborLektori = "Lektori/lektori.json")
+        // Změna: Metoda je nyní async Task
+        public static async Task ZkontrolujRocniArchivaciAsync(
+            string souborSkoleni = "Skoleni/skoleni.json", 
+            string souborStudenti = "Studenti/studenti.json", 
+            string souborLektori = "Lektori/lektori.json")
         {
             try
             {
@@ -21,13 +22,15 @@
                 }
         
                 int aktualniRok = DateTime.Now.Year;
-                // Provedeme archivaci za minulý rok, pokud ještě neproběhla
                 int rokKArchivaci = aktualniRok - 1;
         
-                // Archivace všech tří reálných datových komponent
-                ArchivujSoubor(souborSkoleni, "skoleni", rokKArchivaci);
-                ArchivujSoubor(souborStudenti, "studenti", rokKArchivaci);
-                ArchivujSoubor(souborLektori, "lektori", rokKArchivaci);
+                // --- MULTITHREADING / PARALELNÍ ZPRACOVÁNÍ ---
+                // Spustíme archivaci všech tří souborů současně na pozadí a počkáme, až doběhnou všechny najednou
+                await Task.WhenAll(
+                    ArchivujSouborAsync(souborSkoleni, "skoleni", rokKArchivaci),
+                    ArchivujSouborAsync(souborStudenti, "studenti", rokKArchivaci),
+                    ArchivujSouborAsync(souborLektori, "lektori", rokKArchivaci)
+                );
         
                 VycistiStareArchivy(aktualniRok);
             }
@@ -37,22 +40,29 @@
             }
         }
 
-        private static void ArchivujSoubor(string zdrojovySoubor, string nazevBaze, int rok)
+        // Změna: Pomocná metoda upravena na neblokující async Task
+        private static async Task ArchivujSouborAsync(string zdrojovySoubor, string nazevBaze, int rok)
         {
             if (!File.Exists(zdrojovySoubor))
                 return;
 
             string cil = Path.Combine(ArchivSlozka, $"{nazevBaze}_{rok}.json");
 
-            // Pokud archiv za daný rok už existuje, nepřepisujeme ho
             if (File.Exists(cil))
                 return;
 
             try
             {
-                // KROK 3: Neprůstřelný crash-safe zápis i do archivu přes .tmp
                 string docasnySoubor = cil + ".tmp";
-                File.Copy(zdrojovySoubor, docasnySoubor, overwrite: true);
+                
+                // .NET sice nemá přímé File.CopyAsync, ale čistě asynchronně se to dělá přes proudy (Streams):
+                using (FileStream zdrojovyStream = File.OpenRead(zdrojovySoubor))
+                using (FileStream cilovyStream = File.Create(docasnySoubor))
+                {
+                    // Uvolní vlákno po dobu fyzického asynchronního kopírování souboru na disku
+                    await zdrojovyStream.CopyToAsync(cilovyStream);
+                }
+
                 File.Move(docasnySoubor, cil, overwrite: true);
             }
             catch (Exception)
@@ -61,12 +71,13 @@
             }
         }
 
+        // Metoda pracuje pouze se jmény souborů v paměti, I/O operace Delete je blesková, 
+        // proto může z hlediska režie zůstat synchronní.
         private static void VycistiStareArchivy(int aktualniRok)
         {
             if (!Directory.Exists(ArchivSlozka))
                 return;
 
-            // Hledáme soubory odpovídající masce
             foreach (string soubor in Directory.GetFiles(ArchivSlozka, "*_*.json"))
             {
                 string jmenoSouboru = Path.GetFileNameWithoutExtension(soubor);
