@@ -22,7 +22,7 @@ public class SkoleniRepository(string aktualniFirma, string slozkaSkoleni = "Sko
     public List<Skoleni> Nacist()
     {
         // Pokud chybí hlavní soubor, zkusíme tichou obnovu ze zálohy
-        string cestaKZaloze = Path.Combine("Zalohy", "skoleni.bak.json");
+        string cestaKZaloze = Path.Combine("Zalohy", $"skoleni_{_aktualniFirma}.bak.json");
         if (!File.Exists(_cestaKSouboru) && File.Exists(cestaKZaloze))
         {
             try
