@@ -64,6 +64,21 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 
 - **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno. Do JSON se ukládají jen kódy studentů/lektorů, ne celé objekty; skutečné reference se dopojují po načtení.
 
+### B2B Architektura & Multi-tenancy
+Aplikace využívá koncept sdílené databáze s logickou izolací dat (Shared Database, Isolated Data). Veškerá školení jsou v JSON souborech označena příslušným identifikátorem firmy (Tenant). Systém při inicializaci `SpravceSkoleni` filtruje data na úrovni repozitářů, čímž je zajištěno, že uživatelé vidí pouze kurzy patřící jejich organizaci.
+
+### Čistá architektura (Clean Architecture)
+Projekt striktně dodržuje princip Single Responsibility Principle (SRP) a oddělení vrstev:
+1. **Domain/Application Layer (`SpravceSkoleni`, `SpravceExportu`)**: Obsahuje čistou byznys logiku. Je zcela nezávislá na uživatelském rozhraní (UI) a konzoli. Veškerá selhání validací vyjadřuje pomocí výjimek (`Exceptions`). Tato vrstva je 100% pokrýtelná Unit testy.
+2. **Data Layer (`Repozitare`)**: Zajišťuje perzistenci dat do JSON souborů a správu crash-safe záloh.
+3. **Presentation Layer (`Menu`, `Vypisy`)**: Jediná vrstva komunikující s uživatelem. Odpovídá za zachytávání výjimek z logické vrstvy a jejich formátované zobrazení (pomocí `BarevneVypisyHelper`).
+
+### Asynchronní zpracování & Multithreading (End-to-End Async)
+Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximalizaci plynulosti uživatelského rozhraní:
+1. **Asynchronní I/O řetězec**: Veškerá komunikace s pevným diskem (čtení/zápis JSON dat a textových exportů) probíhá neblokujícím způsobem přes `async/await`. Během fyzického zápisu na disk se procesorové vlákno vrací do fondu (Thread Pool) a je připraveno reagovat na jiné akce.
+2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
+3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání.
+
 ---
 
 ## Externí knihovny (samostatné projekty)
@@ -181,3 +196,16 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 **v1.6.0** – Zavedení B2B Multi-tenancy – Architektura aplikace byla rozšířena o podporu parametru Firma u zaměstnanců i školení, což umožňuje kompletní izolaci dat různých firemních zákazníků. Ochrana proti překlepům – Zadávání firmy je plně defenzivní a automaticky se formátuje přes TitleCase (např. dvi -> Dvi), což zajišťuje konzistenci dat. Podpora externích kurzů – Logika dopojování referencí, hodnocení a hlídání časových překryvů nově identifikuje studenty pomocí neprůstřelné dvojice Firma + Kód, zatímco lektoři zůstávají flexibilně interní. Doplnění Firmy studenta do prezenční listiny jako další kolonka. 
 Dokončení striktního oddělení studentů od lektorů v namespace Vypisy, kde přišlo k vytvoření třídy StudentiVypisy, kam se přesunul kód pro výpisy studentů a přejmenování třídy ZamestnanciVypisy na LektoriVypisy. V této přejmenované třídě zůstal pouze kód pro výpisy lektorů.
 [Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.6.0)
+
+**v1.6.1** – Čistá architektura (Clean Architecture)
+Projekt striktně dodržuje princip Single Responsibility Principle (SRP) a oddělení vrstev:
+1. **Domain/Application Layer (`SpravceSkoleni`, `SpravceExportu`)**: Obsahuje čistou byznys logiku. Je zcela nezávislá na uživatelském rozhraní (UI) a konzoli. Veškerá selhání validací vyjadřuje pomocí výjimek (`Exceptions`). Tato vrstva je 100% pokrýtelná Unit testy.
+2. **Data Layer (`Repozitare`)**: Zajišťuje perzistenci dat do JSON souborů a správu crash-safe záloh.
+3. **Presentation Layer (`Menu`, `Vypisy`)**: Jediná vrstva komunikující s uživatelem. Odpovídá za zachytávání výjimek z logické vrstvy a jejich formátované zobrazení (pomocí `BarevneVypisyHelper`).
+
+Asynchronní zpracování & Multithreading (End-to-End Async)
+Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximalizaci plynulosti uživatelského rozhraní:
+1. **Asynchronní I/O řetězec**: Veškerá komunikace s pevným diskem (čtení/zápis JSON dat a textových exportů) probíhá neblokujícím způsobem přes `async/await`. Během fyzického zápisu na disk se procesorové vlákno vrací do fondu (Thread Pool) a je připraveno reagovat na jiné akce.
+2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
+3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání. 
+[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.6.1)
