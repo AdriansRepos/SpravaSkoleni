@@ -43,17 +43,18 @@ public class SpravceSkoleni
             skoleni.Studenti.Clear();
             skoleni.Lektori.Clear();
             skoleni.HodnoceniStudentu.Clear();
-    
+
             // 1. Dopojení studentů: Studenti patří pod firmu, pro kterou se školení pořádá
             foreach (var kod in skoleni.KodyStudentu)
             {
-                var student = NajdiStudentaPodleKoduAFirmy(kod, student.Firma ?? string.Empty);
+                // Oprava: Firma se musí získat z objektu školení, ne z proměnné student
+                var student = NajdiStudentaPodleKoduAFirmy(kod, skoleni.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.Studenti.Add(student);
                 }
             }
-    
+
             // 2. OPRAVA LEKTORŮ: Lektoři jsou interní/samostatní. 
             // Hledáme je čistě podle jejich vlastního Kódu, protože školení učitelskou firmu nedefinuje.
             foreach (var kod in skoleni.KodyLektoru)
@@ -64,19 +65,19 @@ public class SpravceSkoleni
                     skoleni.Lektori.Add(lektor);
                 }
             }
-    
+
             // 3. OPRAVA DICTIONARY: Použijeme metodu, která vrací čistý, nenullovatelný objekt,
             // čímž okamžitě zmizí chyba s neplatným klíčem v Dictionary.
             foreach (var kvp in skoleni.Hodnoceni)
             {
-                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, student.Firma ?? string.Empty);
+                var student = NajdiStudentaPodleKoduAFirmy(kvp.Key, skoleni.Firma ?? string.Empty);
                 if (student != null)
                 {
                     skoleni.HodnoceniStudentu[student] = kvp.Value;
                 }
             }
         }
-    }       
+    }
     
     // Vrátí Student?, protože student v databázi pro danou firmu reálně nemusí existovat
     public Student? NajdiStudentaPodleKoduAFirmy(string kod, string firma) 
