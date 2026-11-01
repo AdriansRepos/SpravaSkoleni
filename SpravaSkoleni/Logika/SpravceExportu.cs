@@ -16,7 +16,7 @@ namespace SpravaSkoleni.Logika
                 }
 
                 string validniNazev = string.Join("_", skoleni.Nazev.Split(Path.GetInvalidFileNameChars()));
-                string cestaKSouboru = Path.Combine(slozkaProExport, $"Prezence_{validniNazev}.txt");
+                string cestaKSouboru = Path.Combine(slozkaProExport, $"Prezence_{skoleni.Firma}_{validniNazev}.txt");
 
                 StringBuilder sb = new();
                 sb.AppendLine("========================================");
@@ -46,7 +46,7 @@ namespace SpravaSkoleni.Logika
                     int poradi = 1;
                     foreach (var student in skoleni.Studenti)
                     {                        
-                        sb.AppendLine($"{poradi}. {student.Prijmeni} {student.Jmeno} (Kód: {student.Kod}) {student.Firma}- [ Podpis: ................... ]");
+                        sb.AppendLine($"{poradi}. {student.Prijmeni} {student.Jmeno} (Kód: {student.Kod}) - {student.Firma} - [ Podpis: ................... ]");
                         poradi++;
                     }
                 }
