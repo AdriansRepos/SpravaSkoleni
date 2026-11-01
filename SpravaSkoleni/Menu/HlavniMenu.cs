@@ -137,9 +137,18 @@ namespace SpravaSkoleni.Menu
                         
                         if (vybraneSkoleniKExportu != null)
                         {                        
-                            if (SpravceExportu.ExportujPrezencniListinu(vybraneSkoleniKExportu))
+                            try
                             {
+                                // Voláme čistou metodu (nyní void)
+                                SpravceExportu.ExportujPrezencniListinu(vybraneSkoleniKExportu);
+                                
+                                // UI vrstva vypíše úspěch
                                 VypisyDoKonzole.VypisUspech("! Prezenční listina byla úspěšně vyexportována do složky Exporty !");
+                            }
+                            catch (IOException ex)
+                            {
+                                // UI vrstva zachytí chybu disku/zápisu a bezpečně ji zobrazí uživateli
+                                VypisyDoKonzole.VypisVarovani(ex.Message);
                             }
                         }
                         else
