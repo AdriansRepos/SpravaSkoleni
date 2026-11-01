@@ -8,7 +8,10 @@
         /// Zkontroluje a provede automatickou roční archivaci souborů na pozadí.
         /// Uživatel je od tohoto procesu zcela odstíněn.
         /// </summary>
-        public static void ZkontrolujRocniArchivaci(string souborZamestnanci = "zamestnanci.json", string souborSkoleni = "skoleni.json")
+        public static void ZkontrolujRocniArchivaci(
+        string souborSkoleni = "Skoleni/skoleni.json", 
+        string souborStudenti = "Studenti/studenti.json", 
+        string souborLektori = "Lektori/lektori.json")
         {
             try
             {
@@ -16,14 +19,16 @@
                 {
                     Directory.CreateDirectory(ArchivSlozka);
                 }
-
+        
                 int aktualniRok = DateTime.Now.Year;
                 // Provedeme archivaci za minulý rok, pokud ještě neproběhla
                 int rokKArchivaci = aktualniRok - 1;
-
-                ArchivujSoubor(souborZamestnanci, "zamestnanci", rokKArchivaci);
+        
+                // Archivace všech tří reálných datových komponent
                 ArchivujSoubor(souborSkoleni, "skoleni", rokKArchivaci);
-
+                ArchivujSoubor(souborStudenti, "studenti", rokKArchivaci);
+                ArchivujSoubor(souborLektori, "lektori", rokKArchivaci);
+        
                 VycistiStareArchivy(aktualniRok);
             }
             catch (Exception)
