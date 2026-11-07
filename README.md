@@ -1,3 +1,13 @@
+## 🌐 Jazyk / Language Selection
+
+*Klikněte na sekci níže pro zobrazení v češtině nebo angličtině.*
+*Click on a section below to toggle between Czech and English.*
+
+---
+
+<details open>
+<summary>🇨🇿 <strong>ČEŠTINA (Czech Version)</strong></summary>
+
 # Správa školení – Konzolová aplikace v C#
 
 Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich lektorů a přihlášených studentů. Vychází z učebnicového základu, který dál rozšiřuji a upravuji vlastním způsobem (moderní syntaxe C#, opravy chyb z originálu, plánované rozvrstvení architektury).
@@ -169,32 +179,23 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 ## Release
 
 **v1.0.0** – První funkční verze podle učebnicového základu: evidence školení, přihlašování/odhlašování studentů, přiřazování/odebírání lektorů, uzavírání školení, ukládání do textových souborů.  
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.0.0)
 
 **v1.1.0** – Nahrazeno ruční číslované vypisování a parsování voleb (`for` cyklus + `int.Parse`) za znovupoužitelnou knihovnu `SelectHelper` napříč všemi metodami výběru (výběr školení, přihlášení/odhlášení studenta, přiřazení/odebrání lektora). Zadávání dat (počet účastníků, data konání, hodnocení studentů) nahrazeno validovaným vstupem přes `TextHelper`, s možností opakovaného zadání při chybě místo pádu aplikace. Třída `Zamestnanec` upravena na abstraktní bázi s automatickým převodem jména a příjmení do TitleCase přes `InputHelper`, zděděným do `Student` a `Lektor`. Opraveny logické chyby (obrácená podmínka při návratu ze seznamu školení, chybějící odečtení indexu při výběru).  
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.1.0)
 
 **v1.2.0** – Přechod z textového formátu s návěštími na JSON serializaci (`zamestnanci.json`, `skoleni.json`). Třída `Skoleni` ukládá jen kódy studentů/lektorů místo celých objektů, aby se předešlo kruhové referenci; skutečné vazby se dopojují po načtení. `SpravceSkoleni` rozdělena na partial soubory (`SpravceSkoleni.SkoleniData.cs`, `SpravceSkoleni.ZamestnanciData.cs`) pro přehlednost. Metody přejmenovány bez přípony "Json" (např. `UlozitSkoleniJson` → `UlozitSkoleni`), protože JSON je teď jediný podporovaný formát.  
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.0)
 
 **v1.2.1** – Refaktorování architektury datové vrstvy. Odstraněny partial soubory třídy SpravceSkoleni a nahrazeny samostatnými třídami repozitářů (ZamestnanciRepository, SkoleniRepository). Dosaženo čistého oddělení odpovědností (SRP) – SpravceSkoleni se stará o logiku a prezentaci, zatímco repozitáře čistě o persistenci do JSON souborů.
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.1)
 
 **v1.2.2** – Kompletní strukturální refaktorování architektury bez změny vnějších funkcí pro uživatele. Kód byl přehledně rozdělen do samostatných jmenných prostorů a složek (`Data/Entity`, `Data/Repozitare`, `Logika`, `Menu`, `Vypisy`). Aplikační logika ve `SpravceSkoleni` byla plně očistěna od konzolových výpisů (`Console.WriteLine`), které byly přesunuty do prezentace. Přidána integrace sdílené knihovny `BarevneVypisyHelper` pro unifikované stylování konzolového výstupu.  
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.2.2)
 
 **v1.3.0** – Nasazena pokročilá defenzivní logika: kontrola platnosti datumu, hlídání překrývání termínů a blokace přihlášení při naplnění kapacity.
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.3.0)
 
 **v1.4.0** – Masivní refaktorizace na unikátní podnikovou identifikaci (Kódy a Příjmení) eliminující shodu jmen. Nasazen vysoce optimalizovaný exportní modul prezenčních listin na disk s integrovanou byznysovou statistikou a nulovou paměťovou alokací (CA1862). Architektura byla rozšířena o pokročilé LINQ vyhledávací a filtrační subsystémy v samostatných souborech a kompletní evidenci historie účastníků s automatickým čištěním duplicit přes agregace. Prezentační vrstva byla modulárně rozvětvěna do izolovaných interaktivních podmenu (Vyhledávání, Účastníci) a kompletně aktualizován modelový diagram tříd (.cd). Aplikace je plně stabilizována a připravena pro přechod na vícevláknové zpracování a komunikaci s hardwarovými periferiemi.
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.4.0)
 
 **v1.5.0** – Architektura povýšena na B2B All-in-One standard rozdělením kmenových dat do tří samostatných složek (`Skoleni`, `Lektori`, `Studenti`). Implementováno autonomní crash-safe ukládání dat přes `.tmp` soubory, tiché automatické zálohování po každém zápisu disku a 5letá instanční roční archivace s defenzivním přeskočením. Odstraněn vývojářský balast v podobě ladicích výpisů z byznysové logiky i hlavního menu a plně optimalizován startovací proces aplikace v `Program.cs`.
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.5.0)
 
 **v1.6.0** – Zavedení B2B Multi-tenancy – Architektura aplikace byla rozšířena o podporu parametru Firma u zaměstnanců i školení, což umožňuje kompletní izolaci dat různých firemních zákazníků. Ochrana proti překlepům – Zadávání firmy je plně defenzivní a automaticky se formátuje přes TitleCase (např. dvi -> Dvi), což zajišťuje konzistenci dat. Podpora externích kurzů – Logika dopojování referencí, hodnocení a hlídání časových překryvů nově identifikuje studenty pomocí neprůstřelné dvojice Firma + Kód, zatímco lektoři zůstávají flexibilně interní. Doplnění Firmy studenta do prezenční listiny jako další kolonka. 
 Dokončení striktního oddělení studentů od lektorů v namespace Vypisy, kde přišlo k vytvoření třídy StudentiVypisy, kam se přesunul kód pro výpisy studentů a přejmenování třídy ZamestnanciVypisy na LektoriVypisy. V této přejmenované třídě zůstal pouze kód pro výpisy lektorů.
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.6.0)
 
 **v1.6.1** – Čistá architektura (Clean Architecture)
 Projekt striktně dodržuje princip Single Responsibility Principle (SRP) a oddělení vrstev:
@@ -207,4 +208,181 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 1. **Asynchronní I/O řetězec**: Veškerá komunikace s pevným diskem (čtení/zápis JSON dat a textových exportů) probíhá neblokujícím způsobem přes `async/await`. Během fyzického zápisu na disk se procesorové vlákno vrací do fondu (Thread Pool) a je připraveno reagovat na jiné akce.
 2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
 3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání. 
-[Stáhnout zde](https://github.com/AdriansRepos/SpravaSkoleni/releases/tag/v1.6.1)
+
+[Aktuální verze ke stažení zde](https://github.com/AdriansRepos/SpravaSkoleni/releases)
+
+</details>
+
+<details>
+<summary>🇺🇸 <strong>ENGLISH (English Version)</strong></summary>
+
+# Training Management System (SpravaSkoleni)
+
+A robust, production-ready enterprise console application built in **C# (.NET)** designed for comprehensive management of corporate trainings, instructors, and enrolled participants. Rooted in a solid educational foundation, it has been systematically evolved into a modern, multi-threaded B2B system featuring clean architecture, crash-safe data persistence, and strict data isolation.
+
+---
+
+## Features
+
+### Trainings
+- **Creation & Lifecycle:** Set up new trainings with custom titles, descriptions, recommended capacity limits, and start/end dates.
+- **Status Management:** View open/closed training lists and detailed views including instructors, enrolled students, and feedback ratings for closed courses.
+- **Defensive Client Logic:** Real-time date validation (preventing end dates prior to start dates) enforced via cyclical input prompts without crashing or resetting the entire form.
+
+### Students & Instructors
+- **Enrollment & Assignment:** Seamlessly enroll/unenroll students and assign/remove instructors for open trainings.
+- **Strict Integrity Locks:** Zero modifications permitted on already closed/completed courses.
+- **Time Slot Collision Guards:** Automatic schedule overlap protection—prevents instructors and students from attending overlapping courses simultaneously.
+- **Capacity Hard-Stop:** Automated blocking of student registrations when recommended capacity reaches 100%.
+- **Unique Enterprise Identification:** All error handling, lookups, and validations rely on a secure composite identifier (`Surname` + unique employee `Code`) instead of ambiguous first names.
+
+### Advanced Search & Filtering
+- **Interactive Submenus:** Isolated console submenus dedicated to advanced data queries.
+- **Status & Full-Text Filtering:** Rapidly list trainings filtered strictly by status or perform case-insensitive full-text searches by title, instructor surname, or employee code.
+- **Date-Range Overlap Queries:** Search for courses within specific date ranges using mathematical time-axis overlap calculations.
+- **Seamless Navigation:** Smooth transitions from filtered search results directly into the specific training's detail view.
+
+### Participant History & Management
+- **Centralized Directory:** Unique overview of all system-registered students/instructors with automatic duplicate purging via LINQ aggregations (`GroupBy`).
+- **Employee Timeline Cards:** Detailed chronological history displaying all open and closed courses for any specific employee.
+
+### Attendance Sheet Export
+- **File Export:** Generate formatted attendance lists into `.txt` files saved within an automatically managed `Exports` directory.
+- **Rich Metadata:** Exports include course metadata, descriptions, capacity statistics, and a detailed student roster with physical signature lines.
+- **Optimized I/O Performance:** Leverages `StringBuilder`, zero-allocation string comparisons (`StringComparison.OrdinalIgnoreCase`), and optimized collection checks (`.Count > 0` adhering to CA1860, CA1862).
+
+### Data Security & Automation
+- **B2B All-in-One Structure:** Physical data segregation into dedicated, automatically generated root directories (`Skoleni/`, `Lektori/`, `Studenti/`).
+- **Crash-Safe Persistence:** Prevents data corruption during unexpected power outages or failures by using atomic writes via temporary `.tmp` files followed by safe system replacement (`File.Move` with overwrite).
+- **Autonomous Silent Backups:** Automatic generation of `.bak.json` backup files into a `Backups/` directory after every successful write operation, entirely decoupled from user intervention.
+- **5-Year Institutional Archiving:** Automated year-end closing checks at application startup. Freezes past-year data into an `Archive/` folder and purges records older than 5 years with defensive skip-locks.
+
+### B2B Multi-Tenancy
+The application implements a **Shared Database, Isolated Data** pattern. All trainings and employee records are tagged with a corporate tenant identifier (`Firma`). During initialization, `SpravceSkoleni` filters data at the repository layer, ensuring users access exclusively their organization's courses.
+
+### Clean Architecture
+Strictly adheres to the Single Responsibility Principle (SRP) and separation of concerns:
+1. **Domain/Application Layer (`SpravceSkoleni`, `SpravceExportu`)**: Contains pure business logic. Completely independent of the user interface (UI) and console. All validation failures are expressed through custom exceptions. Fully unit-testable.
+2. **Data Layer (`Repozitories`)**: Handles JSON persistence and crash-safe backup operations.
+3. **Presentation Layer (`Menu`, `Vypisy`)**: The sole user-facing layer responsible for catching domain exceptions and rendering formatted outputs via `BarevneVypisyHelper`.
+
+### End-to-End Asynchronous Processing & Multithreading
+- **Asynchronous I/O Chain:** All disk communications (JSON read/write operations and text exports) execute non-blockingly via `async/await`, returning thread pool threads during physical disk I/O.
+- **Parallel Infrastructure (`Task.WhenAll`)**: Yearly system archiving executes parallel file processing in the background, maximizing multi-core CPU utilization at startup.
+- **Multithreaded Fire-and-Forget (`Task.Run`)**: Silent background backups are completely isolated from the main thread, instantly returning control to the user without UI blocking.
+
+---
+
+## Data Model
+
+- **`Zamestnanec` (Employee):** Abstract base class for `Student` and `Lektor`, storing first/last names (automatically formatted to TitleCase), employee code, and job position.
+- **`Student`:** Inherits from `Zamestnanec`, tracks enrolled courses.
+- **`Lektor` (Instructor):** Inherits from `Zamestnanec`, tracks taught courses.
+- **`Skoleni` (Training):** Stores title, description, schedule, capacity limits, enrolled student codes, assigned instructor codes, student ratings (for closed courses), and open/closed status. Only codes (not full object graphs) are serialized to JSON to prevent circular references; actual object references are dynamically wired up upon loading.
+
+---
+
+## External Shared Libraries
+
+- **TextHelper:** Robust user input processing and validation (`UpravaVstupu.ZeptejSeAUprav`).
+- **SelectHelper:** Interactive list item selection UI component (`SelectHelp.VybratPolozku`).
+- **InputHelper:** Automatic TitleCase text conversion (`TitleCase.ToTitleCase`).
+- **BarevneVypisyHelper:** Unified console styling and colored output formatting (`VypisyDoKonzole`).
+
+These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2).
+
+---
+
+## Project Structure
+
+```text
+/SpravaSkoleni
+├── Data/
+│   ├── Entity/
+│   │   ├── Lektor.cs
+│   │   ├── Skoleni.cs
+│   │   ├── Student.cs
+│   │   └── Zamestnanec.cs
+│   └── Repozitare/
+│       ├── SkoleniRepository.cs
+│       ├── LektoriRepository.cs
+│       └── StudentiRepository.cs
+├── Logika/
+│   ├── SpravceSkoleni.cs
+│   └── SpravceExportu.cs
+├── Menu/
+│   └── HlavniMenu.cs
+├── Vypisy/
+│   ├── StudentiVypisy.cs
+│   └── LektoriVypisy.cs
+├── Zaloha/
+│   ├── ArchivacniSluzba.cs
+│   └── ZalohovaciSluzba.cs
+├── Program.cs
+└── README.md
+```
+
+---
+
+## Core Techniques & Patterns
+
+- OOP Principles: Inheritance (Student & Lektor inherit from abstract Zamestnanec), encapsulation.
+- Multi-Layered Architecture: Strict separation of UI, Business Logic, and Data Persistence.
+- Repository Pattern: Clean abstraction layer for JSON file persistence.
+- Modern JSON Serialization (System.Text.Json): Utilizes [JsonIgnore] to prevent circular reference exceptions on bidirectional relationships.
+- LINQ Queries: Extensive use of Select, Where, GroupBy, and ToDictionary for data binding and aggregation.
+- Modern C# Syntax: Collection expressions, target-typed new, nullable reference types, records, pattern matching.
+
+---
+
+## Code Sample
+
+```csharp
+// Example of clean domain logic in SpravceSkoleni decoupled from console UI presentation
+public void AssignInstructor(Skoleni training, Lektor instructor)
+{
+    if (!training.Lektori.Contains(instructor))
+    {
+        training.Lektori.Add(instructor);
+        SaveTraining();
+    }
+}
+
+public List<Lektor> GetUnassignedInstructors(Skoleni training)
+{
+    return Lektori.Where(instructor => !training.Lektori.Contains(instructor)).ToList();
+}
+```
+
+---
+
+## Planned Features
+
+- ZOO Fusion Subsystem: Complete integration of the Training Management module as an autonomous subsystem into the primary enterprise ZOO application (EvidenceZOOCviceniUpraveno2), while maintaining its standalone execution capability.
+- Graphical User Interface (WPF)
+
+---
+
+## Release History
+
+**v1.0.0** – Initial educational release: basic training records, student enrollments, instructor assignments, training closure, and text file persistence.
+
+**v1.1.0** – Replaced manual index-based loops with the reusable SelectHelper library. Integrated validated inputs via TextHelper. Converted Zamestnanec to an abstract base with automated TitleCase formatting.
+
+**v1.2.0** – Transitioned from custom text formats to JSON serialization (System.Text.Json). Split SpravceSkoleni into partial files for clarity.
+
+**v1.2.1** – Architectural refactoring: introduced dedicated repository classes (ZamestnanciRepository, SkoleniRepository) adhering strictly to SRP.
+
+**v1.2.2** – Complete structural refactoring into clean namespaces and folders. Purged Console.WriteLine statements from business logic, migrating them to presentation classes powered by BarevneVypisyHelper.
+
+**v1.3.0** – Deployed advanced defensive logic: date validations, schedule overlap protection, and capacity hard-stops.
+
+**v1.4.0** – Massive refactoring introducing unique enterprise identification (Codes & Surnames). Added zero-allocation attendance export module and advanced LINQ search/filtering submenus.
+
+**v1.5.0** – Elevated architecture to B2B All-in-One standard with segmented root folders, crash-safe .tmp atomic writes, silent background backups, and 5-year yearly archiving.
+
+**v1.6.0** – Introduced B2B Multi-tenancy (Firma tenant isolation), strict namespace separation (StudentiVypisy vs LektoriVypisy), and robust tenant-aware reference binding.
+
+**v1.6.1** – Finalized Clean Architecture boundaries and implemented End-to-End Asynchronous processing (async/await, Task.WhenAll parallel archiving, and Task.Run fire-and-forget backups).
+
+[Downolad latest release here](https://github.com/AdriansRepos/SpravaSkoleni/releases)
