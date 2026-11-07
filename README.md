@@ -213,6 +213,8 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 
 </details>
 
+---
+
 <details>
 <summary>🇺🇸 <strong>ENGLISH (English Version)</strong></summary>
 
