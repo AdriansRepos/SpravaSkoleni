@@ -386,3 +386,5 @@ public List<Lektor> GetUnassignedInstructors(Skoleni training)
 **v1.6.1** – Finalized Clean Architecture boundaries and implemented End-to-End Asynchronous processing (async/await, Task.WhenAll parallel archiving, and Task.Run fire-and-forget backups).
 
 [Downolad latest release here](https://github.com/AdriansRepos/SpravaSkoleni/releases)
+
+</details>
