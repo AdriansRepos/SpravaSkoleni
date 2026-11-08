@@ -4,6 +4,8 @@ using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Menu;
 using TextHelper;
+using SpravaSkoleni.Enumy;
+
 
 namespace SpravaSkoleni.Vypisy;
 
