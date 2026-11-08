@@ -1,23 +1,6 @@
-﻿namespace SpravaSkoleni.Menu;
+﻿using SpravaSkoleni.Enumy;
 
-public enum SkoleniMenuHlavniVolba
-{
-    NávratZpět,
-    VytvoritNoveSkoleni,
-    VybratExistujiciSkoleni,
-    NeplatnaVolba
-}
-
-public enum SkoleniDetailMenuVolba
-{
-    NávratZpět,
-    PrihlasitStudenta,
-    OdhlasitStudenta,
-    PriraditLektora,
-    OdebratLektora,
-    UzavritSkoleni,
-    NeplatnaVolba
-}
+namespace SpravaSkoleni.Menu;
 
 public class SkoleniMenu
 {
