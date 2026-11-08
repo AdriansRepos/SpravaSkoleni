@@ -174,6 +174,11 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 - Kolekce (List<T>, Dictionary<TKey, TValue>)
 - Vícevrstvé konzolové menu (hlavní menu → detail školení → úpravy školení)
 - Moderní syntaxe C# (collection expressions, ternární operátory, nullable reference types, records)
+- Interoperabilita s externími knihovnamy: Využití rozhraní a správců (UsbManager, PdfDocumentGenerator, SystemPrinterManager, NetworkPrinterManager) z externí knihovny `UsbPeripheralsLib`.
+- Platformní specifika: Využití atributu [SupportedOSPlatform("windows")] pro bezpečné zapouzdření nativních Windows API voleb tiskáren a USB subsystému.
+- Generování PDF a RAW tisk: Práce s binárními proudy, TCP socket komunikace (port 9100) pro síťový tisk a renderování PDF dokumentů.
+- Architektonická konzistence: Striktní oddělení prezentační logiky výpisů (*Vypisy), řízení toku (*Menu) a doménových enums (*Enumy) pro absolutní přehlednost kódu.
+
 ---
 
 ## Ukázka kódu
@@ -330,6 +335,8 @@ Strictly adheres to the Single Responsibility Principle (SRP) and separation of 
 - **SelectHelper:** Interactive list item selection UI component (`SelectHelp.VybratPolozku`).
 - **InputHelper:** Automatic TitleCase text conversion (`TitleCase.ToTitleCase`).
 - **BarevneVypisyHelper:** Unified console styling and colored output formatting (`VypisyDoKonzole`).
+- **UsbPeripheralsLib** – správa USB úložišť, generování PDF dokumentů a tisk (síťový i systémový)
+- **UsbPeripheralsLib:** Management of USB storage devices, PDF document generation, and printing capabilities (both network and system printers).
 
 These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2).
 
@@ -395,6 +402,10 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 - Modern JSON Serialization (System.Text.Json): Utilizes [JsonIgnore] to prevent circular reference exceptions on bidirectional relationships.
 - LINQ Queries: Extensive use of Select, Where, GroupBy, and ToDictionary for data binding and aggregation.
 - Modern C# Syntax: Collection expressions, target-typed new, nullable reference types, records, pattern matching.
+- External Library Interoperability: Utilization of interfaces and managers (UsbManager, PdfDocumentGenerator, SystemPrinterManager, NetworkPrinterManager) from the external `UsbPeripheralsLib` package.
+- Platform-Specific Attributes: Implementation of [SupportedOSPlatform("windows")] to safely encapsulate native Windows API calls for printers and the USB subsystem.
+- PDF Generation & RAW Network Printing: Handling binary streams, TCP socket communication (port 9100) for network printers, and PDF document rendering.
+- Architectural Consistency: Strict separation of UI rendering (*Vypisy), flow control (*Menu), and domain enums (Enumy) for pristine code organization.
 
 ---
 
