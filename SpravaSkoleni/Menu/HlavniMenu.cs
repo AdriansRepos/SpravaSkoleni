@@ -1,15 +1,6 @@
-﻿namespace SpravaSkoleni.Menu;
+﻿using SpravaSkoleni.Enumy;
 
-public enum HlavniMenuVolba
-{
-    KonecProgramu,
-    SpravaSkoleni,
-    ExportPrezencniListiny,
-    VyhledavaniAFiltrace,
-    SpravaUcastniku,
-    UsbPeripheralMenu,
-    NeplatnaVolba
-}
+namespace SpravaSkoleni.Menu;
 
 public class HlavniMenu
 {
