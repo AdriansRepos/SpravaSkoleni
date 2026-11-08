@@ -1,5 +1,6 @@
 ﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Logika;
+using SpravaSkoleni.Enumy;
 using SpravaSkoleni.Menu;
 using System.Runtime.Versioning;
 using TextHelper;
