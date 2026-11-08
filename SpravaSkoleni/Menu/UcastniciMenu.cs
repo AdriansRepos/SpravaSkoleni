@@ -1,22 +1,21 @@
-﻿namespace SpravaSkoleni.Menu
-{
-    public enum UcastniciMenuVolba
-    {
-        NávratZpět,
-        ZobrazitVsechnyStudenty,
-        ZobrazitVsechnyLektory
-    }
+﻿namespace SpravaSkoleni.Menu;
 
-    public class UcastniciMenu
+public enum UcastniciMenuVolba
+{
+    NávratZpět,
+    ZobrazitVsechnyStudenty,
+    ZobrazitVsechnyLektory
+}
+
+public class UcastniciMenu
+{
+    public static UcastniciMenuVolba ZpracujVolbu(string vstup)
     {
-        public static UcastniciMenuVolba ZpracujVolbu(string vstup)
+        return vstup.Trim().ToLower() switch
         {
-            return vstup.Trim().ToLower() switch
-            {
-                "1" => UcastniciMenuVolba.ZobrazitVsechnyStudenty,
-                "2" => UcastniciMenuVolba.ZobrazitVsechnyLektory,
-                _ => UcastniciMenuVolba.NávratZpět
-            };
-        }
+            "1" => UcastniciMenuVolba.ZobrazitVsechnyStudenty,
+            "2" => UcastniciMenuVolba.ZobrazitVsechnyLektory,
+            _ => UcastniciMenuVolba.NávratZpět
+        };
     }
 }
