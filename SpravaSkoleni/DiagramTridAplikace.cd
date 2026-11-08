@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SpravaSkoleni.Data.Entity.Lektor" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Entity\Lektor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Entity.Skoleni" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAEEQAAAACAAAAAAAAAgAAAAAAJAIMCAAAAAACAAAA=</HashCode>
+      <FileName>Data\Entity\Skoleni.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Entity.Student" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAABAAAAAAAA=</HashCode>
+      <FileName>Data\Entity\Student.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Entity.Zamestnanec" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAABAAAABBAQAAAAAAAACAJAA=</HashCode>
+      <FileName>Data\Entity\Zamestnanec.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Repozitare.LektoriRepository" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAQBAAABAAAQAAAAAAAA=</HashCode>
+      <FileName>Data\Repozitare\LektoriRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Repozitare.SkoleniRepository" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAgAAAAAAAQAAAAAAQBAAACAAA=</HashCode>
+      <FileName>Data\Repozitare\SkoleniRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Data.Repozitare.StudentiRepository" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAgAAAAAABAAAAAAAQAAAAAAAQ=</HashCode>
+      <FileName>Data\Repozitare\StudentiRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Logika.SpravceExportu" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Logika\SpravceExportu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Logika.SpravceSkoleni" Collapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JEgSIggBAgAAIEAAEAAIh0AQAAAQIMAEACAABAQAAAA=</HashCode>
+      <FileName>Logika\SpravceSkoleni.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.ExportMenu" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Menu\ExportMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.HlavniMenu" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Menu\HlavniMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.SkoleniMenu" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu\SkoleniMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.UcastniciMenu" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Menu\UcastniciMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.UsbPeripheralsMenu" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIgAIAAAQMAAACIAAAAAAAAAAAAAAAAgAAAQAIAAAA=</HashCode>
+      <FileName>Menu\UsbPeripheralsMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Menu.VyhledavaniMenu" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Menu\VyhledavaniMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Zaloha.ArchivacniSluzba" Collapsed="true">
+    <Position X="6.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQEAAAAAAACAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Zaloha\ArchivacniSluzba.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Zaloha.ZalohovaciSluzba" Collapsed="true">
+    <Position X="8.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Zaloha\ZalohovaciSluzba.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.ExportMenuVypisy" Collapsed="true">
+    <Position X="6" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\ExportMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.HlavniMenuVypisy" Collapsed="true">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\HlavniMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.LektoriVypisy" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\LektoriVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.SkoleniMenuVypisy" Collapsed="true">
+    <Position X="6" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Vypisy\SkoleniMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.SkoleniVypisy" Collapsed="true">
+    <Position X="7.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAgAAAAAEBAEAAAAEAAAAAAAAAAAAAAAACAAAAAEAAA=</HashCode>
+      <FileName>Vypisy\SkoleniVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.StudentiVypisy" Collapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\StudentiVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.UcastniciMenuVypisy" Collapsed="true">
+    <Position X="6" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\UcastniciMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.UsbPeripheralsMenuVypisy" Collapsed="true">
+    <Position X="7.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAACAAAAAAAAAAABIAAAIIACAAA=</HashCode>
+      <FileName>Vypisy\UsbPeripheralsMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpravaSkoleni.Vypisy.VyhledavaniMenuVypisy" Collapsed="true">
+    <Position X="9.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Vypisy\VyhledavaniMenuVypisy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SpravaSkoleni.Enumy.ExportMenuVolba" Collapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Enumy\ExportMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.HlavniMenuVolba" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAAAgAAIEAAAAAIAAAIAAAAAAA=</HashCode>
+      <FileName>Enumy\HlavniMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.SkoleniDetailMenuVolba" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAIAKAAAACAAAAAAAQAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Enumy\SkoleniDetailMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.SkoleniMenuHlavniVolba" Collapsed="true">
+    <Position X="9" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAQAIAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Enumy\SkoleniMenuHlavniVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.UcastniciMenuVolba" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAQAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Enumy\UcastniciMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.UsbMenuVolba" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAIAAYAAAAAAAFAAAAAABAAAAAAEAAAAAA=</HashCode>
+      <FileName>Enumy\UsbMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SpravaSkoleni.Enumy.VyhledavaniMenuVolba" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAgAAAIAAAAAIAAAAAAAAAAAAAAGAAAAAAAAAA=</HashCode>
+      <FileName>Enumy\VyhledavaniMenuVolba.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
