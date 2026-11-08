@@ -1,14 +1,6 @@
-﻿namespace SpravaSkoleni.Menu;
+﻿using SpravaSkoleni.Enumy;
 
-public enum VyhledavaniMenuVolba
-{
-    NávratZpět,
-    PouzeOtevrena,
-    PouzeUzavrena,
-    PodleTextu,
-    PodleRozmeziDatumu,
-    NeplatnaVolba
-}
+namespace SpravaSkoleni.Menu;
 
 public class VyhledavaniMenu
 {
