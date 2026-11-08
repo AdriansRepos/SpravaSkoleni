@@ -1,11 +1,6 @@
-﻿namespace SpravaSkoleni.Menu;
+﻿using SpravaSkoleni.Enumy;
 
-public enum ExportMenuVolba
-{
-    NávratZpět,
-    ProvéstExport,
-    NeplatnaVolba
-}
+namespace SpravaSkoleni.Menu;
 
 public class ExportMenu
 {
