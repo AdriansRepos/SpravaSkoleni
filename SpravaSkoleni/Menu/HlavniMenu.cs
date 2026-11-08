@@ -7,6 +7,7 @@ public enum HlavniMenuVolba
     ExportPrezencniListiny,
     VyhledavaniAFiltrace,
     SpravaUcastniku,
+    UsbPeripheralMenu,
     NeplatnaVolba
 }
 
@@ -20,6 +21,7 @@ public class HlavniMenu
             "2" => HlavniMenuVolba.ExportPrezencniListiny,
             "3" => HlavniMenuVolba.VyhledavaniAFiltrace,
             "4" => HlavniMenuVolba.SpravaUcastniku,
+            "5" => HlavniMenuVolba.UsbPeripheralMenu,
             "k" => HlavniMenuVolba.KonecProgramu,
             _ => HlavniMenuVolba.NeplatnaVolba
         };
