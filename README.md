@@ -75,7 +75,14 @@ Projekt striktně dodržuje princip Single Responsibility Principle (SRP) a odd�
 Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximalizaci plynulosti uživatelského rozhraní:
 1. **Asynchronní I/O řetězec**: Veškerá komunikace s pevným diskem (čtení/zápis JSON dat a textových exportů) probíhá neblokujícím způsobem přes `async/await`. Během fyzického zápisu na disk se procesorové vlákno vrací do fondu (Thread Pool) a je připraveno reagovat na jiné akce.
 2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
-3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání.
+3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na
+
+### Hardwarové periferie, PDF a tisk
+- **Integrace externí knihovny `UsbPeripheralsLib`:** Kompletní obalení a české lokalizované rozhraní pro správu vyměnitelných úložišť a tiskových výstupů.
+- **Detekce USB a offline zálohy:** Automatická detekce připojených vyměnitelných USB disků (zobrazení jmenovky, volného a celkového místa) s možností přímého exportu záloh na externí paměti.
+- **Generování PDF dokumentů:** Využití QuestPDF engine pro rychlé generování oficiálních potvrzení o absolvování školení do formátu PDF.
+- **Systémový tisk:** Podpora tisku na lokální/kabelové tiskárny přes systémovou tiskovou frontu Windows.
+- **Síťový RAW tisk:** Přímý tisk přes TCP sockets (port 9100) na síťové tiskárny bez nutnosti instalovaných ovladačů.
 
 ---
 
@@ -113,20 +120,41 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │   │   ├── Student.cs
 │   │   └── Zamestnanec.cs
 │   └── Repozitare/
-|       ├── SkoleniRepository.cs
-|       ├── LektoriRepository.cs
+│       ├── LektoriRepository.cs
+│       ├── SkoleniRepository.cs
 │       └── StudentiRepository.cs
+├── Enumy/
+│   ├── ExportMenuVolba.cs
+│   ├── HlavniMenuVolba.cs
+│   ├── SkoleniDetailMenuVolba.cs
+│   ├── SkoleniMenuHlavniVolba.cs
+│   ├── UcastniciMenuVolba.cs
+│   ├── UsbMenuVolba.cs
+│   └── VyhledavaniMenuVolba.cs
 ├── Logika/
-│   ├── SpravceSkoleni.cs
-│   └── SpravceExportu.cs
+│   ├── SpravceExportu.cs
+│   └── SpravceSkoleni.cs
 ├── Menu/
-│   └── HlavniMenu.cs
+│   ├── ExportMenu.cs
+│   ├── HlavniMenu.cs
+│   ├── SkoleniMenu.cs
+│   ├── UcastniciMenu.cs
+│   ├── UsbPeripheralsMenu.cs
+│   └── VyhledavaniMenu.cs
 ├── Vypisy/
-│   ├── ZamestnanciVypisy.cs
-│   └── SkoleniVypisy.cs
+│   ├── ExportMenuVypisy.cs
+│   ├── HlavniMenuVypisy.cs
+│   ├── LektoriVypisy.cs
+│   ├── SkoleniMenuVypisy.cs
+│   ├── SkoleniVypisy.cs
+│   ├── StudentiVypisy.cs
+│   ├── UcastniciMenuVypisy.cs
+│   ├── UsbPeripheralsMenuVypisy.cs
+│   └── VyhledavaniMenuVypisy.cs
 ├── Zaloha/
 │   ├── ArchivacniSluzba.cs
 │   └── ZalohovaciSluzba.cs
+├── DiagramTridAplikace.cd
 ├── Program.cs
 └── README.md
 ```
@@ -209,6 +237,11 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 2. **Paralelní infrastruktura (`Task.WhenAll`)**: Roční systémová archivace dat spouští procesy pro jednotlivé soubory paralelně na pozadí, čímž maximalizuje využití vícejádrových procesorů při startu aplikace.
 3. **Multithreaded Fire-and-Forget (`Task.Run`)**: Tiché automatické zálohy jsou kompletně izolované od hlavního vlákna. Systém po uložení dat pouze deleguje vytvoření zálohy na pozadí a okamžitě uživatele vrací do menu bez jakéhokoli čekání. 
 
+**v1.7.0** – Modul rozhraní hardwarových periferií & oddělené Enumy
+- Integrována externí knihovna `UsbPeripheralsLib` pro správu USB úložišť (detekce disků, offline zálohování), generování PDF certifikátů (`QuestPDF`) a dvoucestný tisk (kabelový přes Windows frontu i přímý RAW síťový tisk na portu 9100).
+- Kompletní obalení anglické knihovny v konzolové prezentaci do českého rozhraní za dodržení striktního oddělení menu od výpisů.
+- Vytvořena nová samostatná složka a namespace `Enumy`, kam byly vyčleněny veškeré řídící enumy voleb menu (`UsbMenuVolba`, `VyhledavaniMenuVolba`, `HlavniMenuVolba` a další).
+
 [Aktuální verze ke stažení zde](https://github.com/AdriansRepos/SpravaSkoleni/releases)
 
 </details>
@@ -273,6 +306,13 @@ Strictly adheres to the Single Responsibility Principle (SRP) and separation of 
 - **Parallel Infrastructure (`Task.WhenAll`)**: Yearly system archiving executes parallel file processing in the background, maximizing multi-core CPU utilization at startup.
 - **Multithreaded Fire-and-Forget (`Task.Run`)**: Silent background backups are completely isolated from the main thread, instantly returning control to the user without UI blocking.
 
+### Hardware Peripherals, PDF & Printing
+- **`UsbPeripheralsLib` Integration:** Full wrapping and localized Czech UI overlay for removable storage and print hardware management.
+- **USB Detection & Offline Backups:** Automated detection of connected removable USB storage devices (displaying volume label, available, and total space) with direct backup export functionality.
+- **PDF Document Generation:** Integrated QuestPDF engine for fast PDF creation of training completion certificates.
+- **System Printing Queue:** Support for local/wired Windows system print queue jobs.
+- **Network RAW Printing:** Direct TCP socket communication (port 9100) for network printers bypassing OS print driver dependencies.
+
 ---
 
 ## Data Model
@@ -306,20 +346,41 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 │   │   ├── Student.cs
 │   │   └── Zamestnanec.cs
 │   └── Repozitare/
-│       ├── SkoleniRepository.cs
 │       ├── LektoriRepository.cs
+│       ├── SkoleniRepository.cs
 │       └── StudentiRepository.cs
+├── Enumy/
+│   ├── ExportMenuVolba.cs
+│   ├── HlavniMenuVolba.cs
+│   ├── SkoleniDetailMenuVolba.cs
+│   ├── SkoleniMenuHlavniVolba.cs
+│   ├── UcastniciMenuVolba.cs
+│   ├── UsbMenuVolba.cs
+│   └── VyhledavaniMenuVolba.cs
 ├── Logika/
-│   ├── SpravceSkoleni.cs
-│   └── SpravceExportu.cs
+│   ├── SpravceExportu.cs
+│   └── SpravceSkoleni.cs
 ├── Menu/
-│   └── HlavniMenu.cs
+│   ├── ExportMenu.cs
+│   ├── HlavniMenu.cs
+│   ├── SkoleniMenu.cs
+│   ├── UcastniciMenu.cs
+│   ├── UsbPeripheralsMenu.cs
+│   └── VyhledavaniMenu.cs
 ├── Vypisy/
+│   ├── ExportMenuVypisy.cs
+│   ├── HlavniMenuVypisy.cs
+│   ├── LektoriVypisy.cs
+│   ├── SkoleniMenuVypisy.cs
+│   ├── SkoleniVypisy.cs
 │   ├── StudentiVypisy.cs
-│   └── LektoriVypisy.cs
+│   ├── UcastniciMenuVypisy.cs
+│   ├── UsbPeripheralsMenuVypisy.cs
+│   └── VyhledavaniMenuVypisy.cs
 ├── Zaloha/
 │   ├── ArchivacniSluzba.cs
 │   └── ZalohovaciSluzba.cs
+├── DiagramTridAplikace.cd
 ├── Program.cs
 └── README.md
 ```
@@ -386,6 +447,11 @@ public List<Lektor> GetUnassignedInstructors(Skoleni training)
 **v1.6.0** – Introduced B2B Multi-tenancy (Firma tenant isolation), strict namespace separation (StudentiVypisy vs LektoriVypisy), and robust tenant-aware reference binding.
 
 **v1.6.1** – Finalized Clean Architecture boundaries and implemented End-to-End Asynchronous processing (async/await, Task.WhenAll parallel archiving, and Task.Run fire-and-forget backups).
+
+**v1.7.0** – Hardware Peripherals Integration & Enum Layer Refactoring
+- Integrated external `UsbPeripheralsLib` library for USB storage management (drive detection, offline backups), PDF document creation via `QuestPDF`, and dual-mode printing (local Windows queue and direct network RAW sockets on port 9100).
+- Fully wrapped library English API calls inside a localized Czech console interface maintaining strict Clean Architecture principles (Menu vs Vypisy UI layer separation).
+- Introduced a dedicated `Enumy` directory and namespace housing all menu control enums (`UsbMenuVolba`, `VyhledavaniMenuVolba`, `HlavniMenuVolba`, etc.).
 
 [Downolad latest release here](https://github.com/AdriansRepos/SpravaSkoleni/releases)
 
