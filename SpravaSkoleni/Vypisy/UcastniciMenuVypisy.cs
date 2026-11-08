@@ -1,6 +1,8 @@
 ﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Menu;
+using SpravaSkoleni.Enumy;
+
 
 namespace SpravaSkoleni.Vypisy;
 
