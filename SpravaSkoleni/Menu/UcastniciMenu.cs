@@ -1,11 +1,6 @@
-﻿namespace SpravaSkoleni.Menu;
+﻿using SpravaSkoleni.Enumy;
 
-public enum UcastniciMenuVolba
-{
-    NávratZpět,
-    ZobrazitVsechnyStudenty,
-    ZobrazitVsechnyLektory
-}
+namespace SpravaSkoleni.Menu;
 
 public class UcastniciMenu
 {
