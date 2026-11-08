@@ -9,7 +9,7 @@ namespace SpravaSkoleni.Menu;
 
 public static class VyhledavaniMenu
 {
-    public static async Task SpustitAsync(SpravceSkoleni spravceSkoleni)
+    public static Task SpustitAsync(SpravceSkoleni spravceSkoleni)
     {
         char volbaVyhledavani;
         do
@@ -81,5 +81,6 @@ public static class VyhledavaniMenu
             }
         }
         while (volbaVyhledavani != 'n');
+        return Task.CompletedTask;
     }
 }
