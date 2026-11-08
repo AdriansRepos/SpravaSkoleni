@@ -2,20 +2,9 @@
 using UsbPeripheralsLib.Documents;
 using UsbPeripheralsLib.Printing;
 using UsbPeripheralsLib.Storage;
+using SpravaSkoleni.Enumy;
 
 namespace SpravaSkoleni.Menu;
-
-public enum UsbMenuVolba
-{
-    NavratZpet,
-    DostupneDisky,
-    ExportNaUsb,
-    GenerovatPdf,
-    SystemoveTiskarny,
-    TiskNaSystemovou,
-    TiskNaSitovou,
-    NeplatnaVolba
-}
 
 [SupportedOSPlatform("windows")]
 public class UsbPeripheralsMenu
@@ -41,7 +30,7 @@ public class UsbPeripheralsMenu
     }
 
     // Metody obsluhující byznysovou logiku a volání externí knihovny
-    public static List<UsbDriveModel> ZiskejDisky() => _usbManager.GetConnectedUsbDrives().ToList();
+    public static List<UsbDriveModel> ZiskejDisky() => [.. _usbManager.GetConnectedUsbDrives()];
 
     public static bool ProvedExport(string drive, string fileName)
     {
