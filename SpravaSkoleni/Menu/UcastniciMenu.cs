@@ -1,50 +1,22 @@
-﻿using BarevneVypisyHelper;
-using SpravaSkoleni.Logika;
-using SpravaSkoleni.Vypisy;
-
-namespace SpravaSkoleni.Menu;
-
-public static class UcastniciMenu
+﻿namespace SpravaSkoleni.Menu
 {
-    public static Task SpustitAsync(SpravceSkoleni spravceSkoleni)
+    public enum UcastniciMenuVolba
     {
-        char volbaUcastnici;
-        do
+        NávratZpět,
+        ZobrazitVsechnyStudenty,
+        ZobrazitVsechnyLektory
+    }
+
+    public class UcastniciMenu
+    {
+        public static UcastniciMenuVolba ZpracujVolbu(string vstup)
         {
-            VypisyDoKonzole.VypisHlavickuMenu("MENU ÚČASTNÍKŮ A HISTORIE");
-            VypisyDoKonzole.VypisTeloMenu(
-                "1. Vypsat všechny studenty a jejich historii",
-                "2. Vypsat všechny lektory a jejich historii",
-                "n. Návrat do hlavního menu"
-            );
-            
-            VypisyDoKonzole.VypisVyzvuKZadani();
-            volbaUcastnici = char.ToLower(Console.ReadKey().KeyChar);
-            Console.WriteLine();
-
-            switch (volbaUcastnici)
+            return vstup.Trim().ToLower() switch
             {
-                case '1':
-                    StudentiVypisy.VypisVsechnyStudenty(spravceSkoleni);
-                    VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
-                    Console.ReadKey();
-                    break;
-
-                case '2':
-                    LektoriVypisy.VypisVsechnyLektory(spravceSkoleni);
-                    VypisyDoKonzole.VypisInformaci("\nPro návrat do podmenu stiskněte libovolnou klávesu...");
-                    Console.ReadKey();
-                    break;
-
-                case 'n':
-                    break;
-
-                default:
-                    VypisyDoKonzole.VypisInformaci("Neplatná volba, opakujte zadání:");
-                    break;
-            }
-        } 
-        while (volbaUcastnici != 'n');
-        return Task.CompletedTask;
+                "1" => UcastniciMenuVolba.ZobrazitVsechnyStudenty,
+                "2" => UcastniciMenuVolba.ZobrazitVsechnyLektory,
+                _ => UcastniciMenuVolba.NávratZpět
+            };
+        }
     }
 }
