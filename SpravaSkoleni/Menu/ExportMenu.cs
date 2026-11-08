@@ -1,33 +1,21 @@
-﻿using BarevneVypisyHelper;
-using SpravaSkoleni.Data.Entity;
-using SpravaSkoleni.Logika;
-using SpravaSkoleni.Vypisy;
+﻿namespace SpravaSkoleni.Menu;
 
-namespace SpravaSkoleni.Menu;
-
-public static class ExportMenu
+public enum ExportMenuVolba
 {
-    public static async Task SpustitAsync(SpravceSkoleni spravceSkoleni)
+    NávratZpět,
+    ProvéstExport,
+    NeplatnaVolba
+}
+
+public class ExportMenu
+{
+    public static ExportMenuVolba ZpracujVolbu(string vstup)
     {
-        Console.WriteLine("\n*** Export prezenční listiny ***\n");
-            
-        Skoleni? vybraneSkoleniKExportu = SkoleniVypisy.VybratSkoleni(spravceSkoleni); 
-        
-        if (vybraneSkoleniKExportu != null)
-        {                        
-            try
-            {
-                await SpravceExportu.ExportujPrezencniListinuAsync(vybraneSkoleniKExportu);
-                VypisyDoKonzole.VypisUspech("! Prezenční listina byla úspěšně vyexportována do složky Exporty !");
-            }
-            catch (IOException ex)
-            {
-                VypisyDoKonzole.VypisVarovani(ex.Message);
-            }
-        }
-        else
+        return vstup.Trim().ToLower() switch
         {
-            Console.WriteLine("Žádné školení nebylo vybráno nebo neexistuje.");
-        }
+            "1" => ExportMenuVolba.ProvéstExport,
+            "n" => ExportMenuVolba.NávratZpět,
+            _ => ExportMenuVolba.NeplatnaVolba
+        };
     }
 }
