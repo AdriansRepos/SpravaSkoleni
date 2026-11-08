@@ -75,7 +75,7 @@ public static class HlavniMenuVypisy
                     break;   
                     
                 case HlavniMenuVolba.UsbPeripheralMenu:
-                    UsbPeripheralsMenu.SpustitMenuAsync();
+                    UsbPeripheralsMenuVypisy.SpustitInteraktivniMenu();
                     break;
 
                 case HlavniMenuVolba.KonecProgramu:                 
