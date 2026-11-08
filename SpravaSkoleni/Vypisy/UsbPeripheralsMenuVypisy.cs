@@ -12,7 +12,7 @@ public static class UsbPeripheralsMenuVypisy
         while (pokracovat)
         {
             Console.Clear();
-            VypisyDoKonzole.VypisHlavickuMenu("SPRÁVA USB, TISKÁRN A PDF");
+            VypisyDoKonzole.VypisHlavickuMenu("SPRÁVA USB, TISKÁREN A PDF");
             VypisyDoKonzole.VypisTeloMenu(
                 "1. Zdetekovat připojené USB disky",
                 "2. Exportovat soubor/zálohu na USB disk",
