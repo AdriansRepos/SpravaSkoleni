@@ -1,10 +1,12 @@
 ﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Logika;
 using SpravaSkoleni.Menu;
+using System.Runtime.Versioning;
 using TextHelper;
 
 namespace SpravaSkoleni.Vypisy;
 
+[SupportedOSPlatform("windows")]
 public static class HlavniMenuVypisy
 {
     public static async Task SpustitAplikaciAsync()
@@ -41,7 +43,8 @@ public static class HlavniMenuVypisy
                 "1. Správa školení",
                 "2. Export prezenční listiny",
                 "3. Vyhledávání a filtrace",
-                "4. Správa účastníků",                
+                "4. Správa účastníků",   
+                "5. Správa USB, tiskáren a PDF",
                 "k. Ukončit program"
             );
             
@@ -68,8 +71,12 @@ public static class HlavniMenuVypisy
 
                 case HlavniMenuVolba.SpravaUcastniku: 
                     UcastniciMenuVypisy.SpustInteraktivniMenu(spravceSkoleni);
-                    break;                
-                
+                    break;   
+                    
+                case HlavniMenuVolba.UsbPeripheralMenu:
+                    await UsbPeripheralsMenu.SpustitMenuAsync();
+                    break;
+
                 case HlavniMenuVolba.KonecProgramu:                 
                     break;
 
