@@ -1,5 +1,6 @@
 ﻿using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Data.Repozitare;
+using SpravaSkoleni.Dto;
 
 namespace SpravaSkoleni.Logika;
 
@@ -275,5 +276,58 @@ public class SpravceSkoleni
         s.Studenti.Any(st => st.Kod == student.Kod && st.Firma == student.Firma) && // B2B ÚPRAVA: Přesné vyhledání podle firmy a kódu instance
         start < s.KoncoveDatum &&
         konec > s.PocatecniDatum);
+    }
+
+    // Pomocná metoda pro převedení importovaných DTO na doménové objekty Student
+    public async Task<List<Student>> PrevedNaStudentyAsync(
+        IEnumerable<ImportovanyStudentDto> importovani,
+        string? firma = null,
+        bool ulozitNoveDoKmenu = true)
+    {
+        string cilovaFirma = string.IsNullOrWhiteSpace(firma) ? _aktualniFirma : firma.Trim();
+        var vysledek = new List<Student>();
+        bool zmenenKmenovySeznam = false;
+
+        foreach (var dto in importovani)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Kod))
+            {
+                continue;
+            }
+
+            string kod = dto.Kod.Trim();
+            var existujici = Studenti.FirstOrDefault(s =>
+                s.Kod == kod && s.Firma.Equals(cilovaFirma, StringComparison.OrdinalIgnoreCase));
+
+            Student student;
+            if (existujici != null)
+            {
+                existujici.Jmeno = dto.Jmeno;
+                existujici.Prijmeni = dto.Prijmeni;
+                existujici.PracovniPozice = dto.PracovniPozice;
+                student = existujici;
+            }
+            else
+            {
+                student = new Student(dto.Jmeno, dto.Prijmeni, kod, dto.PracovniPozice, cilovaFirma);
+                if (ulozitNoveDoKmenu)
+                {
+                    Studenti.Add(student);
+                    zmenenKmenovySeznam = true;
+                }
+            }
+
+            if (!vysledek.Contains(student))
+            {
+                vysledek.Add(student);
+            }
+        }
+
+        if (zmenenKmenovySeznam)
+        {
+            await UlozitStudentaAsync();
+        }
+
+        return vysledek;
     }
 }
