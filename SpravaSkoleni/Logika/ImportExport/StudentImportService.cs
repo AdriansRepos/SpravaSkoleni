@@ -21,7 +21,7 @@ public sealed class StudentImportService(IEnumerable<IFormatStudentReader> cteck
         var zaznamy = await ctecka.NactiAsync(cestaKSouboru);
 
         // Očištění a kontrola povinných položek (jméno, příjmení, kód, funkce)
-        return zaznamy
+        return [.. zaznamy
             .Where(z =>
                 !string.IsNullOrWhiteSpace(z.Jmeno) &&
                 !string.IsNullOrWhiteSpace(z.Prijmeni) &&
@@ -30,7 +30,6 @@ public sealed class StudentImportService(IEnumerable<IFormatStudentReader> cteck
                 z.Jmeno.Trim(),
                 z.Prijmeni.Trim(),
                 z.Kod.Trim(),
-                string.IsNullOrWhiteSpace(z.PracovniPozice) ? "Neuvedeno" : z.PracovniPozice.Trim()))
-            .ToList();
+                string.IsNullOrWhiteSpace(z.PracovniPozice) ? "Neuvedeno" : z.PracovniPozice.Trim()))];
     }
 }
