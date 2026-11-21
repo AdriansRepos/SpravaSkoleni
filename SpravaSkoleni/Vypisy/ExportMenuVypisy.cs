@@ -35,8 +35,8 @@ public static class ExportMenuVypisy
                     {
                         try
                         {
-                            await SpravceExportu.ExportujPrezencniListinuAsync(vybraneSkoleniKExportu);
-                            VypisyDoKonzole.VypisUspech("! Prezenční listina byla úspěšně vyexportována do složky Exporty !");
+                            string cestaKSouboru = await SpravceExportu.ExportujPrezencniListinuAsync(vybraneSkoleniKExportu);
+                            VypisyDoKonzole.VypisUspech($"! Prezenční listina byla úspěšně vyexportována do: {cestaKSouboru} !");
                         }
                         catch (IOException ex)
                         {
@@ -47,7 +47,7 @@ public static class ExportMenuVypisy
                     {
                         Console.WriteLine("Žádné školení nebylo vybráno nebo neexistuje.");
                     }
-                    
+
                     VypisyDoKonzole.VypisInformaci("\nPro návrat stiskněte libovolnou klávesu...");
                     Console.ReadKey();
                     break;
