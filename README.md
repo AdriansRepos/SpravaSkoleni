@@ -30,6 +30,7 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 - Odhlášení studenta ze školení.
 - Přiřazení lektora na otevřené školení.
 - Odebrání lektora ze školení.
+- **Import studentů do otevřeného školení:** Připravený modul importu ze souborů (`.docx`, `.xlsx`, `.pdf`) přes `IStudentImportService` a čtečky formátů (`DocxStudentReader`, `XlsxStudentReader`, `PdfStudentReader`) s převodem přes `ImportovanyStudentDto` a `PrevedNaStudentyAsync` (kontrola duplicit, aktualizace existujících nebo zápis nových studentů do kmenového seznamu a následné přihlášení na školení).
 - **Neprůstřelná integrita:** U uzavřených školení nelze provádět žádné úpravy (ochrana proti změně již proběhlého školení).
 - **Časové pojistky:** Automatické hlídání překrývání termínů – lektor nemůže učit a student nemůže studovat více kurzů v totožný čas.
 - **Kapacitní stopka:** Tvrdá blokace přihlášení studenta při stoprocentním naplnění doporučené kapacity školení.
@@ -51,7 +52,7 @@ Tento projekt je konzolová aplikace pro evidenci firemních školení, jejich l
 
 ### Export prezenčních listin
 
-- Export formátované prezenční listiny do souboru `.txt` do automaticky generované složky `Exporty`.
+- Export formátované prezenční listiny do souboru `.docx` do automaticky generované složky `Exporty`.
 - Soubor obsahuje kompletní metadata kurzu, popis, statistiky kapacity a detailní seznam studentů s kolonkou pro fyzický podpis.
 - **Optimalizovaný I/O provoz:** Využití StringBuilderu, nulová paměťová alokace nových řetězců (`StringComparison.OrdinalIgnoreCase`) a eliminace rozšiřujících LINQ metod ve prospěch vlastnosti `.Count > 0` (CA1860, CA1862).
 
@@ -96,6 +97,8 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 
 - **Skoleni** – název, popis, termín, doporučený počet účastníků, seznam přihlášených studentů a přiřazených lektorů, hodnocení studentů (u uzavřených školení), stav otevřeno/uzavřeno. Do JSON se ukládají jen kódy studentů/lektorů, ne celé objekty; skutečné reference se dopojují po načtení.
 
+- **ImportovanyStudentDto** – přenosový objekt pro importované záznamy studenta (jméno, příjmení, osobní kód, pracovní pozice).
+
 ---
 
 ## Externí knihovny (samostatné projekty)
@@ -104,6 +107,8 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 - **SelectHelper** – výběr položky ze seznamu (`SelectHelp.VybratPolozku`)
 - **InputHelper** – převod textu na TitleCase (`TitleCase.ToTitleCase`)
 - **BarevneVypisyHelper** – formátování a barevný výstup menu i systémových hlášení do konzole (`VypisyDoKonzole`)
+- **UsbPeripheralsLib** – správa USB úložišť, generování PDF dokumentů a tisk (síťový i systémový)
+- **DocumentFormat.OpenXml**, **ClosedXML**, **PdfPig** – NuGet balíčky připravené pro budoucí naplnění čteček `.docx`, `.xlsx` a `.pdf`
 
 Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2), kde vznikly a dál se rozvíjejí.
 
@@ -123,6 +128,8 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │       ├── LektoriRepository.cs
 │       ├── SkoleniRepository.cs
 │       └── StudentiRepository.cs
+├── Dto/
+│   └── ImportovanyStudentDto.cs
 ├── Enumy/
 │   ├── ExportMenuVolba.cs
 │   ├── HlavniMenuVolba.cs
@@ -132,6 +139,11 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │   ├── UsbMenuVolba.cs
 │   └── VyhledavaniMenuVolba.cs
 ├── Logika/
+│   ├── ImportExport/
+│   │   ├── DocxStudentReader.cs
+│   │   ├── PdfStudentReader.cs
+│   │   ├── StudentImportService.cs
+│   │   └── XlsxStudentReader.cs
 │   ├── SpravceExportu.cs
 │   └── SpravceSkoleni.cs
 ├── Menu/
@@ -141,6 +153,10 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 │   ├── UcastniciMenu.cs
 │   ├── UsbPeripheralsMenu.cs
 │   └── VyhledavaniMenu.cs
+├── Rozhrani/
+│   └── ImportExport/
+│       ├── IFormatStudentReader.cs
+│       └── IStudentImportService.cs
 ├── Vypisy/
 │   ├── ExportMenuVypisy.cs
 │   ├── HlavniMenuVypisy.cs
@@ -154,7 +170,7 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 ├── Zaloha/
 │   ├── ArchivacniSluzba.cs
 │   └── ZalohovaciSluzba.cs
-├── DiagramTridAplikace.cd
+├── DiagramTříd.cd
 ├── Program.cs
 └── README.md
 ```
@@ -165,7 +181,8 @@ Tyto knihovny jsou sdílené i s projektem [EvidenceZOOCviceniUpraveno2](https:/
 
 - OOP (dědičnost – Student a Lektor dědí ze společné abstraktní třídy Zamestnanec)
 - Zapouzdření a validace vstupů
-- Vícevrstvá architektura s přísným oddělením odpovědností (UI / Vypisy / Menu → Logika → Data/Entity & Repozitáře)
+- Vícevrstvá architektura s přísným oddělením odpovědností (UI / Vypisy / Menu / Enumy → Logika & Rozhraní → Data/Entity, Repozitáře & DTO)
+- Strategy / Factory rozdělení pro čtečky importních formátů (`IFormatStudentReader` + `StudentImportService`)
 - Vzor Repository pro práci s JSON soubory
 - Znovupoužitelné externí knihovny (TextHelper, SelectHelper, InputHelper, BarevneVypisyHelper)
 - Serializace/deserializace do JSON souborů (System.Text.Json)
@@ -204,6 +221,7 @@ public List<Lektor> ZiskejNeprirazeneLektory(Skoleni skoleni)
 
 ## Plánované funkce
 
+- **Unit testy** – doplnění reálného parsování do čteček (.docx, .xlsx, .pdf) a pokrytí byznysové logiky unit testy.
 - **Subsystem Fúze (ZOO)** – kompletní integrace modulu Správy školení jako autonomního subsystému do hlavní enterprise aplikace ZOO (https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2). Stejně jako ponechání modulu správy školení jako samostatné plně funkční aplikace.
 - **GUI (WPF)**
 
@@ -247,6 +265,12 @@ Aplikace plně využívá moderní asynchronní vzory platformy .NET pro maximal
 - Kompletní obalení anglické knihovny v konzolové prezentaci do českého rozhraní za dodržení striktního oddělení menu od výpisů.
 - Vytvořena nová samostatná složka a namespace `Enumy`, kam byly vyčleněny veškeré řídící enumy voleb menu (`UsbMenuVolba`, `VyhledavaniMenuVolba`, `HlavniMenuVolba` a další).
 
+**v1.8.0** – Základ importu studentů a příprava na testování / WPF 
+- Vytvořena vrstva Dto (ImportovanyStudentDto), Rozhrani/ImportExport (IFormatStudentReader, IStudentImportService) a Logika/ImportExport (StudentImportService a kostry čteček DocxStudentReader, XlsxStudentReader, PdfStudentReader). 
+- Do SpravceSkoleni doplněna metoda PrevedNaStudentyAsync s kontrolou duplicit a volitelným zápisem nových studentů do kmenové databáze. 
+- Napojen import studentů do menu detailu otevřeného školení (SkoleniDetailMenuVolba, SkoleniMenu, SkoleniMenuVypisy, SkoleniVypisy). 
+- Upraven SpravceExportu (oddělení sestavení textu listiny a vrácení cesty k uloženému souboru) i ExportMenuVypisy pro snazší unit testování a budoucí napojení na WPF.
+
 [Aktuální verze ke stažení zde](https://github.com/AdriansRepos/SpravaSkoleni/releases)
 
 </details>
@@ -271,6 +295,7 @@ A robust, production-ready enterprise console application built in **C# (.NET)**
 
 ### Students & Instructors
 - **Enrollment & Assignment:** Seamlessly enroll/unenroll students and assign/remove instructors for open trainings.
+- **Student Import into Open Trainings:** Import scaffolding supporting .docx, .xlsx, and .pdf via IStudentImportService and format readers (DocxStudentReader, XlsxStudentReader, PdfStudentReader), mapped through ImportovanyStudentDto and PrevedNaStudentyAsync with duplicate checks, optional master-list persistence, and enrollment.
 - **Strict Integrity Locks:** Zero modifications permitted on already closed/completed courses.
 - **Time Slot Collision Guards:** Automatic schedule overlap protection—prevents instructors and students from attending overlapping courses simultaneously.
 - **Capacity Hard-Stop:** Automated blocking of student registrations when recommended capacity reaches 100%.
@@ -287,7 +312,7 @@ A robust, production-ready enterprise console application built in **C# (.NET)**
 - **Employee Timeline Cards:** Detailed chronological history displaying all open and closed courses for any specific employee.
 
 ### Attendance Sheet Export
-- **File Export:** Generate formatted attendance lists into `.txt` files saved within an automatically managed `Exports` directory.
+- **File Export:** Generate formatted attendance lists into `.docx` files saved within an automatically managed `Exports` directory.
 - **Rich Metadata:** Exports include course metadata, descriptions, capacity statistics, and a detailed student roster with physical signature lines.
 - **Optimized I/O Performance:** Leverages `StringBuilder`, zero-allocation string comparisons (`StringComparison.OrdinalIgnoreCase`), and optimized collection checks (`.Count > 0` adhering to CA1860, CA1862).
 
@@ -303,7 +328,7 @@ The application implements a **Shared Database, Isolated Data** pattern. All tra
 ### Clean Architecture
 Strictly adheres to the Single Responsibility Principle (SRP) and separation of concerns:
 1. **Domain/Application Layer (`SpravceSkoleni`, `SpravceExportu`)**: Contains pure business logic. Completely independent of the user interface (UI) and console. All validation failures are expressed through custom exceptions. Fully unit-testable.
-2. **Data Layer (`Repozitories`)**: Handles JSON persistence and crash-safe backup operations.
+2. **Data Layer (`Repozitories`, `Dto`, `Rozhrani`)**: SON persistence, DTOs (ImportovanyStudentDto), and import/export interfaces (IFormatStudentReader, IStudentImportService).
 3. **Presentation Layer (`Menu`, `Vypisy`)**: The sole user-facing layer responsible for catching domain exceptions and rendering formatted outputs via `BarevneVypisyHelper`.
 
 ### End-to-End Asynchronous Processing & Multithreading
@@ -326,6 +351,7 @@ Strictly adheres to the Single Responsibility Principle (SRP) and separation of 
 - **`Student`:** Inherits from `Zamestnanec`, tracks enrolled courses.
 - **`Lektor` (Instructor):** Inherits from `Zamestnanec`, tracks taught courses.
 - **`Skoleni` (Training):** Stores title, description, schedule, capacity limits, enrolled student codes, assigned instructor codes, student ratings (for closed courses), and open/closed status. Only codes (not full object graphs) are serialized to JSON to prevent circular references; actual object references are dynamically wired up upon loading.
+- **`ImportovanyStudentDto`:** Data transfer object for imported student records (first name, last name, code, job position)
 
 ---
 
@@ -337,6 +363,7 @@ Strictly adheres to the Single Responsibility Principle (SRP) and separation of 
 - **BarevneVypisyHelper:** Unified console styling and colored output formatting (`VypisyDoKonzole`).
 - **UsbPeripheralsLib** – správa USB úložišť, generování PDF dokumentů a tisk (síťový i systémový)
 - **UsbPeripheralsLib:** Management of USB storage devices, PDF document generation, and printing capabilities (both network and system printers).
+- **DocumentFormat.OpenXml, ClosedXML, PdfPig:** NuGet packages added for upcoming .docx, .xlsx, and .pdf reader implementations.
 
 These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com/AdriansRepos/EvidenceZOOCviceniUpraveno2).
 
@@ -356,6 +383,8 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 │       ├── LektoriRepository.cs
 │       ├── SkoleniRepository.cs
 │       └── StudentiRepository.cs
+├── Dto/
+│   └── ImportovanyStudentDto.cs
 ├── Enumy/
 │   ├── ExportMenuVolba.cs
 │   ├── HlavniMenuVolba.cs
@@ -365,6 +394,11 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 │   ├── UsbMenuVolba.cs
 │   └── VyhledavaniMenuVolba.cs
 ├── Logika/
+│   ├── ImportExport/
+│   │   ├── DocxStudentReader.cs
+│   │   ├── PdfStudentReader.cs
+│   │   ├── StudentImportService.cs
+│   │   └── XlsxStudentReader.cs
 │   ├── SpravceExportu.cs
 │   └── SpravceSkoleni.cs
 ├── Menu/
@@ -374,6 +408,10 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 │   ├── UcastniciMenu.cs
 │   ├── UsbPeripheralsMenu.cs
 │   └── VyhledavaniMenu.cs
+├── Rozhrani/
+│   └── ImportExport/
+│       ├── IFormatStudentReader.cs
+│       └── IStudentImportService.cs
 ├── Vypisy/
 │   ├── ExportMenuVypisy.cs
 │   ├── HlavniMenuVypisy.cs
@@ -387,7 +425,7 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 ├── Zaloha/
 │   ├── ArchivacniSluzba.cs
 │   └── ZalohovaciSluzba.cs
-├── DiagramTridAplikace.cd
+├── DiagramTříd.cd
 ├── Program.cs
 └── README.md
 ```
@@ -397,7 +435,8 @@ These libraries are shared with [EvidenceZOOCviceniUpraveno2](https://github.com
 ## Core Techniques & Patterns
 
 - OOP Principles: Inheritance (Student & Lektor inherit from abstract Zamestnanec), encapsulation.
-- Multi-Layered Architecture: Strict separation of UI, Business Logic, and Data Persistence.
+- Multi-layered architecture with DTOs, interfaces, enums, menus, and console views.
+- Strategy / Factory reader dispatch for import formats
 - Repository Pattern: Clean abstraction layer for JSON file persistence.
 - Modern JSON Serialization (System.Text.Json): Utilizes [JsonIgnore] to prevent circular reference exceptions on bidirectional relationships.
 - LINQ Queries: Extensive use of Select, Where, GroupBy, and ToDictionary for data binding and aggregation.
@@ -432,8 +471,9 @@ public List<Lektor> GetUnassignedInstructors(Skoleni training)
 
 ## Planned Features
 
-- ZOO Fusion Subsystem: Complete integration of the Training Management module as an autonomous subsystem into the primary enterprise ZOO application (EvidenceZOOCviceniUpraveno2), while maintaining its standalone execution capability.
-- Graphical User Interface (WPF)
+- **Unit Tests:** Implement format reader parsing (.docx, .xlsx, .pdf) and add unit tests across domain logic.
+- **ZOO Fusion Subsystem:** Complete integration of the Training Management module as an autonomous subsystem into the primary enterprise ZOO application (EvidenceZOOCviceniUpraveno2), while maintaining its standalone execution capability.
+- **Graphical User Interface (WPF)**
 
 ---
 
@@ -463,6 +503,8 @@ public List<Lektor> GetUnassignedInstructors(Skoleni training)
 - Integrated external `UsbPeripheralsLib` library for USB storage management (drive detection, offline backups), PDF document creation via `QuestPDF`, and dual-mode printing (local Windows queue and direct network RAW sockets on port 9100).
 - Fully wrapped library English API calls inside a localized Czech console interface maintaining strict Clean Architecture principles (Menu vs Vypisy UI layer separation).
 - Introduced a dedicated `Enumy` directory and namespace housing all menu control enums (`UsbMenuVolba`, `VyhledavaniMenuVolba`, `HlavniMenuVolba`, etc.).
+
+**v1.8.0** - Added Dto, Rozhrani/ImportExport, and Logika/ImportExport scaffolding (ImportovanyStudentDto, IFormatStudentReader, IStudentImportService, StudentImportService, DocxStudentReader, XlsxStudentReader, PdfStudentReader), PrevedNaStudentyAsync in SpravceSkoleni, open-training import integration in SkoleniDetailMenuVolba / SkoleniMenu / SkoleniMenuVypisy / SkoleniVypisy, and test-friendly export updates in SpravceExportu and ExportMenuVypisy.
 
 [Downolad latest release here](https://github.com/AdriansRepos/SpravaSkoleni/releases)
 
