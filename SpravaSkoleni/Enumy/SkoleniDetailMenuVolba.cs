@@ -8,5 +8,6 @@ public enum SkoleniDetailMenuVolba
     PriraditLektora,
     OdebratLektora,
     UzavritSkoleni,
+    ImportovatStudentyZeSouboru,
     NeplatnaVolba
 }
