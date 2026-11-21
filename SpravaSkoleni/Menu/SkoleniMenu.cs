@@ -24,6 +24,7 @@ public class SkoleniMenu
             "3" => SkoleniDetailMenuVolba.PriraditLektora,
             "4" => SkoleniDetailMenuVolba.OdebratLektora,
             "5" => SkoleniDetailMenuVolba.UzavritSkoleni,
+            "6" => SkoleniDetailMenuVolba.ImportovatStudentyZeSouboru,
             "n" => SkoleniDetailMenuVolba.NávratZpět,
             _ => SkoleniDetailMenuVolba.NeplatnaVolba
         };
