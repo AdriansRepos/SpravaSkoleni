@@ -1,14 +1,22 @@
 ﻿using BarevneVypisyHelper;
 using SpravaSkoleni.Data.Entity;
 using SpravaSkoleni.Logika;
+using SpravaSkoleni.Logika.ImportExport;
 using SpravaSkoleni.Menu;
+using SpravaSkoleni.Rozhrani.ImportExport;
 using SpravaSkoleni.Enumy;
-
 
 namespace SpravaSkoleni.Vypisy;
 
 public static class SkoleniMenuVypisy
 {
+    private static readonly IStudentImportService _importService = new StudentImportService(
+    [
+        new DocxStudentReader(),
+        new XlsxStudentReader(),
+        new PdfStudentReader()
+    ]);
+
     public static async Task SpustInteraktivniMenuAsync(SpravceSkoleni spravceSkoleni)
     {
         char volba;
@@ -73,7 +81,8 @@ public static class SkoleniMenuVypisy
                 "2. Odhlásit studenta",
                 "3. Přiřadit lektora",
                 "4. Odebrat lektora",
-                "5. Uzavřít školení",                         
+                "5. Uzavřít školení",
+                "6. Importovat studenty ze souboru",
                 "n. Návrat zpět"
             );
             
@@ -103,6 +112,10 @@ public static class SkoleniMenuVypisy
 
                 case SkoleniDetailMenuVolba.UzavritSkoleni:                                    
                     await SkoleniVypisy.UzavritSkoleniAsync(spravceSkoleni, vybraneSkoleni);
+                    break;
+
+                case SkoleniDetailMenuVolba.ImportovatStudentyZeSouboru:
+                    await SkoleniVypisy.ImportovatStudentyZeSouboruAsync(spravceSkoleni, vybraneSkoleni, _importService);
                     break;
 
                 case SkoleniDetailMenuVolba.NávratZpět:
