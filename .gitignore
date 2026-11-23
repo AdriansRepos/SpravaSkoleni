@@ -11,5 +11,7 @@
 *.sln.docstates
 
 # Výstupy testů a balíčky
+TestResults/
+*.trx
 *.nupkg
 *.suo
