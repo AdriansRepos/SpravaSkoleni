@@ -29,7 +29,8 @@ namespace SpravaSkoleni.Data.Entity
         public string PracovniPozice
         {
             get => _pracovniPozice;
-            set => _pracovniPozice = TitleCase.ToTitleCase(value);
+            set => _pracovniPozice = TitleCase.ToTitleCase(
+                string.IsNullOrWhiteSpace(value) ? "Neuvedeno" : value.Trim());
         }
 
         private string _firma = string.Empty;
