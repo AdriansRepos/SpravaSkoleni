@@ -11,7 +11,7 @@ public sealed class StudentImportService(IEnumerable<IFormatStudentReader> cteck
     {
         if (string.IsNullOrWhiteSpace(cestaKSouboru) || !File.Exists(cestaKSouboru))
         {
-            throw new FileNotFoundException("Vstupní soubor se seznamu studentů nebyl nalezen.", cestaKSouboru);
+            throw new FileNotFoundException("Vstupní soubor se seznamem studentů nebyl nalezen.", cestaKSouboru);
         }
 
         string pripona = Path.GetExtension(cestaKSouboru).ToLowerInvariant();
