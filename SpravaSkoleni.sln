@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37411.7 d17.14
+VisualStudioVersion = 17.14.37411.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpravaSkoleni", "SpravaSkoleni\SpravaSkoleni.csproj", "{F6E45E7F-0C28-4950-8E10-2C07AF4910EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpravaSkoleni.Tests", "SpravaSkoleni.Tests\SpravaSkoleni.Tests.csproj", "{5DC1DDE4-3BA9-4D47-A2CC-874448F74B49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F6E45E7F-0C28-4950-8E10-2C07AF4910EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6E45E7F-0C28-4950-8E10-2C07AF4910EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6E45E7F-0C28-4950-8E10-2C07AF4910EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DC1DDE4-3BA9-4D47-A2CC-874448F74B49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC1DDE4-3BA9-4D47-A2CC-874448F74B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC1DDE4-3BA9-4D47-A2CC-874448F74B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC1DDE4-3BA9-4D47-A2CC-874448F74B49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
